@@ -1,3 +1,3 @@
 # BotwActorToolCSharp
 
-Rewrite of Botw Actor Tool by GingerAvalache
+Rewrite of Botw Actor Tool in C# and XAML
