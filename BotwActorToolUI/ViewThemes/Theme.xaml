@@ -1,7 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="Static.Background" Color="#1f1f1f"/>
-    <SolidColorBrush x:Key="Static.Background.Active" Color="#2f2f2f"/>
+    <!--General Colors-->
+    <SolidColorBrush x:Key="Static.Background" Color="#0f0f0f"/>
+    <SolidColorBrush x:Key="Static.Background.Active" Color="#1f1f1f"/>
     <SolidColorBrush x:Key="Static.Foreground" Color="#fff"/>
-    <SolidColorBrush x:Key="Static.Highlight.Button.MouseOverColor" Color="#FF0086FF"/>
+
+    <!--Tab Colors-->
+    <SolidColorBrush x:Key="TabObject.Static.Foreground" Color="#fff"/>
+    <SolidColorBrush x:Key="TabObject.Static.Background" Color="#2f2f2f"/>
+    <Color x:Key="TabObject.MouseOver.Background" R="0" B="255" G="134" A="255"/>
+    <Color x:Key="TabObject.Active.Background" R="31" G="31" B="31" A="255"/>
 </ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿<Application x:Class="BotwActorToolUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="https://github.com/canton7/Stylet"
              xmlns:local="clr-namespace:BotwActorToolUI">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,7 +10,11 @@
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <local:Bootstrapper x:Key="Bootstrapper"/>
+                    <s:ApplicationLoader x:Key="Bootstrapper">
+                        <s:ApplicationLoader.Bootstrapper>
+                            <local:AppBootstrapper />
+                        </s:ApplicationLoader.Bootstrapper>
+                    </s:ApplicationLoader>
                 </ResourceDictionary>
                 
                 <ResourceDictionary Source="ViewThemes/Theme.xaml"/>
