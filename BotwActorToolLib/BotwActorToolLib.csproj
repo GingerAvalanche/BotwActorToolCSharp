@@ -33,22 +33,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AampLibraryCSharp">
-      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\Plugins\AampLibraryCSharp.dll</HintPath>
+      <HintPath>lib\KillzXGaming\AampLibraryCSharp.dll</HintPath>
     </Reference>
     <Reference Include="ByamlExt">
-      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\ByamlExt.dll</HintPath>
+      <HintPath>lib\KillzXGaming\ByamlExt.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SARCExt">
-      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\SARCExt.dll</HintPath>
+      <HintPath>lib\KillzXGaming\SARCExt.dll</HintPath>
     </Reference>
     <Reference Include="SharpYaml">
-      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\SharpYaml.dll</HintPath>
+      <HintPath>lib\KillzXGaming\SharpYaml.dll</HintPath>
     </Reference>
     <Reference Include="Syroot.BinaryData">
-      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\Syroot.BinaryData.dll</HintPath>
+      <HintPath>lib\KillzXGaming\Syroot.BinaryData.dll</HintPath>
+    </Reference>
+    <Reference Include="Syroot.Maths">
+      <HintPath>lib\KillzXGaming\Syroot.Maths.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
