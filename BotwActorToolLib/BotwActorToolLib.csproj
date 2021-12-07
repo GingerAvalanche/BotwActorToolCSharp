@@ -32,6 +32,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AampLibraryCSharp">
+      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\Plugins\AampLibraryCSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ByamlExt">
+      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\ByamlExt.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SARCExt">
+      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\SARCExt.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpYaml">
+      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\SharpYaml.dll</HintPath>
+    </Reference>
+    <Reference Include="Syroot.BinaryData">
+      <HintPath>..\..\..\..\CemuShit\Switch-Toolbox\Lib\Syroot.BinaryData.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,13 +60,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Gamedata\Flags\BoolArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\BoolBaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\BoolFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\BaseFlag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Gamedata\Flags\F32ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\F32BaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\F32Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\S32ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\S32BaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\S32Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\String256ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\String256Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\String32Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\String64ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\String64Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\StringArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\StringBaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\StringFlag.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotwActorToolUI\BotwActorToolUI.csproj">
       <Project>{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}</Project>
       <Name>BotwActorToolUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Data\overrides.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
