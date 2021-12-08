@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace BotwActorToolLib.Gamedata.Flags
 {
-    abstract class BaseFlag
+    public abstract class BaseFlag
     {
         private string p_DataName = "";
         private int p_HashValue;

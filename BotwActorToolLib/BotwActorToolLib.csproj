@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>9.0</LangVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,25 +34,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AampLibraryCSharp">
-      <HintPath>lib\KillzXGaming\AampLibraryCSharp.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\AampLibraryCSharp.dll</HintPath>
     </Reference>
     <Reference Include="ByamlExt">
-      <HintPath>lib\KillzXGaming\ByamlExt.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\ByamlExt.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SARCExt">
-      <HintPath>lib\KillzXGaming\SARCExt.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\SARCExt.dll</HintPath>
     </Reference>
     <Reference Include="SharpYaml">
-      <HintPath>lib\KillzXGaming\SharpYaml.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\SharpYaml.dll</HintPath>
     </Reference>
     <Reference Include="Syroot.BinaryData">
-      <HintPath>lib\KillzXGaming\Syroot.BinaryData.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\Syroot.BinaryData.dll</HintPath>
     </Reference>
     <Reference Include="Syroot.Maths">
-      <HintPath>lib\KillzXGaming\Syroot.Maths.dll</HintPath>
+      <HintPath>..\packages\KillzXGaming\Syroot.Maths.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -90,6 +91,7 @@
     <Compile Include="src\Gamedata\Flags\Vec3Flag.cs" />
     <Compile Include="src\Gamedata\Flags\Vec4BaseFlag.cs" />
     <Compile Include="src\Gamedata\Flags\Vec4Flag.cs" />
+    <Compile Include="src\Gamedata\Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotwActorToolUI\BotwActorToolUI.csproj">
