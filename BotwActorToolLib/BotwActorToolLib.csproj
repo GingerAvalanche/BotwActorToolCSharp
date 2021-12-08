@@ -82,6 +82,14 @@
     <Compile Include="src\Gamedata\Flags\StringArrayFlag.cs" />
     <Compile Include="src\Gamedata\Flags\StringBaseFlag.cs" />
     <Compile Include="src\Gamedata\Flags\StringFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec2ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec2BaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec2Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec3ArrayFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec3BaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec3Flag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec4BaseFlag.cs" />
+    <Compile Include="src\Gamedata\Flags\Vec4Flag.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotwActorToolUI\BotwActorToolUI.csproj">
