@@ -33,17 +33,17 @@ namespace BotwActorToolLib.MSBT
         Header header;
         public List<SectionTag> section_order;
         [CanBeNull]
-        Ato1 ato1;
+        internal Ato1 ato1;
         [CanBeNull]
-        Atr1 atr1;
+        internal Atr1 atr1;
         [CanBeNull]
-        Lbl1 lbl1;
+        internal Lbl1 lbl1;
         [CanBeNull]
-        Nli1 nli1;
+        internal Nli1 nli1;
         [CanBeNull]
-        Tsy1 tsy1;
+        internal Tsy1 tsy1;
         [CanBeNull]
-        Txt2 txt2;
+        internal Txt2 txt2;
         public MSBT(Stream stream)
         {
             MsbtReader reader = new(new BinaryReader(stream));
