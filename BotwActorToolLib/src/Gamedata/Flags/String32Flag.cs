@@ -7,7 +7,7 @@ namespace BotwActorToolLib.Gamedata.Flags
     class String32Flag : StringFlag
     {
         public String32Flag() : base() { }
-        public String32Flag(OrderedDictionary<string,dynamic> dict) : base(dict) { }
+        public String32Flag(OrderedDictionary<string, dynamic> dict) : base(dict) { }
         public void OverrideParams(Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides)
         {
             OverrideParams(overrides["STANDARD_OVERRIDES"]);

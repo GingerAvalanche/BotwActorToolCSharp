@@ -8,7 +8,7 @@ namespace BotwActorToolLib.Gamedata
 {
     public class Store
     {
-        private static readonly ReadOnlyCollection<string> IgnoredSaveFlags = new ReadOnlyCollection<string>(new List<string>
+        private static readonly ReadOnlyCollection<string> IgnoredSaveFlags = new(new List<string>
         {
             "AlbumPictureIndex",
             "IsGet_Obj_AmiiboItem",
@@ -65,7 +65,8 @@ namespace BotwActorToolLib.Gamedata
             "CameraUpDownReverse",
             "PlayReport_CtrlMode_Handheld"
         });
-        private readonly Dictionary<string, Dictionary<int, BaseFlag>> FlagStore = new Dictionary<string, Dictionary<int, BaseFlag>> {
+        private readonly Dictionary<string, Dictionary<int, BaseFlag>> FlagStore = new()
+        {
             { "bool_data", new Dictionary<int, BaseFlag>() },
             { "bool_array_data", new Dictionary<int, BaseFlag>() },
             { "s32_data", new Dictionary<int, BaseFlag>() },
@@ -83,7 +84,8 @@ namespace BotwActorToolLib.Gamedata
             { "vector3f_array_data", new Dictionary<int, BaseFlag>() },
             { "vector4f_data", new Dictionary<int, BaseFlag>() }
         };
-        private readonly Dictionary<string, Dictionary<int, BaseFlag>> OrigFlagStore = new Dictionary<string, Dictionary<int, BaseFlag>> {
+        private readonly Dictionary<string, Dictionary<int, BaseFlag>> OrigFlagStore = new()
+        {
             { "bool_data", new Dictionary<int, BaseFlag>() },
             { "bool_array_data", new Dictionary<int, BaseFlag>() },
             { "s32_data", new Dictionary<int, BaseFlag>() },
@@ -353,7 +355,9 @@ namespace BotwActorToolLib.Gamedata
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
         }
+#pragma warning disable IDE0060 // Remove unused parameter
         public HashSet<string> GetModifiedSvData(string type)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             return new();
         }
@@ -364,7 +368,7 @@ namespace BotwActorToolLib.Gamedata
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
         }
-        public List<OrderedDictionary<string,dynamic>> ToBgdata(string prefix)
+        public List<OrderedDictionary<string, dynamic>> ToBgdata(string prefix)
         {
             string type = prefix.Replace("revival_", "");
             List<OrderedDictionary<string, dynamic>> ret = new();

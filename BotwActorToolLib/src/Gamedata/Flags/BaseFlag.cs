@@ -71,7 +71,7 @@ namespace BotwActorToolLib.Gamedata.Flags
         }
         public OrderedDictionary<string, dynamic> ToByml()
         {
-            OrderedDictionary<string, dynamic> byml = new OrderedDictionary<string, dynamic>
+            OrderedDictionary<string, dynamic> byml = new()
             {
                 ["DataName"] = DataName,
                 ["HashValue"] = HashValue,
@@ -87,7 +87,7 @@ namespace BotwActorToolLib.Gamedata.Flags
         }
         public OrderedDictionary<string, dynamic> ToSvByml()
         {
-            OrderedDictionary<string, dynamic> byml = new OrderedDictionary<string, dynamic>
+            OrderedDictionary<string, dynamic> byml = new()
             {
                 ["DataName"] = DataName,
                 ["HashValue"] = HashValue
@@ -98,9 +98,9 @@ namespace BotwActorToolLib.Gamedata.Flags
         {
             return HashValue != 0;
         }
-        public void OverrideParams(Dictionary<string,Dictionary<string,dynamic>> overrides)
+        public void OverrideParams(Dictionary<string, Dictionary<string, dynamic>> overrides)
         {
-            foreach (KeyValuePair<string,dynamic> pair in overrides["IS_EVENT_ASSOCIATED"])
+            foreach (KeyValuePair<string, dynamic> pair in overrides["IS_EVENT_ASSOCIATED"])
             {
                 if (new Regex(pair.Key).Matches(p_DataName).Count > 0)
                 {

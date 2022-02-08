@@ -21,7 +21,7 @@ namespace BotwActorToolLib.Gamedata.Flags
         {
             try
             {
-                List<Dictionary<string,List<string>>> iv = dict["InitValue"];
+                List<Dictionary<string, List<string>>> iv = dict["InitValue"];
                 if (iv[0].Count > 1) { throw new System.Exception(); }
                 // This is actually to force errors if the Lists are empty/Dictionary is made wrong
                 if (iv[0]["Values"][0].GetType() == typeof(string)) { }
