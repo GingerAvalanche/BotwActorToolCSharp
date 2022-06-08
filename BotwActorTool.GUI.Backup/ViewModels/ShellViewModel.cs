@@ -36,5 +36,10 @@ namespace BotwActorToolUI.ViewModels
             Actors.Add(Weapon_Sword_002);
             Actors.Add(Weapon_Sword_003);
         }
+
+        public void RemoveActor(ActorViewModel model)
+        {
+            Actors.Remove(model);
+        }
     }
 }

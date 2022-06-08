@@ -34,7 +34,7 @@ namespace BotwActorToolUI.ViewModels
             set => SetAndNotify(ref _sampleTags, value);
         }
 
-        public ActorViewModel(string name, string text, IEnumerable<string> tags)
+        public ActorViewModel(string name, string text = null, IEnumerable<string> tags = null)
         {
             ActorName = name;
             SampleText = text;

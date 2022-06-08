@@ -214,7 +214,7 @@ namespace BotwActorToolLib
             {
                 if (reader.CheckSignature(4, "YAZ0"))
                 {
-                    stream = new MemoryStream(EveryFileExplorer.YAZ0.Decompress(stream.ToArray()));
+                    stream = new MemoryStream(Yaz0.Decompress(stream.ToArray()));
                     return true;
                 }
                 else

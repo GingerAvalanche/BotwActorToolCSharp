@@ -1,0 +1,101 @@
+﻿<Window x:Class="BotwActorToolUI.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:BotwActorToolUI.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:viewmodels="clr-namespace:BotwActorToolUI.ViewModels"
+        x:Name="shellView"
+        Title="Botw Actor Tool"
+        Width="1000"
+        Height="650"
+        Background="{DynamicResource Static.Background}"
+        WindowStyle="None"
+        mc:Ignorable="d">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" />
+    </WindowChrome.WindowChrome>
+
+    <Grid Background="{DynamicResource Static.Background}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+            <TextBlock FontFamily="Tajawal"
+                       FontSize="20"
+                       Foreground="#fff"
+                       Text="TestFont!!" />
+            <Button x:Name="homeBtnWindowMin"
+                    Width="45"
+                    Content="!"
+                    Style="{StaticResource WindowChromeItem}" />
+            <Button x:Name="homeBtnWindowSize"
+                    Width="45"
+                    Content="'"
+                    Style="{StaticResource WindowChromeItem}" />
+            <Button x:Name="homeBtnWindowExit"
+                    Width="45"
+                    Content=","
+                    Style="{StaticResource WindowChromeExitItem}" />
+        </StackPanel>
+        <Menu Width="40"
+              HorizontalAlignment="Left"
+              Background="Transparent"
+              WindowChrome.IsHitTestVisibleInChrome="True">
+            <MenuItem Width="30" Height="30">
+                <MenuItem.Background>
+                    <ImageBrush ImageSource="../ViewThemes/Icons/menu.png"
+                                Stretch="Uniform"
+                                TileMode="None" />
+                </MenuItem.Background>
+                <MenuItem Header="Open File" />
+                <MenuItem Header="Save File" />
+            </MenuItem>
+        </Menu>
+
+        <TabControl x:Name="tabs"
+                    Grid.Row="1"
+                    ItemContainerStyle="{StaticResource ObjectTabStyle_Primary}"
+                    ItemsSource="{Binding Actors}"
+                    SelectedItem="{Binding SelectedActors}"
+                    Style="{DynamicResource ObjectPageStyle_Primary}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="8,6,4,0" Text="{Binding ActorName}" />
+                        <Button Width="18"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Right"
+                                s:View.ActionTarget="{Binding DataContext, ElementName=tabs}"
+                                Command="{s:Action RemoveActor}"
+                                CommandParameter="{Binding}"
+                                Content=","
+                                Style="{StaticResource ObjectTabStyle_CloseButton}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:ActorViewModel}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding ActorName}" />
+                        <TextBlock Text="{Binding SampleText}" />
+                        <ItemsControl ItemsSource="{Binding SampleTags}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+</Window>

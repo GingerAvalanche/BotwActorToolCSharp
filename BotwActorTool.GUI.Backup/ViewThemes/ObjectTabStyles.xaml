@@ -1,30 +1,36 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="ObjectTabStyle_Primary" TargetType="{x:Type TabItem}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="6,2,6,2"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="Foreground" Value="{DynamicResource TabObject.Static.Foreground}"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{DynamicResource TabObject.Static.Foreground}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
-                    <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
-                        <Border Background="{StaticResource TabObject.Static.Background}" MinHeight="30" x:Name="mainBorder"
-                                Margin="0, 5, 1, 0" CornerRadius="6, 6, 0, 0"/>
-                        <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False"
+                    <Grid x:Name="templateRoot" SnapsToDevicePixels="False">
+                        <Border x:Name="mainBorder"
+                                MinHeight="30"
+                                Margin="0,5,1,0"
+                                Background="{StaticResource TabObject.Static.Background}"
+                                CornerRadius="6, 6, 0, 0" />
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="{TemplateBinding Padding}"
                                           HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                           VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                          TextOptions.TextFormattingMode="Display"/>
+                                          ContentSource="Header"
+                                          Focusable="False"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          TextOptions.TextFormattingMode="Display" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="true"/>
-                                <Condition Property="IsSelected" Value="false"/>
+                                <Condition Property="IsMouseOver" Value="true" />
+                                <Condition Property="IsSelected" Value="false" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
@@ -32,7 +38,7 @@
                                         <ColorAnimation Storyboard.TargetName="mainBorder"
                                                         Storyboard.TargetProperty="Background.Color"
                                                         To="{StaticResource TabObject.MouseOver.Background}"
-                                                        Duration="0:0:0:0.1"/>
+                                                        Duration="0:0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </MultiTrigger.EnterActions>
@@ -42,15 +48,15 @@
                                         <ColorAnimation Storyboard.TargetName="mainBorder"
                                                         Storyboard.TargetProperty="Background.Color"
                                                         To="{x:Null}"
-                                                        Duration="0:0:0:0.1"/>
+                                                        Duration="0:0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </MultiTrigger.ExitActions>
                         </MultiTrigger>
-                        <!--IsMouseOver Trigger-->
+                        <!--  IsMouseOver Trigger  -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="IsSelected" Value="true" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
@@ -58,11 +64,11 @@
                                         <ThicknessAnimation Storyboard.TargetName="mainBorder"
                                                             Storyboard.TargetProperty="Margin"
                                                             To="0, 0, 2, 0"
-                                                            Duration="0:0:0:0.1"/>
+                                                            Duration="0:0:0:0.1" />
                                         <ColorAnimation Storyboard.TargetName="mainBorder"
                                                         Storyboard.TargetProperty="Background.Color"
                                                         To="{StaticResource TabObject.Active.Background}"
-                                                        Duration="0:0:0:0.1"/>
+                                                        Duration="0:0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </MultiTrigger.EnterActions>
@@ -70,54 +76,61 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ThicknessAnimation Storyboard.TargetName="mainBorder"
-                                                        Storyboard.TargetProperty="Margin"
-                                                        To="0, 5, 2, 0"
-                                                        Duration="0:0:0:0.1"/>
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0, 5, 2, 0"
+                                                            Duration="0:0:0:0.0" />
                                         <ColorAnimation Storyboard.TargetName="mainBorder"
                                                         Storyboard.TargetProperty="Background.Color"
                                                         To="{x:Null}"
-                                                        Duration="0:0:0:0.1"/>
+                                                        Duration="0:0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </MultiTrigger.ExitActions>
-                            <Setter Property="Panel.ZIndex" Value="1"/>
+                            <Setter Property="Panel.ZIndex" Value="1" />
                         </MultiTrigger>
-                        <!--IsSelected Trigger-->
+                        <!--  IsSelected Trigger  -->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
     <Style x:Key="ObjectTabStyle_CloseButton" TargetType="{x:Type Button}">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Static.Foreground}"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Padding" Value="1"/>
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="FontFamily" Value="../ViewThemes/Fonts/#Windowcharacters"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Static.Foreground}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="../ViewThemes/Fonts/#Windowcharacters" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true" CornerRadius="5">
-                        <TextBlock x:Name="contentPresenter" Focusable="False"
-                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5"
+                            SnapsToDevicePixels="true">
+                        <TextBlock x:Name="contentPresenter"
                                    Margin="{TemplateBinding Padding}"
-                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                   Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Content}"
-                                   FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}"/>
+                                   Focusable="False"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                   Text="{TemplateBinding Content}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="#aa3f3f3f"/>
+                            <Setter TargetName="border" Property="Background" Value="#aa3f3f3f" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#afafaf"/>
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="#afafaf" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
