@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AampLibrary" Version="1.0.2" />
+    <PackageReference Include="BymlLibrary" Version="1.0.2" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    <PackageReference Include="SarcLibrary" Version="1.0.1" />
+    <PackageReference Include="Yaz0Library" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
