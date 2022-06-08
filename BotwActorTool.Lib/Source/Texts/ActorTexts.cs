@@ -22,7 +22,7 @@ namespace BotwActorTool.Lib.Texts
             OrigActorName = ActorName;
             Profile = profile;
             string lang = new Util.BATSettings().GetSetting("lang");
-            MSBT.MSBT msbt = new(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt"));
+            MSBT.MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, string> temp = msbt.GetTexts();
             foreach (KeyValuePair<string, string> kvp in Texts) {
                 if (temp.ContainsKey($"{ActorName}_{kvp.Key}")) {
@@ -34,29 +34,29 @@ namespace BotwActorTool.Lib.Texts
         public void SetText(string name, string text) => Texts[name] = text;
         public string GetText(string name) => Texts[name];
 
-        public void DeleteActor(string ModRoot)
+        public void DeleteActor(string modRoot)
         {
             string lang = new Util.BATSettings().GetSetting("lang");
-            MSBT.MSBT msbt = new(Util.GetFileAnywhere(ModRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt"));
+            MSBT.MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, string> AllTexts = msbt.GetTexts();
             AllTexts.Remove($"{OrigActorName}_BaseName");
             AllTexts.Remove($"{OrigActorName}_Name");
             AllTexts.Remove($"{OrigActorName}_Desc");
             AllTexts.Remove($"{OrigActorName}_PictureBook");
             msbt.SetTexts(AllTexts);
-            Util.InjectFile(ModRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt", msbt.Write().ToArray());
+            Util.InjectFile(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt", msbt.Write().ToArray());
         }
 
-        public void Write(string ModRoot)
+        public void Write(string modRoot)
         {
             string lang = new Util.BATSettings().GetSetting("lang");
-            MSBT.MSBT msbt = new(Util.GetFileAnywhere(ModRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt"));
+            MSBT.MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, string> AllTexts = msbt.GetTexts();
             foreach (KeyValuePair<string, string> kvp in Texts) {
                 AllTexts[$"{ActorName}_{kvp.Key}"] = kvp.Value;
             }
             msbt.SetTexts(AllTexts);
-            Util.InjectFile(ModRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt", msbt.Write().ToArray());
+            Util.InjectFile(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt", msbt.Write().ToArray());
         }
     }
 }
