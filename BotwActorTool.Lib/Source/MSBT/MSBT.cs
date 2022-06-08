@@ -49,14 +49,11 @@ namespace BotwActorTool.Lib.MSBT
         public MSBT(Stream stream)
         {
             MsbtReader reader = new(new BinaryReader(stream));
-            while (true)
-            {
-                if (reader.HasReachedEOF())
-                {
+            while (true) {
+                if (reader.HasReachedEOF()) {
                     break;
                 }
-                switch (Encoding.UTF8.GetString(reader.Peek(4)))
-                {
+                switch (Encoding.UTF8.GetString(reader.Peek(4))) {
                     case "ATO1":
                         ato1 = reader.ReadAto1();
                         section_order.Add(SectionTag.Ato1);
@@ -90,10 +87,8 @@ namespace BotwActorTool.Lib.MSBT
         {
             MsbtWriter writer = new(this, new BinaryWriter(new MemoryStream()));
             writer.WriteHeader();
-            foreach (SectionTag tag in section_order)
-            {
-                switch (tag)
-                {
+            foreach (SectionTag tag in section_order) {
+                switch (tag) {
                     case SectionTag.Ato1:
                         writer.WriteAto1(ato1);
                         break;
@@ -121,8 +116,7 @@ namespace BotwActorTool.Lib.MSBT
         {
             Dictionary<string, string> texts = new();
             List<string> strings = txt2.Strings();
-            foreach (Label label in lbl1.labels)
-            {
+            foreach (Label label in lbl1.labels) {
                 texts.Add(label.name, strings[(int)label.index]);
             }
             return texts;
@@ -132,8 +126,7 @@ namespace BotwActorTool.Lib.MSBT
         {
             List<string> strings = new();
             List<Label> labels = new();
-            foreach (KeyValuePair<string, string> kvp in texts)
-            {
+            foreach (KeyValuePair<string, string> kvp in texts) {
                 labels.Add(new Label(lbl1, kvp.Value, (uint)strings.Count, Label.GenerateChecksum(kvp.Value)));
                 strings.Add(kvp.Key);
             }
@@ -148,8 +141,7 @@ namespace BotwActorTool.Lib.MSBT
         public ulong PlusPadding(ulong size)
         {
             ulong rem = size % 16ul;
-            if (rem > 0)
-            {
+            if (rem > 0) {
                 return size + (16ul - rem);
             }
             return size;
