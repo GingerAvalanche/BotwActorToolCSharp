@@ -137,7 +137,7 @@
     <Compile Include="src\Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BotwActorToolUI\BotwActorToolUI.csproj">
+    <ProjectReference Include="..\BotwActorTool.GUI.Backup\BotwActorTool.GUI.Backup.csproj">
       <Project>{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}</Project>
       <Name>BotwActorToolUI</Name>
     </ProjectReference>
