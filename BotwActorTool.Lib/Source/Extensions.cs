@@ -24,7 +24,7 @@ namespace BotwActorTool.Lib
                 // nestedSarc.Unload();
             }
 
-            // // I think the new library handles this automaticly during serialization, should be tested
+            // // I think the new library handles hashing automaticly during serialization, should be tested
             // 
             // return sarc.AddFile(sarc.SetupFileEntry(parts[0], newData, NameHash(parts[0]).ToString("X8")));
             // 
