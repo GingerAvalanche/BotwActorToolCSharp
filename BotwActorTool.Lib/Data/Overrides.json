@@ -1,0 +1,179 @@
+{
+  "STANDARD_OVERRIDES": {
+    "IS_EVENT_ASSOCIATED": {
+      "IsInside_Dungeon": true,
+      "MapTower_07_Demo": false
+    },
+    "IS_ONE_TRIGGER": {
+      "Clear_": true,
+      "CompleteTreasure_": true,
+      "_DispNameFlag": true,
+      "Enter_": true,
+      "IsGet_": true,
+      "Open_": true,
+      "IsGet_PortableUnit": false,
+      "Clear_Remains": false,
+      "Open_Door": false,
+      "FinalTrial_Open_DoorBoss": true
+    },
+    "IS_PROGRAM_READABLE": {},
+    "IS_PROGRAM_WRITABLE": {
+      "MapTower_07_Demo": false
+    },
+    "IS_SAVE": {
+      "CompleteTreasure_": true,
+      "_DispNameFlag": true,
+      "Enter_": true,
+      "EquipTime_": true,
+      "IsGet_": true,
+      "IsInside_Dungeon": false,
+      "IsNewPictureBook_": true,
+      "IsRegisteredPictureBook_": true,
+      "Location_": true,
+      "PictureBookSize_": true,
+      "PorchTime_": true
+    },
+    "RESET_TYPE": {
+      "Clear_": 0,
+      "DgnObj_EntranceTerminal": 0,
+      "EquipTime_": 0,
+      "IsGet_": 0,
+      "IsInside_Dungeon": 0,
+      "IsNewPictureBook_": 0,
+      "IsRegisteredPictureBook_": 0,
+      "Location_": 0,
+      "MapTower_07_Demo": 0,
+      "Open_": 0,
+      "PictureBookSize_": 0,
+      "PorchTime_": 0
+    }
+  },
+  "BOOL_OVERRIDES": {
+    "CATEGORY": {
+      "Clear_": 1,
+      "IsRegisteredPictureBook_AncientArrow": 5,
+      "IsRegisteredPictureBook_Animal": 2,
+      "IsRegisteredPictureBook_Bee": 4,
+      "IsRegisteredPictureBook_BombArrow": 5,
+      "IsRegisteredPictureBook_ElectricArrow": 5,
+      "IsRegisteredPictureBook_Enemy": 3,
+      "IsRegisteredPictureBook_FireArrow": 5,
+      "IsRegisteredPictureBook_GameRomHorse": 2,
+      "IsRegisteredPictureBook_IceArrow": 5,
+      "IsRegisteredPictureBook_Item_Fish": 2,
+      "IsRegisteredPictureBook_Item_Insect": 2,
+      "IsRegisteredPictureBook_Item_Fruit": 4,
+      "IsRegisteredPictureBook_Item_Mushroom": 4,
+      "IsRegisteredPictureBook_Item_Plant": 4,
+      "IsRegisteredPictureBook_NormalArrow": 5,
+      "IsRegisteredPictureBook_Obj_Mineral": 6,
+      "IsRegisteredPictureBook_RemainsFire_Drone": 3,
+      "IsRegisteredPictureBook_TBox": 6,
+      "IsRegisteredPictureBook_Weapon": 5,
+      "MainField_Npc_HiddenKorok": 11,
+      "IsRegisteredPictureBook_Enemy_.*_Dark": 7,
+      "IsRegisteredPictureBook_Enemy_.*_Gold": 7,
+      "IsRegisteredPictureBook_Enemy_Dragon": 7,
+      "IsRegisteredPictureBook_Enemy_Ganon": 7,
+      "IsRegisteredPictureBook_Enemy_SiteBoss": 7,
+      "Dungeon_Clear_": -1
+    },
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "BOOL_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "S32_OVERRIDES": {
+    "INIT_VALUE": {
+      "EquipTime_": 0,
+      "Location_": 0,
+      "Location_StartPoint": 1,
+      "Npc_": 0,
+      "PictureBookSize_": -1,
+      "PorchTime_": 0
+    },
+    "MAX_VALUE": {
+      "EquipTime_": 2147483647,
+      "Location_": 2147483647,
+      "Npc_": 65535,
+      "PictureBookSize_": 65536,
+      "PorchTime_": 2147483647
+    },
+    "MIN_VALUE": {
+      "EquipTime_": 0,
+      "Location_": -2147483648,
+      "Npc_": 0,
+      "PictureBookSize_": -1,
+      "PorchTime_": 0
+    }
+  },
+  "S32_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "F32_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "F32_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "STR32_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "STR64_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "STR256_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "STR64_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "STR256_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "VEC2_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "VEC2_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "VEC3_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "VEC3_ARRAY_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  },
+  "VEC4_OVERRIDES": {
+    "INIT_VALUE": {},
+    "MAX_VALUE": {},
+    "MIN_VALUE": {}
+  }
+}
