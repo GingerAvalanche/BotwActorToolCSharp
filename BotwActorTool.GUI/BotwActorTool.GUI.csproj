@@ -55,10 +55,10 @@
 
   <ItemGroup>
     <Reference Include="System.Operations">
-      <HintPath>..\..\..\..\Libraries\Acheron\Acheron\Release\net6.0-windows\System.Operations.dll</HintPath>
+      <HintPath>.\Lib\System.Operations.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Formatting">
-      <HintPath>..\..\..\..\Libraries\Acheron\Acheron\Release\net6.0-windows\System.Text.Formatting.dll</HintPath>
+      <HintPath>.\Lib\System.Text.Formatting.dll</HintPath>
     </Reference>
   </ItemGroup>
 
