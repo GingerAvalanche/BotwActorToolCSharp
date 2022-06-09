@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwActorTool.GUI.Backup", "BotwActorTool.GUI.Backup\BotwActorTool.GUI.Backup.csproj", "{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.GUI", "BotwActorTool.GUI\BotwActorTool.GUI.csproj", "{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.Lib", "BotwActorTool.Lib\BotwActorTool.Lib.csproj", "{676537ED-112E-47BC-B6D7-B30AA8987838}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwActorTool.Lib.Backup", "BotwActorTool.Lib.Backup\BotwActorTool.Lib.Backup.csproj", "{A204CD92-02BE-4C30-BB38-EDD93F6506D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBTTests", "MSBTTests\MSBTTests.csproj", "{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BE5EA19-0D19-4ACA-BA14-3FB417319F3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -29,10 +23,10 @@ Global
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A204CD92-02BE-4C30-BB38-EDD93F6506D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A204CD92-02BE-4C30-BB38-EDD93F6506D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A204CD92-02BE-4C30-BB38-EDD93F6506D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A204CD92-02BE-4C30-BB38-EDD93F6506D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
