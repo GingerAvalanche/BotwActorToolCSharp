@@ -30,8 +30,7 @@ namespace BotwActorTool.Lib.Texts
             }
         }
 
-        public void SetText(string name, string text) => Texts[name] = new("", text);
-        public string GetText(string name) => Texts[name].Value;
+        public MsbtEntry this[string str] => Texts[str];
 
         public void DeleteActor(string modRoot)
         {
