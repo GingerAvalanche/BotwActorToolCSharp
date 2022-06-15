@@ -10,7 +10,7 @@ using static System.Environment;
 
 namespace BotwActorTool.Lib
 {
-    class Util
+    public class Util
     {
         public static readonly List<string> LINKS = new()
         {
@@ -117,7 +117,7 @@ namespace BotwActorTool.Lib
                     }
                 }
 
-                return sarc.Files[parts[parts.Length - 1]];
+                return sarc.Files[parts[^1]];
             }
 
             return null;
@@ -126,50 +126,61 @@ namespace BotwActorTool.Lib
         public static byte[]? GetFileAnywhere(string modRoot, string relPath)
         {
             byte[]? bytes = GetFile($"{modRoot}/{relPath}");
-            if (bytes != null) {
-                if (bytes.Length > 0) {
-                    return bytes;
-                }
-                else {
-                    bytes = GetFile(FindFileOrig(relPath));
-                    if (bytes != null) {
-                        return bytes;
-                    }
-                }
+
+            if (bytes == null || bytes.Length == 0) {
+                bytes = GetFile(FindFileOrig(relPath));
             }
 
-            return null;
+            return bytes;
         }
 
-        public static bool InjectFilesIntoBootup(string modRoot, List<(string, byte[])> files)
+        public static void InjectFilesIntoBootup(string modRoot, List<(string, byte[])> files)
         {
             files.ForEach(t => InjectFile(modRoot, $"Pack/Bootup.pack//{t.Item1}", t.Item2));
-            return true;
         }
 
-        public static bool InjectFile(string modRoot, string relPath, byte[] data)
+        public static void InjectFile(string modRoot, string relPath, byte[] data)
         {
-            string[] parts = relPath.Split("//", 2, StringSplitOptions.None);
+            string[] parts = relPath.Split("//");
             byte[] bytes = GetFileAnywhere(modRoot, relPath) ?? Array.Empty<byte>();
             bool yazd = UnYazIfNeeded(ref bytes);
 
-            SarcFile sarc = new(bytes);
-            sarc.SetFileData(parts[1], data);
-
-            byte[] newData = sarc.ToBinary();
+            bytes = InjectHelper(new(bytes), string.Join("", parts[1..^0]), data);
 
             if (yazd) {
-                newData = Yaz0.Compress(newData, 7);
+                bytes = Yaz0.Compress(bytes, 7);
             }
 
-            File.WriteAllBytes($"{modRoot}/{relPath}", newData);
-            return true;
+            File.WriteAllBytes($"{modRoot}/{relPath}", bytes);
+        }
+
+        private static byte[] InjectHelper(SarcFile sarc, string relPath, byte[] data)
+        {
+            string[] parts = relPath.Split("//");
+            if (parts.Length > 1)
+            {
+                byte[] bytes = sarc.Files[parts[0]];
+                bool yazd = UnYazIfNeeded(ref bytes);
+                SarcFile nested_sarc = new(bytes);
+                bytes = InjectHelper(nested_sarc, string.Join("", parts[1..^0]), data);
+                sarc.Files[parts[0]] = yazd ? Yaz0.Compress(bytes) : bytes;
+                return sarc.ToBinary();
+            }
+            else
+            {
+                if (Path.GetExtension(parts[0]).StartsWith(".s") && Path.GetExtension(parts[0]) != ".sarc")
+                {
+                    data = Yaz0.Compress(data);
+                }
+                sarc.Files[parts[0]] = data;
+                return sarc.ToBinary();
+            }
         }
 
         public static string FindFileOrig(string RelPath)
         {
             BATSettings settings = new();
-            string[] parts = RelPath.Split(new[] { "//" }, System.StringSplitOptions.None);
+            string[] parts = RelPath.Split(new[] { "//" }, StringSplitOptions.None);
             if (File.Exists($"{settings.GetSetting("update_dir")}/{parts[0]}")) {
                 return $"{settings.GetSetting("update_dir")}/{RelPath}";
             }
@@ -195,6 +206,10 @@ namespace BotwActorTool.Lib
                 ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack")}//Actor/ResidentActors.byml";
             }
             var ResidentActorRoot = BymlFile.FromBinary(GetFile(ResidentActorPath)).RootNode;
+            if (ResidentActorRoot == null)
+            {
+                throw new Exception("Could not find ResidentActors.byml");
+            }
             foreach (var actor in ResidentActorRoot) {
                 ResidentActors.Add(actor["name"]);
             }
@@ -214,7 +229,7 @@ namespace BotwActorTool.Lib
         public static string GetModRoot(string AbsPath)
         {
             IEnumerable<string> reversed_path = AbsPath.Split('/').Reverse();
-            return String.Join("/", reversed_path.Skip(reversed_path.TakeWhile(s => s != "content" && s != "romfs").Count()).Reverse());
+            return string.Join("/", reversed_path.Skip(reversed_path.TakeWhile(s => s != "content" && s != "romfs").Count()).Reverse());
         }
 
         public static bool UnYazIfNeeded(ref Stream stream)

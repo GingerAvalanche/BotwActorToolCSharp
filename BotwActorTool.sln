@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.GUI", "BotwAc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.Lib", "BotwActorTool.Lib\BotwActorTool.Lib.csproj", "{676537ED-112E-47BC-B6D7-B30AA8987838}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBTTests", "MSBTTests\MSBTTests.csproj", "{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BATLibTests", "BATLibTests\BATLibTests.csproj", "{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6964F5FF-2A8D-4AAF-876E-520AF5D6A0C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

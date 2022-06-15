@@ -15,4 +15,10 @@
     <PackageReference Include="Yaz0Library" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MsbtLib">
+      <HintPath>..\assemblies\MsbtLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
