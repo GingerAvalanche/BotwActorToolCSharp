@@ -98,7 +98,7 @@ namespace BotwActorTool.Lib
             string[] parts = filePath.Split("//");
 
             if (File.Exists(parts[0]) && parts.Length > 1) {
-                SarcFile sarc = new(File.OpenRead(parts[0]));
+                SarcFile sarc = new(File.ReadAllBytes(parts[0]));
 
                 for (int i = 1; i < parts.Length - 1; i++) {
 
