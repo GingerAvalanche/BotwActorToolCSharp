@@ -1,7 +1,6 @@
 ﻿using IniParser.Model;
 using Nintendo.Byml;
 using Nintendo.Sarc;
-using Syroot.BinaryData;
 using System.Runtime.InteropServices;
 using System.Text;
 using Yaz0Library;
@@ -234,9 +233,9 @@ namespace BotwActorTool.Lib
 
         public static bool UnYazIfNeeded(ref Stream stream)
         {
-            using var reader = new BinaryStream(stream);
+            using var reader = new BinaryReader(stream);
 
-            if (reader.ReadString(4, Encoding.ASCII) == "Yaz0") {
+            if (Encoding.ASCII.GetString(reader.ReadBytes(4)) == "Yaz0") {
                 stream = new MemoryStream(Yaz0.Decompress(stream.ToArray()));
                 return true;
             }
