@@ -284,10 +284,10 @@ namespace BotwActorTool.Lib
             public string GetDataDir()
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                    return $"{GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create)}/botw_actor_tool";
+                    return $"{GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
                 }
                 else {
-                    return $"{GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.Create)}/botw_actor_tool";
+                    return $"{GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
                 }
             }
 
