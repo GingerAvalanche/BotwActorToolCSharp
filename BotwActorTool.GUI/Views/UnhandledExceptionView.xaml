@@ -24,7 +24,7 @@
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
 
-    <Border Background="{DynamicResource MaterialDesignBackground}"
+    <Border Background="{DynamicResource MaterialDesignPaper}"
             BorderBrush="{DynamicResource PrimaryHueMidBrush}"
             BorderThickness="1">
         <Grid>
