@@ -271,7 +271,7 @@ namespace BotwActorTool.Lib
                     Settings["General"]["game_dir"] = "";
                     Settings["General"]["update_dir"] = "";
                     Settings["General"]["dlc_dir"] = "";
-                    Settings["General"]["dark_theme"] = "false";
+                    Settings["General"]["theme"] = "System";
                     Settings["General"]["lang"] = "USen";
                     Settings.Sections.AddSection("Window");
                     Settings["Window"]["WinPosX"] = "0";
@@ -307,15 +307,8 @@ namespace BotwActorTool.Lib
                 parser.WriteData(new StreamWriter($"{GetDataDir()}/settings.ini"), Settings);
             }
 
-            public void SetDarkMode(bool enabled)
-            {
-                Settings["General"]["dark_theme"] = enabled ? "true" : "false";
-            }
-
-            public bool GetDarkMode()
-            {
-                return Settings["General"]["dark_theme"] == "true";
-            }
+            public void SetDarkMode(string theme) => Settings["General"]["theme"] = theme;
+            public string GetTheme() => Settings["General"]["theme"];
 
             public void SetWinPosition((int, int) pos)
             {
