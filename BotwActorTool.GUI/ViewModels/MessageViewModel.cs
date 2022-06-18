@@ -1,13 +1,15 @@
 ﻿#pragma warning disable CS8600
 #pragma warning disable CS8601
 
+using BotwActorTool.GUI.ViewThemes.App;
 using MaterialDesignThemes.Wpf;
+using MdXaml;
 using Stylet;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text.Formatting;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -20,13 +22,7 @@ namespace BotwActorTool.GUI.ViewModels
 
         public void No() => RequestClose(true);
 
-        public void Copy() => Clipboard.SetText(MessageStr);
-
-        private static ITheme GetTheme()
-        {
-            PaletteHelper helper = new();
-            return helper.GetTheme();
-        }
+        public void Copy() => Clipboard.SetText($"**{Title}**\n> {Message}");
 
         #endregion
 
@@ -39,15 +35,14 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _title, value);
         }
 
-        private TextBlock _message = new() { Text = "No details were provided." };
-        public string MessageStr { get; set; } = "";
-        public TextBlock Message
+        private string _message;
+        public string Message
         {
             get => _message;
             set => SetAndNotify(ref _message, value);
         }
 
-        private Brush _foreground = new SolidColorBrush(GetTheme().Body);
+        private Brush _foreground = new SolidColorBrush(SysTheme.ITheme.Body);
         public Brush Foreground
         {
             get => _foreground;
@@ -87,8 +82,7 @@ namespace BotwActorTool.GUI.ViewModels
         public MessageViewModel(string message, string title = "Notice", bool isOption = false, string? messageColor = null, double width = 220,
             string yesButtonText = "Yes", string noButtonText = "Auto")
         {
-            MessageStr = $"**{title}**\n> {message}";
-            Message = message.ToTextBlock();
+            Message = message;
             Title = title;
             Width = width;
             ButtonRight = noButtonText == "Auto" ? "Ok" : noButtonText;

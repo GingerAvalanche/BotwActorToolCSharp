@@ -1,13 +1,14 @@
 ﻿using BotwActorTool.GUI.ViewResources.Helpers;
+using MdXaml;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Formatting;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace BotwActorTool.GUI.ViewModels
 {
@@ -76,7 +77,7 @@ namespace BotwActorTool.GUI.ViewModels
         public void Close()
         {
             if (ShellViewModel != null)
-                ShellViewModel.HandledExceptionViewVisibility = System.Windows.Visibility.Collapsed;
+                ShellViewModel.HandledExceptionViewModel = null;
         }
 
         private string _title = "Handled Exception";
@@ -93,8 +94,8 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _message, value);
         }
 
-        private TextBlock _stack = new();
-        public TextBlock Stack
+        private FlowDocument _stack = new();
+        public FlowDocument Stack
         {
             get => _stack;
             set => SetAndNotify(ref _stack, value);
@@ -129,7 +130,7 @@ namespace BotwActorTool.GUI.ViewModels
             Title = title;
             Message = message;
             StackText = stack;
-            Stack = stack.ToTextBlock();
+            Stack = new Markdown().Transform(stack);
             IsReportable = isReportable;
             ShellViewModel = shell;
         }
