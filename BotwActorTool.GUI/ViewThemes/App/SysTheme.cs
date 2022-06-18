@@ -24,7 +24,7 @@ namespace BotwActorTool.GUI.ViewThemes.App
         private static PaletteHelper Helper { get; set; } = new();
 
         public static ITheme ITheme => Helper.GetTheme();
-        public static string Folder { get; set; } = $"{Environment.GetEnvironmentVariable("LOCALAPPDATA")}\\BotwActorTool\\Themes";
+        public static string Folder { get; set; } = $"{Config.DataFolder}\\Themes";
         public static string Default { get; set; } = "System";
         public static string Last { get; set; } = "System";
         public static string Name { get; set; } = "System";

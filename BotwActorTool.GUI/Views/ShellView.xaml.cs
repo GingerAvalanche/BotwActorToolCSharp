@@ -3,7 +3,6 @@
 
 using BotwActorTool.GUI.ViewModels;
 using BotwActorTool.GUI.ViewThemes.App;
-using BotwActorTool.Lib;
 using Stylet;
 using System;
 using System.Runtime.InteropServices;

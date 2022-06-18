@@ -23,7 +23,7 @@ namespace BotwActorTool.Lib
         #region Expand
 
         [JsonIgnore]
-        public static string Folder {
+        public string DataFolder {
             get {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     return $"{GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
@@ -45,8 +45,8 @@ namespace BotwActorTool.Lib
 
         public static void LoadConfig()
         {
-            if (File.Exists($"{Folder}\\Config.json"))
-                Config = JsonSerializer.Deserialize<BatConfig>(File.ReadAllText($"{Folder}\\Config.json")) ?? new();
+            if (File.Exists($"{Config.DataFolder}\\Config.json"))
+                Config = JsonSerializer.Deserialize<BatConfig>(File.ReadAllText($"{Config.DataFolder}\\Config.json")) ?? new();
             else {
                 Config = new BatConfig().Save();
             }
@@ -54,8 +54,8 @@ namespace BotwActorTool.Lib
 
         public BatConfig Save()
         {
-            Directory.CreateDirectory(Folder);
-            File.WriteAllText($"{Folder}\\Config.json", JsonSerializer.Serialize(this));
+            Directory.CreateDirectory(Config.DataFolder);
+            File.WriteAllText($"{Config.DataFolder}\\Config.json", JsonSerializer.Serialize(this));
             return this;
         }
 
