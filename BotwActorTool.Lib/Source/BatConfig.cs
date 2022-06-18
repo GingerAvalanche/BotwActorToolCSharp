@@ -57,5 +57,41 @@ namespace BotwActorTool.Lib
             File.WriteAllText($"{Folder}\\Config.json", JsonSerializer.Serialize(this));
             return this;
         }
+
+        public bool ValidateGameDir(string path)
+        {
+            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+                return false;
+            }
+            if (!File.Exists($"{path}/Pack/Dungeon000.pack")) {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateUpdateDir(string path)
+        {
+            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+                return false;
+            }
+            if (!File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack")) {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateDlcDir(string path)
+        {
+            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+                return false;
+            }
+            if (!File.Exists($"{path}/Pack/AocMainField.pack")) {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
