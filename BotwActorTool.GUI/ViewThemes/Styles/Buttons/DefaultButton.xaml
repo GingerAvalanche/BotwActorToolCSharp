@@ -7,34 +7,27 @@
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="5,0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="23" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Border Name="outline"
-                                Margin="0"
-                                Background="{DynamicResource PrimaryHueMidBrush}"
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="2"
-                                                  Opacity="0.2"
+                                                  Opacity="0.5"
                                                   ShadowDepth="1" />
                             </Border.Effect>
                         </Border>
-                        <Border Margin="1"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="2" />
-                        <Border x:Name="accent"
-                                Margin="1"
-                                Background="{DynamicResource PrimaryHueLightBrush}"
-                                CornerRadius="2"
-                                Opacity="0" />
                         <Border Margin="3" Background="Transparent">
                             <ContentPresenter Margin="{TemplateBinding Padding}"
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -45,6 +38,12 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryHueMidBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryHueDarkBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
