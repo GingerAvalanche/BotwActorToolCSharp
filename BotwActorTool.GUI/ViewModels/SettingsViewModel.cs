@@ -2,6 +2,7 @@
 using BotwActorTool.GUI.ViewThemes.App;
 using Stylet;
 using System.IO;
+using System.Windows;
 using System.Windows.Media;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -73,10 +74,25 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _dlcBrush, value);
         }
 
-        private string _lang = "";
+        private string _lang = "USen";
         public string Lang {
             get => _lang;
             set => SetAndNotify(ref _lang, value);
+        }
+
+        private string _mode = "WiiU";
+        public string Mode {
+            get => _mode;
+            set {
+                SetAndNotify(ref _mode, value);
+                ShowUpdate = _mode == "Switch" ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private Visibility _showUpdate = Visibility.Visible;
+        public Visibility ShowUpdate {
+            get => _showUpdate;
+            set => SetAndNotify(ref _showUpdate, value);
         }
 
         private BindableCollection<string> _themes = new();
@@ -108,7 +124,7 @@ namespace BotwActorTool.GUI.ViewModels
                 return;
             }
 
-            if (UpdateBrush == _invalid) {
+            if (UpdateBrush == _invalid && Mode != "Switch") {
                 _shellViewModel.WindowManager.Show("The update path is invalid or nor set.\nPlease correct it before saving.", "Error");
                 return;
             }
@@ -118,6 +134,7 @@ namespace BotwActorTool.GUI.ViewModels
             Config.DlcDir = Dlc;
             Config.Theme = Theme;
             Config.Lang = Lang;
+            Config.Mode = Mode;
             Config.Save();
 
             Close();
@@ -149,7 +166,7 @@ namespace BotwActorTool.GUI.ViewModels
         public void DeleteTheme()
         {
             if (Theme == "System") {
-                _shellViewModel.WindowManager.Show($"Yu can't delete the system theme.", "Error");
+                _shellViewModel.WindowManager.Show($"You can't delete the system theme.", "Error");
                 return;
             }
 
@@ -187,6 +204,7 @@ namespace BotwActorTool.GUI.ViewModels
             Update = Config.UpdateDir;
             Dlc = Config.DlcDir;
             Lang = Config.Lang;
+            Mode = Config.Mode;
         }
     }
 }

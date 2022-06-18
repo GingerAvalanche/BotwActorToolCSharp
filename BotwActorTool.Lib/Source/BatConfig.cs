@@ -39,6 +39,7 @@ namespace BotwActorTool.Lib
         public string DlcDir { get; set; } = "";
         public string Theme { get; set; } = "System";
         public string Lang { get; set; } = "USen";
+        public string Mode { get; set; } = "WiiU";
 
         #endregion
 

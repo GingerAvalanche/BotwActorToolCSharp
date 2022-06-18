@@ -31,8 +31,10 @@
             </Grid>
 
             <!--  Update Path  -->
-            <TextBlock Margin="0,15,0,0" Text="Update Path" />
-            <Grid Margin="15,5,0,0">
+            <TextBlock Margin="0,15,0,0"
+                       Text="Update Path"
+                       Visibility="{Binding ShowUpdate}" />
+            <Grid Margin="15,5,0,0" Visibility="{Binding ShowUpdate}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="5" />
@@ -88,19 +90,45 @@
             </Grid>
         </StackPanel>
 
-        <Button Width="100"
-                Margin="15"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Command="{s:Action Save}"
-                Content="Save" />
+        <StackPanel Margin="15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
 
-        <Button Width="100"
-                Margin="120,15"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Command="{s:Action Close}"
-                Content="Cancel" />
+            <Button Width="100"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{s:Action Close}"
+                    Content="Cancel" />
+
+            <Button Width="100"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{s:Action Save}"
+                    Content="Save" />
+        </StackPanel>
+
+        <StackPanel Margin="15"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
+
+            <ComboBox Width="120"
+                      Margin="15,0,5,0"
+                      Text="{Binding Mode}">
+                <ComboBoxItem Content="WiiU" />
+                <ComboBoxItem Content="Switch" />
+            </ComboBox>
+
+            <ComboBox Width="120" Text="{Binding Lang}">
+                <ComboBoxItem Content="USen" />
+                <Separator />
+                <ComboBoxItem Content="EUen" />
+                <Separator />
+                <ComboBoxItem Content="JPja" />
+            </ComboBox>
+        </StackPanel>
 
         <ContentControl s:View.Model="{Binding ThemeViewModel}" />
     </Grid>
