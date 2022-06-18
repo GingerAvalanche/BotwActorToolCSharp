@@ -16,7 +16,8 @@ namespace BotwActorTool.GUI.ViewThemes.App
 {
     public static class SysTheme
     {
-        private static Color Color(this string color) => (Color)ColorConverter.ConvertFromString(color);
+        public static Color ToColor(this string color) => (Color)ColorConverter.ConvertFromString(color);
+        public static Brush ToBrush(this string color) => (Brush)(new BrushConverter().ConvertFromString(color) ?? new());
         private static Color? GetColor(this object? color) => color is ColorPair pair ? pair.Color : color as Color?;
 
         private static PropertyInfo[] Elements { get; } = typeof(ITheme).GetProperties();
@@ -138,10 +139,10 @@ namespace BotwActorTool.GUI.ViewThemes.App
                 object? value = property.GetValue(ITheme);
 
                 if (value is Color) {
-                    property.SetValue(ITheme, lTheme[property.Name].Color());
+                    property.SetValue(ITheme, lTheme[property.Name].ToColor());
                 }
                 else if (value is ColorPair) {
-                    property.SetValue(ITheme, new ColorPair(lTheme[property.Name].Color()));
+                    property.SetValue(ITheme, new ColorPair(lTheme[property.Name].ToColor()));
                 }
             }
 
