@@ -2,93 +2,54 @@
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Grid>
-            <Border Name="outline"
-                    Margin="0"
-                    Background="{DynamicResource PrimaryHueMidBrush}"
-                    CornerRadius="5">
+            <Border Name="Border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="3">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="10"
-                                      Opacity="0.4"
-                                      ShadowDepth="2" />
+                    <DropShadowEffect BlurRadius="2"
+                                      Opacity="0.5"
+                                      ShadowDepth="1" />
                 </Border.Effect>
             </Border>
-            <Border Margin="1"
-                    Background="{TemplateBinding Background}"
-                    CornerRadius="4" />
-            <Border x:Name="accent"
-                    Margin="1"
-                    Background="{DynamicResource PrimaryHueLightBrush}"
-                    CornerRadius="4"
-                    Opacity="0" />
+            <Border Margin="3" Background="Transparent">
+                <ContentPresenter Margin="{TemplateBinding Padding}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True" />
+            </Border>
             <Path x:Name="Arrow"
-                  Margin="15"
+                  Margin="0,0,8,0"
                   HorizontalAlignment="Right"
                   VerticalAlignment="Center"
                   Data="M 0 0 L 4 4 L 8 0 Z"
                   Fill="{DynamicResource MaterialDesignBody}" />
+            <Path x:Name="ArrowOpen"
+                  Margin="0,0,9,0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Data="M -2 4 L 2 8 L 2 0 Z"
+                  Fill="{DynamicResource MaterialDesignBody}"
+                  Visibility="Collapsed" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
             </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <BeginStoryboard.Storyboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="accent"
-                                                 Storyboard.TargetProperty="Opacity"
-                                                 To="1"
-                                                 Duration="0:0:0:0.2" />
-                            </Storyboard>
-                        </BeginStoryboard.Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.EnterActions>
-                <MultiTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <BeginStoryboard.Storyboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="accent"
-                                                 Storyboard.TargetProperty="Opacity"
-                                                 To="{x:Null}"
-                                                 Duration="0:0:0:0.2" />
-                            </Storyboard>
-                        </BeginStoryboard.Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.ExitActions>
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsChecked" Value="True" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <BeginStoryboard.Storyboard>
-                            <Storyboard>
-                                <ThicknessAnimation Storyboard.TargetName="outline"
-                                                    Storyboard.TargetProperty="Margin"
-                                                    To="-1"
-                                                    Duration="0:0:0:0.1" />
-                            </Storyboard>
-                        </BeginStoryboard.Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.EnterActions>
-                <MultiTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <BeginStoryboard.Storyboard>
-                            <Storyboard>
-                                <ThicknessAnimation Storyboard.TargetName="outline"
-                                                    Storyboard.TargetProperty="Margin"
-                                                    To="0"
-                                                    Duration="0:0:0:0.1" />
-                            </Storyboard>
-                        </BeginStoryboard.Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.ExitActions>
-            </MultiTrigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource SecondaryHueMidBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource SecondaryHueDarkBrush}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource SecondaryHueDarkBrush}" />
+                <Setter TargetName="Border" Property="CornerRadius" Value="3,3,0,0" />
+                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="ArrowOpen" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Border" Property="Effect" Value="{x:Null}" />
+            </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
@@ -100,19 +61,19 @@
 
     <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
         <Setter Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="MinWidth" Value="120" />
-        <Setter Property="MinHeight" Value="35" />
+        <Setter Property="Height" Value="23" />
         <Setter Property="Padding" Value="10,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -121,6 +82,8 @@
                         <ToggleButton x:Name="ToggleButton"
                                       Grid.Column="2"
                                       Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
                                       ClickMode="Press"
                                       Focusable="false"
                                       IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
@@ -155,24 +118,23 @@
                                   SnapsToDevicePixels="True">
                                 <Border x:Name="DropDownBorder"
                                         Background="{DynamicResource PrimaryHueDarkBrush}"
-                                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                                        BorderThickness="2" />
-                                <ScrollViewer Margin="0,8" SnapsToDevicePixels="True">
+                                        BorderBrush="{DynamicResource SecondaryHueDarkBrush}"
+                                        BorderThickness="1,0,1,1" />
+                                <ScrollViewer Margin="0,0,0,1" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
                             </Grid>
                         </Popup>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="HasItems" Value="false">
+                        <Trigger Property="HasItems" Value="False">
                             <Setter TargetName="DropDownBorder" Property="MinHeight" Value="15" />
                         </Trigger>
-                        <Trigger Property="IsGrouping" Value="true">
+                        <Trigger Property="IsGrouping" Value="True">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
                         </Trigger>
-                        <Trigger SourceName="Popup" Property="AllowsTransparency" Value="true">
-                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4" />
-                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,3,0,0" />
+                        <Trigger SourceName="Popup" Property="AllowsTransparency" Value="True">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0,0,3,3" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -181,83 +143,33 @@
     </Style>
 
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                     <Grid>
-                        <Border x:Name="accent"
-                                Margin="2,0"
-                                Background="{DynamicResource PrimaryHueLightBrush}"
-                                Opacity="0" />
-                        <Border x:Name="Border"
-                                Padding="10,8,0,8"
-                                Background="Transparent"
-                                SnapsToDevicePixels="true">
-                            <ContentPresenter />
+                        <Border Margin="2.5,1,1,1"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2" />
+                        <Border Margin="6,2,5,2" Background="Transparent">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <MultiTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <BeginStoryboard.Storyboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="accent"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.6"
-                                                             Duration="0:0:0:0" />
-                                        </Storyboard>
-                                    </BeginStoryboard.Storyboard>
-                                </BeginStoryboard>
-                            </MultiTrigger.EnterActions>
-                            <MultiTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <BeginStoryboard.Storyboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="accent"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0"
-                                                             Duration="0:0:0:0" />
-                                        </Storyboard>
-                                    </BeginStoryboard.Storyboard>
-                                </BeginStoryboard>
-                            </MultiTrigger.ExitActions>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <MultiTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <BeginStoryboard.Storyboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="accent"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="1"
-                                                             Duration="0:0:0:0.2" />
-                                        </Storyboard>
-                                    </BeginStoryboard.Storyboard>
-                                </BeginStoryboard>
-                            </MultiTrigger.EnterActions>
-                            <MultiTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <BeginStoryboard.Storyboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="accent"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="{x:Null}"
-                                                             Duration="0:0:0:0.2" />
-                                        </Storyboard>
-                                    </BeginStoryboard.Storyboard>
-                                </BeginStoryboard>
-                            </MultiTrigger.ExitActions>
-                        </MultiTrigger>
-
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
