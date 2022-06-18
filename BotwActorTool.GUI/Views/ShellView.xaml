@@ -25,27 +25,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="24" />
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="content"
-                    Grid.Row="1"
-                    Margin="15">
-            <TextBox Margin="0,15" Text="{Binding HelloWorld, UpdateSourceTrigger=PropertyChanged}" />
-            <CheckBox Margin="0,15" Content="IsCheckBox = True" />
-            <Button Margin="0,15" Content="Click" />
-        </StackPanel>
+        <ContentControl Grid.Row="1" s:View.Model="{Binding SettingsViewModel}" />
 
-        <ContentControl x:Name="settings"
-                        Grid.Row="1"
-                        s:View.Model="{Binding SettingsViewModel}"
-                        Visibility="Hidden" />
-
-        <ContentControl Grid.Row="1"
-                        s:View.Model="{Binding HandledExceptionViewModel}"
-                        Visibility="{Binding HandledExceptionViewVisibility}" />
+        <ContentControl Grid.Row="1" s:View.Model="{Binding HandledExceptionViewModel}" />
 
         <Grid x:Name="windowChrome" Background="{DynamicResource PrimaryHueDarkBrush}">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition />
@@ -55,11 +43,46 @@
             <Image x:Name="icon"
                    Margin="2"
                    Source="../ViewResources/Images/icon.png" />
-            <TextBlock Grid.Column="1"
-                       Margin="10,0,0,0"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       Text="{Binding Title}" />
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Menu Margin="5,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <MenuItem Header="_File">
+                        <MenuItem CommandParameter="Ctrl + N"
+                                  Header="New"
+                                  Icon="FolderOpen" />
+                        <MenuItem CommandParameter="Ctrl + O"
+                                  Header="Open"
+                                  Icon="FolderText" />
+                        <Separator />
+                        <MenuItem CommandParameter="Ctrl + S"
+                                  Header="Save"
+                                  Icon="ContentSave" />
+                        <Separator />
+                        <MenuItem Command="{s:Action LoadSettings}"
+                                  Header="Settings"
+                                  Icon="Cog" />
+                        <Separator />
+                        <MenuItem CommandParameter="Ctrl + Q"
+                                  Header="Quit"
+                                  Icon="Remove" />
+                    </MenuItem>
+                    <MenuItem Header="Tools">
+                        <MenuItem Header="Generate Collision" Icon="AlertOctagram" />
+                    </MenuItem>
+                    <MenuItem Header="Help">
+                        <MenuItem Click="{s:Action GitHub}"
+                                  CommandParameter="F12"
+                                  Header="GitHub"
+                                  Icon="Github" />
+                        <Separator />
+                        <MenuItem Click="{s:Action About}"
+                                  CommandParameter="F1"
+                                  Header="About"
+                                  Icon="Information" />
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Button x:Name="btnMin"
                         Width="40"
@@ -126,73 +149,21 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="footer"
-              Grid.Row="2"
-              Background="{DynamicResource PrimaryHueDarkBrush}">
-            <Grid.Effect>
-                <DropShadowEffect BlurRadius="15"
-                                  Direction="90"
-                                  Opacity="0.2"
-                                  ShadowDepth="2" />
-            </Grid.Effect>
-            <Button x:Name="btnShowSettings"
-                    Width="40"
-                    Height="40"
-                    Padding="4"
-                    HorizontalAlignment="Right"
-                    Foreground="{DynamicResource SecondaryHueLightBrush}"
-                    Style="{StaticResource WindowChromeSimple}"
-                    Visibility="{Binding SettingsPanel}">
-                <wpf:PackIcon x:Name="footerShowSettingsIcon"
-                              Width="28"
-                              Height="28"
-                              Kind="Settings">
-                    <wpf:PackIcon.RenderTransform>
-                        <RotateTransform x:Name="footerShowSettingsIconRotate" Angle="0" CenterX="14" CenterY="14" />
-                    </wpf:PackIcon.RenderTransform>
-                </wpf:PackIcon>
-            </Button>
-            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <Button x:Name="footerRequestHelp"
-                        Width="32"
-                        Height="32"
-                        Margin="5,3,3,3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Background="{DynamicResource PrimaryHueDarkBrush}"
-                        Command="{s:Action Help}"
-                        Foreground="{DynamicResource SecondaryHueLightBrush}"
-                        ToolTip="{Binding HelpLink}">
-                    <wpf:PackIcon Width="26"
-                                  Height="26"
-                                  Kind="HelpCircleOutline" />
-                </Button>
-                <Button x:Name="footerChangeAppTheme"
-                        Width="32"
-                        Height="32"
-                        Margin="3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Foreground="{DynamicResource SecondaryHueLightBrush}">
-                    <wpf:PackIcon x:Name="footerChangeAppThemeIcon"
-                                  Width="24"
-                                  Height="24"
-                                  Margin="0.5,1,0,0"
-                                  Kind="SunMoonStars">
-                        <wpf:PackIcon.RenderTransform>
-                            <ScaleTransform x:Name="footerChangeAppThemeIconScale" CenterX="12" CenterY="12" ScaleX="1" ScaleY="-1" />
-                        </wpf:PackIcon.RenderTransform>
-                    </wpf:PackIcon>
-                </Button>
-            </StackPanel>
-            <TextBlock x:Name="footerBasicErrorReport"
-                       HorizontalAlignment="Center"
+        <StackPanel x:Name="footer"
+                    Grid.Row="2"
+                    Background="{DynamicResource PrimaryHueDarkBrush}"
+                    Orientation="Horizontal">
+            <wpf:PackIcon Margin="5,0,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Kind="CardsOutline" />
+            <TextBlock Margin="10,0,0,0"
+                       HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontFamily="Consolas"
-                       FontSize="18"
-                       FontWeight="Bold"
-                       Text="" />
-        </Grid>
+                       FontSize="13"
+                       Text="Ready (this should do/say something eventually)" />
+        </StackPanel>
 
     </Grid>
 </Window>

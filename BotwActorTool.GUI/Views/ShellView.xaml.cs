@@ -2,16 +2,14 @@
 #pragma warning disable CS8605
 
 using BotwActorTool.GUI.ViewModels;
-using BotwActorTool.GUI.ViewResources.Helpers;
+using BotwActorTool.GUI.ViewThemes.App;
+using BotwActorTool.Lib;
 using Stylet;
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 
 namespace BotwActorTool.GUI.Views
 {
@@ -146,6 +144,7 @@ namespace BotwActorTool.GUI.Views
         {
             InitializeComponent();
             DataContext = new ShellViewModel(WindowManager);
+
             SourceInitialized += (s, e) =>
             {
                 System.Windows.Forms.Application.ThreadException += new ThreadExceptionEventHandler(((ShellViewModel)DataContext).Application_ThreadException);
@@ -156,23 +155,12 @@ namespace BotwActorTool.GUI.Views
             };
 
             // Load theme file
-            if (File.Exists(AppTheme.ThemeFile))
-            {
-                AppTheme.ThemeStr = "Light";
-                AppTheme.Change(true);
-            }
-            else
-            {
-                footerChangeAppThemeIconScale.ScaleY = 1;
-                AppTheme.ThemeStr = "Dark";
-                AppTheme.Change();
-            }
+            SysTheme.Load(new Util.BATSettings().GetSetting("theme"));
 
             // Load button close/minimize events
             btnExit.Click += (s, e) => { Hide(); Environment.Exit(1); };
             btnMin.Click += (s, e) => WindowState = WindowState.Minimized;
             btnReSize.Click += (s, e) => WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
-
 
             // Assign state changed events
             shellView.StateChanged += (s, e) =>
@@ -186,40 +174,6 @@ namespace BotwActorTool.GUI.Views
                 {
                     rectCascade.Opacity = 1;
                     rectMaximize.Opacity = 0;
-                }
-            };
-
-            // Animation Triggers
-            btnShowSettings.Click += (s, e) =>
-            {
-                if (settings.Visibility == Visibility.Visible)
-                {
-                    Animation.DoubleAnim(footerShowSettingsIcon, nameof(footerShowSettingsIconRotate), RotateTransform.AngleProperty, 0, 200);
-                    settings.Visibility = Visibility.Hidden;
-                }
-                else if (settings.Visibility == Visibility.Hidden)
-                {
-                    Animation.DoubleAnim(footerShowSettingsIcon, nameof(footerShowSettingsIconRotate), RotateTransform.AngleProperty, -45, 200);
-                    settings.Visibility = Visibility.Visible;
-                }
-            };
-
-            // Change app theme event
-            footerChangeAppTheme.Click += async (s, e) =>
-            {
-                if (AppTheme.ThemeStr == "Dark")
-                {
-                    AppTheme.ThemeStr = "Light";
-                    AppTheme.Change(true);
-                    Animation.DoubleAnim(footerChangeAppThemeIcon, nameof(footerChangeAppThemeIconScale), ScaleTransform.ScaleYProperty, -1, 250);
-                    await Task.Run(() => Thread.Sleep(250));
-                }
-                else
-                {
-                    AppTheme.ThemeStr = "Dark";
-                    AppTheme.Change();
-                    Animation.DoubleAnim(footerChangeAppThemeIcon, nameof(footerChangeAppThemeIconScale), ScaleTransform.ScaleYProperty, 1, 250);
-                    await Task.Run(() => Thread.Sleep(250));
                 }
             };
         }

@@ -1,7 +1,6 @@
 ﻿using BotwActorTool.GUI.ViewResources.Helpers;
 using Stylet;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -30,6 +29,10 @@ namespace BotwActorTool.GUI.ViewModels
         ///
         #region Actions
 
+        public void GitHub() => System.Operations.Execute.Explorer(HelpLink);
+        public void About() => WindowManager.Show(File.ReadAllText($"README.md"), "About");
+        public void LoadSettings() => SettingsViewModel = new(this);
+
         #endregion
 
         ///
@@ -37,12 +40,7 @@ namespace BotwActorTool.GUI.ViewModels
         ///
         #region Properties
 
-        private string _helloWorld = "Hello World!";
-        public string HelloWorld
-        {
-            get => _helloWorld;
-            set => SetAndNotify(ref _helloWorld, value);
-        }
+
 
         #endregion
 
@@ -50,13 +48,6 @@ namespace BotwActorTool.GUI.ViewModels
         /// Bindings
         ///
         #region Bindings
-
-        private Visibility _handledExceptionViewVisibility = Visibility.Collapsed;
-        public Visibility HandledExceptionViewVisibility
-        {
-            get => _handledExceptionViewVisibility;
-            set => SetAndNotify(ref _handledExceptionViewVisibility, value);
-        }
 
         #endregion
 
@@ -66,8 +57,6 @@ namespace BotwActorTool.GUI.ViewModels
         #region DataContext
 
         // Views
-        public SettingsViewModel? SettingsViewModel { get; set; } = null;
-
         private HandledExceptionViewModel? _handledExceptionViewModel = null;
         public HandledExceptionViewModel? HandledExceptionViewModel
         {
@@ -75,7 +64,14 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _handledExceptionViewModel, value);
         }
 
+        private SettingsViewModel? _settingsViewModel = null;
+        public SettingsViewModel? SettingsViewModel {
+            get => _settingsViewModel;
+            set => SetAndNotify(ref _settingsViewModel, value);
+        }
+
         // App
+        public IWindowManager WindowManager { get; set; }
         public bool CanFullscreen { get; set; } = CanResize;
         public ResizeMode ResizeMode { get; set; } = CanResize ? ResizeMode.CanResize : ResizeMode.CanMinimize;
         public WindowStyle WindowStyle { get; set; } = CanResize ? WindowStyle.None : WindowStyle.SingleBorderWindow;
@@ -84,25 +80,9 @@ namespace BotwActorTool.GUI.ViewModels
         {
             WindowManager.Error(ex.Message, ex.StackText, ex.Title);
             HandledExceptionViewModel = ex;
-            HandledExceptionViewVisibility = Visibility.Visible;
         }
 
-        public void Help()
-        {
-            Process proc = new();
-
-            proc.StartInfo.FileName = "explorer.exe";
-            proc.StartInfo.Arguments = HelpLink;
-
-            proc.Start();
-        }
-
-        public IWindowManager? WindowManager { get; set; }
-        public ShellViewModel(IWindowManager? windowManager)
-        {
-            WindowManager = windowManager;
-            SettingsViewModel = new(this);
-        }
+        public ShellViewModel(IWindowManager windowManager) => WindowManager = windowManager;
 
         ///
         /// Root Error handling
