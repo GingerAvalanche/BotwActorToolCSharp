@@ -20,7 +20,7 @@ namespace BotwActorTool.Lib.Texts
             ActorName = Path.GetFileNameWithoutExtension(pack);
             OrigActorName = ActorName;
             Profile = profile;
-            string lang = new Util.BATSettings().GetSetting("lang");
+            string lang = Config.Lang;
             MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, MsbtEntry> temp = msbt.GetTexts();
             foreach (KeyValuePair<string, MsbtEntry> kvp in Texts) {
@@ -34,7 +34,7 @@ namespace BotwActorTool.Lib.Texts
 
         public void DeleteActor(string modRoot)
         {
-            string lang = new Util.BATSettings().GetSetting("lang");
+            string lang = Config.Lang;
             MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
             AllTexts.Remove($"{OrigActorName}_BaseName");
@@ -47,7 +47,7 @@ namespace BotwActorTool.Lib.Texts
 
         public void Write(string modRoot)
         {
-            string lang = new Util.BATSettings().GetSetting("lang");
+            string lang = Config.Lang;
             MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{Profile}.msbt") ?? Array.Empty<byte>()));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
             foreach (KeyValuePair<string, MsbtEntry> kvp in Texts) {

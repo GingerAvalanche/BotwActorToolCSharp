@@ -57,15 +57,12 @@ namespace BotwActorTool.GUI.ViewModels
 
         public void Save()
         {
-            Util.BATSettings settings = new();
-
-            settings.SetSetting("base_dir", BaseGame);
-            settings.SetSetting("update_dir", BaseGame);
-            settings.SetSetting("dlc_dir", BaseGame);
-            settings.SetSetting("theme", Theme);
-            settings.SetSetting("lang", Lang);
-
-            settings.SaveSettings();
+            Config.GameDir = BaseGame;
+            Config.UpdateDir = Update;
+            Config.DlcDir = Dlc;
+            Config.Theme = Theme;
+            Config.Lang = Lang;
+            Config.Save();
 
             ShellViewModel.SettingsViewModel = null;
         }

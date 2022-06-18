@@ -1,11 +1,7 @@
-﻿using IniParser.Model;
-using Nintendo.Byml;
+﻿using Nintendo.Byml;
 using Nintendo.Sarc;
-using System.Runtime.InteropServices;
 using System.Text;
 using Yaz0Library;
-
-using static System.Environment;
 
 namespace BotwActorTool.Lib
 {
@@ -178,16 +174,15 @@ namespace BotwActorTool.Lib
 
         public static string FindFileOrig(string RelPath)
         {
-            BATSettings settings = new();
             string[] parts = RelPath.Split(new[] { "//" }, StringSplitOptions.None);
-            if (File.Exists($"{settings.GetSetting("update_dir")}/{parts[0]}")) {
-                return $"{settings.GetSetting("update_dir")}/{RelPath}";
+            if (File.Exists($"{Config.UpdateDir}/{parts[0]}")) {
+                return $"{Config.UpdateDir}/{RelPath}";
             }
-            else if (File.Exists($"{settings.GetSetting("dlc_dir")}/{parts[0]}")) {
-                return $"{settings.GetSetting("dlc_dir")}/{RelPath}";
+            else if (File.Exists($"{Config.DlcDir}/{parts[0]}")) {
+                return $"{Config.DlcDir}/{RelPath}";
             }
-            else if (File.Exists($"{settings.GetSetting("game_dir")}/{parts[0]}")) {
-                return $"{settings.GetSetting("game_dir")}/{RelPath}";
+            else if (File.Exists($"{Config.GameDir}/{parts[0]}")) {
+                return $"{Config.GameDir}/{RelPath}";
             }
             else {
                 throw new FileNotFoundException($"{RelPath} doesn't seem to exist.");
@@ -252,118 +247,6 @@ namespace BotwActorTool.Lib
             }
 
             return false;
-        }
-
-        public class BATSettings
-        {
-            private readonly IniData Settings;
-
-            public BATSettings()
-            {
-                IniParser.Parser.IniDataParser Parser = new();
-                if (File.Exists($"{GetDataDir()}/settings.ini")) {
-                    Settings = Parser.Parse(File.ReadAllText($"{GetDataDir()}/settings.ini"));
-                }
-                else {
-                    Settings = new();
-                    Settings.Sections = new();
-                    Settings.Sections.AddSection("General");
-                    Settings["General"]["game_dir"] = "";
-                    Settings["General"]["update_dir"] = "";
-                    Settings["General"]["dlc_dir"] = "";
-                    Settings["General"]["theme"] = "System";
-                    Settings["General"]["lang"] = "USen";
-                    Settings.Sections.AddSection("Window");
-                    Settings["Window"]["WinPosX"] = "0";
-                    Settings["Window"]["WinPosY"] = "0";
-                    Settings["Window"]["WinHeight"] = "0";
-                    Settings["Window"]["WinWidth"] = "0";
-                }
-            }
-
-            public string GetDataDir()
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                    return $"{GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
-                }
-                else {
-                    return $"{GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
-                }
-            }
-
-            public void SetSetting(string name, string value)
-            {
-                Settings["General"][name] = value;
-            }
-
-            public string GetSetting(string name)
-            {
-                return Settings["General"][name];
-            }
-
-            public void SaveSettings()
-            {
-                IniParser.StreamIniDataParser parser = new();
-                parser.WriteData(new StreamWriter($"{GetDataDir()}/settings.ini"), Settings);
-            }
-
-            public void SetDarkMode(string theme) => Settings["General"]["theme"] = theme;
-            public string GetTheme() => Settings["General"]["theme"];
-
-            public void SetWinPosition((int, int) pos)
-            {
-                Settings["Window"]["WinPosX"] = pos.Item1.ToString();
-                Settings["Window"]["WinPosY"] = pos.Item2.ToString();
-            }
-
-            public (int, int) GetWinPosition()
-            {
-                return (int.Parse(Settings["Window"]["WinPosX"]), int.Parse(Settings["Window"]["WinPosY"]));
-            }
-
-            public void SetWinSize((int, int) size)
-            {
-                Settings["Window"]["WinWidth"] = size.Item1.ToString();
-                Settings["Window"]["WinHeight"] = size.Item2.ToString();
-            }
-
-            public (int, int) GetWinSize()
-            {
-                return (int.Parse(Settings["Window"]["WinWidth"]), int.Parse(Settings["Window"]["WinHeight"]));
-            }
-
-            public bool ValidateGameDir(string path)
-            {
-                if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
-                    return false;
-                }
-                if (!File.Exists($"{path}/Pack/Dungeon000.pack")) {
-                    return false;
-                }
-                return true;
-            }
-
-            public bool ValidateUpdateDir(string path)
-            {
-                if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
-                    return false;
-                }
-                if (!File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack")) {
-                    return false;
-                }
-                return true;
-            }
-
-            public bool ValidateDlcDir(string path)
-            {
-                if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
-                    return false;
-                }
-                if (!File.Exists($"{path}/Pack/AocMainField.pack")) {
-                    return false;
-                }
-                return true;
-            }
         }
     }
 }

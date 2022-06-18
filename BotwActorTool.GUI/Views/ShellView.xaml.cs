@@ -155,7 +155,8 @@ namespace BotwActorTool.GUI.Views
             };
 
             // Load theme file
-            SysTheme.Load(new Util.BATSettings().GetSetting("theme"));
+            LoadConfig();
+            SysTheme.Load(Config.Theme);
 
             // Load button close/minimize events
             btnExit.Click += (s, e) => { Hide(); Environment.Exit(1); };
