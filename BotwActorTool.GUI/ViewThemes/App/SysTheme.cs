@@ -119,7 +119,7 @@ namespace BotwActorTool.GUI.ViewThemes.App
             themeName ??= Name;
 
             if (!File.Exists($"{Folder}\\{themeName}.json")) {
-                throw new FileNotFoundException($"Could not locate the theme resource '{Folder}\\{themeName}.json'");
+                Save();
             }
 
             byte[] bytes = File.ReadAllBytes($"{Folder}\\{themeName}.json");
@@ -173,8 +173,6 @@ namespace BotwActorTool.GUI.ViewThemes.App
                     if (MessageBox.Show($"The theme file {themeName} already exists.\nOverwrite it?", "Warning", MessageBoxButton.YesNo)
                         != MessageBoxResult.Yes) return false;
                 }
-
-                ask = true;
             }
 
             foreach (PropertyInfo property in Elements) {
