@@ -44,12 +44,9 @@ namespace BotwActorTool.GUI.ViewThemes.App
                 "SecondaryDark",
                 "SecondaryMid",
                 "SecondaryLight",
-                "Background",
                 "Paper",
                 "Body",
                 "BodyLight",
-                "ToolTipBackground",
-                "ToolForeground",
                 "ValidationError"
             };
 
@@ -119,7 +116,18 @@ namespace BotwActorTool.GUI.ViewThemes.App
             themeName ??= Name;
 
             if (!File.Exists($"{Folder}\\{themeName}.json")) {
-                Save();
+
+                string def = "Data\\Theme\\Default.json";
+
+                if (File.Exists(def)) {
+
+                    // Copy and delete to avoid bad drive access
+                    File.Copy(def, $"{Folder}\\System.json");
+                    File.Delete(def);
+                }
+                else {
+                    Save();
+                }
             }
 
             byte[] bytes = File.ReadAllBytes($"{Folder}\\{themeName}.json");
