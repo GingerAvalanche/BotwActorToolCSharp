@@ -1,8 +1,8 @@
-﻿# About
+﻿## About
 
-Place holder stuff- blah blah blah
+Place holder stuff - blah blah blah
 
-# Credits
+## Credits
 
 *Ginger Avalanche — Technical Stuff*
 

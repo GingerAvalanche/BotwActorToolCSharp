@@ -2,7 +2,6 @@
 #pragma warning disable CS8601
 
 using MaterialDesignThemes.Wpf;
-using MdXaml;
 using Stylet;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,8 +46,8 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _title, value);
         }
 
-        private FlowDocument _message = new();
-        public FlowDocument Message
+        private string _message = "";
+        public string Message
         {
             get => _message;
             set => SetAndNotify(ref _message, value);
@@ -104,7 +103,7 @@ namespace BotwActorTool.GUI.ViewModels
             string? extendedMessageColor = null, string yesButtonText = "Yes", string noButtonText = "Auto")
         {
             MessageText = $"**{title}**\n> {message}\n\n```\n{stack}\n```";
-            Message = new Markdown().Transform(message);
+            Message = message;
             Title = title;
             ButtonRight = noButtonText == "Auto" ? "Ok" : noButtonText;
             ButtonLeft = yesButtonText;

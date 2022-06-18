@@ -1,5 +1,4 @@
 ﻿using BotwActorTool.GUI.ViewResources.Helpers;
-using MdXaml;
 using Stylet;
 using System;
 using System.Collections.Generic;
@@ -94,8 +93,8 @@ namespace BotwActorTool.GUI.ViewModels
             set => SetAndNotify(ref _message, value);
         }
 
-        private FlowDocument _stack = new();
-        public FlowDocument Stack
+        private string _stack = "";
+        public string Stack
         {
             get => _stack;
             set => SetAndNotify(ref _stack, value);
@@ -130,7 +129,7 @@ namespace BotwActorTool.GUI.ViewModels
             Title = title;
             Message = message;
             StackText = stack;
-            Stack = new Markdown().Transform(stack);
+            Stack = stack;
             IsReportable = isReportable;
             ShellViewModel = shell;
         }

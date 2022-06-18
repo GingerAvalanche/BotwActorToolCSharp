@@ -3,7 +3,6 @@
 
 using BotwActorTool.GUI.ViewThemes.App;
 using MaterialDesignThemes.Wpf;
-using MdXaml;
 using Stylet;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -79,8 +78,7 @@ namespace BotwActorTool.GUI.ViewModels
 
         #endregion
 
-        public MessageViewModel(string message, string title = "Notice", bool isOption = false, string? messageColor = null, double width = 220,
-            string yesButtonText = "Yes", string noButtonText = "Auto")
+        public MessageViewModel(string message, string title = "Notice", bool isOption = false, string? messageColor = null, double width = 220, string yesButtonText = "Yes", string noButtonText = "Auto")
         {
             Message = message;
             Title = title;

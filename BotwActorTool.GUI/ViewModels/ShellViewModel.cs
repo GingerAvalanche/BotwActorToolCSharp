@@ -30,7 +30,7 @@ namespace BotwActorTool.GUI.ViewModels
         #region Actions
 
         public void GitHub() => System.Operations.Execute.Explorer(HelpLink);
-        public void About() => WindowManager.Show(File.ReadAllText($"README.md"), "About");
+        public void About() => WindowManager.Show(File.ReadAllText($"README.md"), "About", width: 400);
         public void LoadSettings() => SettingsViewModel = new(this);
 
         #endregion

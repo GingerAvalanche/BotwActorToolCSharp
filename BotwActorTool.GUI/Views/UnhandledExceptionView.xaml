@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:BotwActorTool.GUI.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mdxaml="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         x:Name="parent"
@@ -134,23 +135,13 @@
                     BorderThickness="1"
                     CornerRadius="3">
 
-                <RichTextBox Grid.Row="2"
-                             Margin="2"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             FontFamily="Consolas"
-                             FontSize="15"
-                             Foreground="{Binding Foreground}"
-                             IsReadOnly="True"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                             SelectionBrush="{DynamicResource SecondaryHueLightBrush}"
-                             Style="{x:Null}">
-                    <FlowDocument>
-                        <Paragraph>
-                            <Run Text="{Binding Stack}" />
-                        </Paragraph>
-                    </FlowDocument>
-                </RichTextBox>
+                <ScrollViewer Grid.Row="1"
+                              Height="Auto"
+                              Margin="2"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <mdxaml:MarkdownViewer Markdown="{Binding Stack}" />
+                </ScrollViewer>
 
             </Border>
 
