@@ -23,7 +23,7 @@
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding BaseGame}" />
+                <TextBox BorderBrush="{Binding BaseGameBrush}" Text="{Binding BaseGame, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Column="2"
                         Command="{s:Action Browse}"
                         CommandParameter="base"
@@ -39,7 +39,7 @@
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding Update}" />
+                <TextBox BorderBrush="{Binding UpdateBrush}" Text="{Binding Update, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Column="2"
                         Command="{s:Action Browse}"
                         CommandParameter="update"
@@ -55,7 +55,7 @@
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding Dlc}" />
+                <TextBox BorderBrush="{Binding DlcBrush}" Text="{Binding Dlc, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Column="2"
                         Command="{s:Action Browse}"
                         CommandParameter="dlc"
@@ -94,6 +94,13 @@
                 VerticalAlignment="Bottom"
                 Command="{s:Action Save}"
                 Content="Save" />
+
+        <Button Width="100"
+                Margin="120,15"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{s:Action Close}"
+                Content="Cancel" />
 
         <ContentControl s:View.Model="{Binding ThemeViewModel}" />
     </Grid>

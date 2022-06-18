@@ -1,31 +1,76 @@
 ﻿using BotwActorTool.GUI.ViewResources.Helpers;
 using BotwActorTool.GUI.ViewThemes.App;
-using BotwActorTool.Lib;
 using Stylet;
 using System.IO;
+using System.Windows.Media;
 
 namespace BotwActorTool.GUI.ViewModels
 {
     public class SettingsViewModel : Screen
     {
-        private ShellViewModel ShellViewModel { get; set; }
+        private readonly Brush _valid = "#0CED5F".ToBrush();
+        private readonly Brush _invalid = "#ED2A64".ToBrush();
+        private readonly ShellViewModel _shellViewModel;
 
         private string _baseGame = "";
         public string BaseGame {
             get => _baseGame;
-            set => SetAndNotify(ref _baseGame, value);
+            set {
+                SetAndNotify(ref _baseGame, value);
+                if (Config.ValidateGameDir(value)) {
+                    BaseGameBrush = _valid;
+                }
+                else {
+                    BaseGameBrush = _invalid;
+                }
+            }
+
         }
 
         private string _update = "";
         public string Update {
             get => _update;
-            set => SetAndNotify(ref _update, value);
+            set {
+                SetAndNotify(ref _update, value);
+                if (Config.ValidateUpdateDir(value)) {
+                    UpdateBrush = _valid;
+                }
+                else {
+                    UpdateBrush = _invalid;
+                }
+            }
         }
 
         private string _dlc = "";
         public string Dlc {
             get => _dlc;
-            set => SetAndNotify(ref _dlc, value);
+            set {
+                SetAndNotify(ref _dlc, value);
+                if (Config.ValidateDlcDir(value)) {
+                    DlcBrush = _valid;
+                }
+                else {
+                    DlcBrush = _invalid;
+                }
+            }
+        }
+
+        private Brush _baseGameBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        public Brush BaseGameBrush {
+            get => _baseGameBrush;
+            set => SetAndNotify(ref _baseGameBrush, value);
+        }
+
+        private Brush _updateBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        public Brush UpdateBrush {
+            get => _updateBrush;
+            set => SetAndNotify(ref _updateBrush, value);
+        }
+
+        private Brush _dlcBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        public Brush DlcBrush {
+            get => _dlcBrush;
+            set => SetAndNotify(ref _dlcBrush, value);
         }
 
         private string _lang = "";
@@ -55,8 +100,19 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
+        public void Close() => _shellViewModel.SettingsViewModel = null;
         public void Save()
         {
+            if (BaseGameBrush == _invalid) {
+                _shellViewModel.WindowManager.Show("The game path is invalid or nor set.\nPlease correct it before saving.", "Error");
+                return;
+            }
+
+            if (UpdateBrush == _invalid) {
+                _shellViewModel.WindowManager.Show("The update path is invalid or nor set.\nPlease correct it before saving.", "Error");
+                return;
+            }
+
             Config.GameDir = BaseGame;
             Config.UpdateDir = Update;
             Config.DlcDir = Dlc;
@@ -64,7 +120,7 @@ namespace BotwActorTool.GUI.ViewModels
             Config.Lang = Lang;
             Config.Save();
 
-            ShellViewModel.SettingsViewModel = null;
+            Close();
         }
 
         public void Browse(string mode)
@@ -78,7 +134,7 @@ namespace BotwActorTool.GUI.ViewModels
                 else if (mode == "update") {
                     Update = browse.SelectedPath;
                 }
-                else if (mode == "update") {
+                else if (mode == "dlc") {
                     Dlc = browse.SelectedPath;
                 }
             }
@@ -86,19 +142,19 @@ namespace BotwActorTool.GUI.ViewModels
 
         public void EditTheme()
         {
-            ThemeViewModel = new(ShellViewModel.WindowManager, this);
+            ThemeViewModel = new(_shellViewModel.WindowManager, this);
             ThemeViewModel.ThemeName = Theme == "New. . ." ? "New Theme" : Theme;
         }
 
         public void DeleteTheme()
         {
             if (Theme == "System") {
-                ShellViewModel.WindowManager.Show($"Yu can't delete the system theme.", "Error");
+                _shellViewModel.WindowManager.Show($"Yu can't delete the system theme.", "Error");
                 return;
             }
 
             if (File.Exists($"{SysTheme.Folder}\\{Theme}.json")) {
-                if (ShellViewModel.WindowManager.Show($"Are you sure you want to delete '{Theme}'?", "Warning", true)) {
+                if (_shellViewModel.WindowManager.Show($"Are you sure you want to delete '{Theme}'?", "Warning", true)) {
 
                     // Delete theme resource
                     File.Delete($"{SysTheme.Folder}\\{Theme}.json");
@@ -124,8 +180,13 @@ namespace BotwActorTool.GUI.ViewModels
 
         public SettingsViewModel(ShellViewModel shell)
         {
-            ShellViewModel = shell;
+            _shellViewModel = shell;
             Themes = SysTheme.GetThemes(true);
+
+            BaseGame = Config.GameDir;
+            Update = Config.UpdateDir;
+            Dlc = Config.DlcDir;
+            Lang = Config.Lang;
         }
     }
 }
