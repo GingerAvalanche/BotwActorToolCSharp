@@ -6,10 +6,10 @@
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="FlowDirection" Value="LeftToRight" />
-        <Setter Property="Padding" Value="0,15" />
+        <Setter Property="Padding" Value="5" />
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="Template">
             <Setter.Value>
@@ -17,13 +17,7 @@
                     <Grid>
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="10"
-                                                  Opacity="0.4"
-                                                  ShadowDepth="2" />
-                            </Border.Effect>
+                                BorderThickness="{TemplateBinding BorderThickness}">
                             <ScrollViewer x:Name="PART_ScrollViewer"
                                           Margin="{TemplateBinding Padding}"
                                           HorizontalContentAlignment="Left"
