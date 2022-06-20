@@ -102,8 +102,8 @@ namespace BotwActorTool.Lib
 
                         byte[] sarcBytes = sarc.Files[parts[i]];
                         UnYazIfNeeded(ref sarcBytes);
-
-                        if (sarcBytes[0..5].ToString() == "SARC") {
+                        
+                        if (Encoding.ASCII.GetString(sarcBytes[0..4]) == "SARC") {
                             sarc = SarcFile.FromBinary(sarcBytes);
                         }
                     }
@@ -245,7 +245,7 @@ namespace BotwActorTool.Lib
 
         public static bool UnYazIfNeeded(ref byte[] bytes)
         {
-            if (bytes[0..5].ToString() == "Yaz0") {
+            if (Encoding.ASCII.GetString(bytes[0..4]) == "Yaz0") {
                 bytes = Yaz0.Decompress(bytes);
                 return true;
             }
