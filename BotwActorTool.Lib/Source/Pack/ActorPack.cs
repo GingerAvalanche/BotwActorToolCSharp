@@ -5,7 +5,7 @@ using Syroot.BinaryData.Core;
 
 namespace BotwActorTool.Lib.Pack
 {
-    internal class Pack
+    internal class ActorPack
     {
         private string _actorname;
         private readonly Dictionary<string, AampFile> _aampfiles = new();
@@ -18,7 +18,7 @@ namespace BotwActorTool.Lib.Pack
         public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToList(); }
         public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToList(); }
 
-        public Pack(string actorname, SarcFile sarc)
+        public ActorPack(string actorname, SarcFile sarc)
         {
             _actorname = actorname;
             List<string> handled = new() { $"Actor/ActorLink/{_actorname}.bcml" };
@@ -146,6 +146,8 @@ namespace BotwActorTool.Lib.Pack
                 }
             }
         }
+
+        public AampFile GetPhysicsForFar() => _aampfiles["PhysicsUser"];
 
         public string GetLinkData(string link)
         {
