@@ -1,11 +1,9 @@
-﻿#pragma warning disable IDE0060 // Remove unused parameter
-
-using BotwActorTool.Lib.Gamedata.Flags;
+﻿using BotwActorTool.Lib.Gamedata.Flags;
 using System.Collections.ObjectModel;
 
 namespace BotwActorTool.Lib.Gamedata
 {
-    public class Store
+    public class FlagStore
     {
         private static readonly ReadOnlyCollection<string> IgnoredSaveFlags = new(new List<string>
         {
@@ -65,7 +63,7 @@ namespace BotwActorTool.Lib.Gamedata
             "PlayReport_CtrlMode_Handheld"
         });
 
-        private readonly Dictionary<string, Dictionary<int, BaseFlag>> FlagStore = new()
+        private readonly Dictionary<string, Dictionary<int, BaseFlag>> CurrFlagStore = new()
         {
             { "bool_data", new Dictionary<int, BaseFlag>() },
             { "bool_array_data", new Dictionary<int, BaseFlag>() },
@@ -105,73 +103,41 @@ namespace BotwActorTool.Lib.Gamedata
             { "vector4f_data", new Dictionary<int, BaseFlag>() }
         };
 
-        public Store() { }
+        public FlagStore() { }
 
         public void AddFlagsFromByml(string filename, SortedDictionary<string, dynamic> byml)
         {
             bool IsRevival = filename.Contains("revival");
 
-            // KeyValuePair<string, List<SortedDictionary<string, dynamic>>> : throws CS0030
-            foreach (var pair in byml) {
-                foreach (SortedDictionary<string, dynamic> flag in pair.Value) {
-                    BaseFlag f = new BoolFlag();
-                    switch (pair.Key) {
-                        case "bool_data":
-                            f = new BoolFlag(flag, IsRevival);
-                            goto default;
-                        case "bool_array_data":
-                            f = new BoolArrayFlag(flag);
-                            goto default;
-                        case "s32_data":
-                            f = new S32Flag(flag, IsRevival);
-                            goto default;
-                        case "s32_array_data":
-                            f = new S32ArrayFlag(flag);
-                            goto default;
-                        case "f32_data":
-                            f = new F32Flag(flag);
-                            goto default;
-                        case "f32_array_data":
-                            f = new F32ArrayFlag(flag);
-                            goto default;
-                        case "string_data":
-                            f = new String32Flag(flag);
-                            goto default;
-                        case "string64_data":
-                            f = new String64Flag(flag);
-                            goto default;
-                        case "string64_array_data":
-                            f = new String64ArrayFlag(flag);
-                            goto default;
-                        case "string256_data":
-                            f = new String256Flag(flag);
-                            goto default;
-                        case "string256_array_data":
-                            f = new String256ArrayFlag(flag);
-                            goto default;
-                        case "vector2f_data":
-                            f = new Vec2Flag(flag);
-                            goto default;
-                        case "vector2f_array_data":
-                            f = new Vec2ArrayFlag(flag);
-                            goto default;
-                        case "vector3f_data":
-                            f = new Vec3Flag(flag);
-                            goto default;
-                        case "vector3f_array_data":
-                            f = new Vec3ArrayFlag(flag);
-                            goto default;
-                        case "vector4f_data":
-                            f = new Vec4Flag(flag);
-                            goto default;
-                        default:
-                            if (f.HashValue == 0) {
-                                break;
-                            }
-                            FlagStore[pair.Key].Add(f.HashValue, f);
-                            OrigFlagStore[pair.Key].Add(f.HashValue, f);
-                            break;
+            foreach (KeyValuePair<string, dynamic> pair in byml) {
+                foreach (SortedDictionary<string, dynamic> flag in pair.Value)
+                {
+                    BaseFlag f = pair.Key switch
+                    {
+                        "bool_data" => new BoolFlag(flag, IsRevival),
+                        "bool_array_data" => new BoolArrayFlag(flag),
+                        "s32_data" => new S32Flag(flag, IsRevival),
+                        "s32_array_data" => new S32ArrayFlag(flag),
+                        "f32_data" => new F32Flag(flag),
+                        "f32_array_data" => new F32ArrayFlag(flag),
+                        "string_data" => new String32Flag(flag),
+                        "string64_data" => new String64Flag(flag),
+                        "string64_array_data" => new String64ArrayFlag(flag),
+                        "string256_data" => new String256Flag(flag),
+                        "string256_array_data" => new String256ArrayFlag(flag),
+                        "vector2f_data" => new Vec2Flag(flag),
+                        "vector2f_array_data" => new Vec2ArrayFlag(flag),
+                        "vector3f_data" => new Vec3Flag(flag),
+                        "vector3f_array_data" => new Vec3ArrayFlag(flag),
+                        "vector4f_data" => new Vec4Flag(flag),
+                        _ => throw new Exception($"Unknown flag type {pair.Key}"),
+                    };
+                    if (f.HashValue == 0)
+                    {
+                        continue;
                     }
+                    CurrFlagStore[pair.Key].Add(f.HashValue, f);
+                    OrigFlagStore[pair.Key].Add(f.HashValue, f);
                 }
             }
         }
@@ -180,82 +146,49 @@ namespace BotwActorTool.Lib.Gamedata
         {
             bool IsRevival = filename.Contains("revival");
 
-            // KeyValuePair<string, List<SortedDictionary<string, dynamic>>> : throws CS0030
-            foreach (var pair in byml) {
+            foreach (KeyValuePair<string, dynamic> pair in byml) {
                 foreach (SortedDictionary<string, dynamic> flag in pair.Value) {
-                    BaseFlag f = new BoolFlag();
-                    switch (pair.Key) {
-                        case "bool_data":
-                            f = new BoolFlag(flag, IsRevival);
-                            goto default;
-                        case "bool_array_data":
-                            f = new BoolArrayFlag(flag);
-                            goto default;
-                        case "s32_data":
-                            f = new S32Flag(flag, IsRevival);
-                            goto default;
-                        case "s32_array_data":
-                            f = new S32ArrayFlag(flag);
-                            goto default;
-                        case "f32_data":
-                            f = new F32Flag(flag);
-                            goto default;
-                        case "f32_array_data":
-                            f = new F32ArrayFlag(flag);
-                            goto default;
-                        case "string_data":
-                            f = new String32Flag(flag);
-                            goto default;
-                        case "string64_data":
-                            f = new String64Flag(flag);
-                            goto default;
-                        case "string64_array_data":
-                            f = new String64ArrayFlag(flag);
-                            goto default;
-                        case "string256_data":
-                            f = new String256Flag(flag);
-                            goto default;
-                        case "string256_array_data":
-                            f = new String256ArrayFlag(flag);
-                            goto default;
-                        case "vector2f_data":
-                            f = new Vec2Flag(flag);
-                            goto default;
-                        case "vector2f_array_data":
-                            f = new Vec2ArrayFlag(flag);
-                            goto default;
-                        case "vector3f_data":
-                            f = new Vec3Flag(flag);
-                            goto default;
-                        case "vector3f_array_data":
-                            f = new Vec3ArrayFlag(flag);
-                            goto default;
-                        case "vector4f_data":
-                            f = new Vec4Flag(flag);
-                            goto default;
-                        default:
-                            if (f.HashValue == 0 || FlagStore[pair.Key].ContainsKey(f.HashValue)) {
-                                break;
-                            }
-                            FlagStore[pair.Key].Add(f.HashValue, f);
-                            OrigFlagStore[pair.Key].Add(f.HashValue, f);
-                            break;
+                    BaseFlag f = pair.Key switch
+                    {
+                        "bool_data" => new BoolFlag(flag, IsRevival),
+                        "bool_array_data" => new BoolArrayFlag(flag),
+                        "s32_data" => new S32Flag(flag, IsRevival),
+                        "s32_array_data" => new S32ArrayFlag(flag),
+                        "f32_data" => new F32Flag(flag),
+                        "f32_array_data" => new F32ArrayFlag(flag),
+                        "string_data" => new String32Flag(flag),
+                        "string64_data" => new String64Flag(flag),
+                        "string64_array_data" => new String64ArrayFlag(flag),
+                        "string256_data" => new String256Flag(flag),
+                        "string256_array_data" => new String256ArrayFlag(flag),
+                        "vector2f_data" => new Vec2Flag(flag),
+                        "vector2f_array_data" => new Vec2ArrayFlag(flag),
+                        "vector3f_data" => new Vec3Flag(flag),
+                        "vector3f_array_data" => new Vec3ArrayFlag(flag),
+                        "vector4f_data" => new Vec4Flag(flag),
+                        _ => throw new Exception($"Unknown flag type {pair.Key}"),
+                    };
+                    if (f.HashValue == 0 || CurrFlagStore[pair.Key].ContainsKey(f.HashValue))
+                    {
+                        continue;
                     }
+                    CurrFlagStore[pair.Key].Add(f.HashValue, f);
+                    OrigFlagStore[pair.Key].Add(f.HashValue, f);
                 }
             }
         }
 
         public BaseFlag Find(string type, int hash)
         {
-            if (FlagStore[type].ContainsKey(hash)) {
-                return FlagStore[type][hash];
+            if (CurrFlagStore[type].ContainsKey(hash)) {
+                return CurrFlagStore[type][hash];
             }
             return new BoolFlag();
         }
 
         public List<BaseFlag> FindAll(string type, string name)
         {
-            return FlagStore[type]
+            return CurrFlagStore[type]
                 .Where(p => p.Value.DataName.Contains(name))
                 .Select(p => p.Value)
                 .ToList();
@@ -263,19 +196,19 @@ namespace BotwActorTool.Lib.Gamedata
 
         public HashSet<int> FindAllHashes(string type, string name)
         {
-            return FlagStore[type]
+            return CurrFlagStore[type]
                 .Where(p => p.Value.DataName.Contains(name))
                 .Select(p => p.Value.HashValue)
                 .ToHashSet();
         }
 
-        public void Add(string type, BaseFlag flag) => FlagStore[type][flag.HashValue] = flag;
-        public void Remove(string type, int hash) => FlagStore[type].Remove(hash);
+        public void Add(string type, BaseFlag flag) => CurrFlagStore[type][flag.HashValue] = flag;
+        public void Remove(string type, int hash) => CurrFlagStore[type].Remove(hash);
 
         public int GetNewNum()
         {
             int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in FlagStore) {
+            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
                 ret += GetNew(pair.Key).Count;
             }
             return ret;
@@ -284,7 +217,7 @@ namespace BotwActorTool.Lib.Gamedata
         public int GetModifiedNum()
         {
             int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in FlagStore) {
+            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
                 ret += GetModified(pair.Key).Count;
             }
             return ret;
@@ -293,7 +226,7 @@ namespace BotwActorTool.Lib.Gamedata
         public int GetRemovedNum()
         {
             int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in FlagStore) {
+            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
                 ret += GetRemoved(pair.Key).Count;
             }
             return ret;
@@ -301,7 +234,7 @@ namespace BotwActorTool.Lib.Gamedata
 
         public HashSet<string> GetNew(string type)
         {
-            return FlagStore[type]
+            return CurrFlagStore[type]
                 .Where(p => !OrigFlagStore[type].ContainsKey(p.Key))
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
@@ -309,7 +242,7 @@ namespace BotwActorTool.Lib.Gamedata
 
         public HashSet<string> GetModified(string type)
         {
-            return FlagStore[type]
+            return CurrFlagStore[type]
                 .Where(p => OrigFlagStore[type].ContainsKey(p.Key) && !p.Value.Equals(OrigFlagStore[type][p.Key]))
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
@@ -318,7 +251,7 @@ namespace BotwActorTool.Lib.Gamedata
         public HashSet<string> GetRemoved(string type)
         {
             return OrigFlagStore[type]
-                .Where(p => !FlagStore[type].ContainsKey(p.Key))
+                .Where(p => !CurrFlagStore[type].ContainsKey(p.Key))
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
         }
@@ -331,7 +264,7 @@ namespace BotwActorTool.Lib.Gamedata
         public int GetNewNumSvData()
         {
             int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in FlagStore) {
+            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
                 ret += GetNewSvData(pair.Key).Count;
             }
             return ret;
@@ -345,7 +278,7 @@ namespace BotwActorTool.Lib.Gamedata
         public int GetRemovedNumSvData()
         {
             int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in FlagStore) {
+            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
                 ret += GetRemovedSvData(pair.Key).Count;
             }
             return ret;
@@ -353,7 +286,7 @@ namespace BotwActorTool.Lib.Gamedata
 
         public HashSet<string> GetNewSvData(string type)
         {
-            return FlagStore[type]
+            return CurrFlagStore[type]
                 .Where(p => p.Value.IsSave && !OrigFlagStore[type].ContainsKey(p.Key))
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
@@ -367,7 +300,7 @@ namespace BotwActorTool.Lib.Gamedata
         public HashSet<string> GetRemovedSvData(string type)
         {
             return OrigFlagStore[type]
-                .Where(p => p.Value.IsSave && !FlagStore[type].ContainsKey(p.Key))
+                .Where(p => p.Value.IsSave && !CurrFlagStore[type].ContainsKey(p.Key))
                 .Select(p => p.Value.DataName)
                 .ToHashSet();
         }
@@ -393,13 +326,13 @@ namespace BotwActorTool.Lib.Gamedata
                 case "vector3f_data":
                 case "vector3f_array_data":
                 case "vector4f_data":
-                    ret.AddRange(FlagStore[type]
+                    ret.AddRange(CurrFlagStore[type]
                         .Where(p => !p.Value.IsRevival)
                         .Select(p => p.Value.ToByml()));
                     break;
                 case "revival_bool_data":
                 case "revival_s32_data":
-                    ret.AddRange(FlagStore[type]
+                    ret.AddRange(CurrFlagStore[type]
                         .Where(p => p.Value.IsRevival)
                         .Select(p => p.Value.ToByml()));
                     break;
@@ -410,7 +343,7 @@ namespace BotwActorTool.Lib.Gamedata
         public List<SortedDictionary<string, dynamic>> ToSvdata()
         {
             List<SortedDictionary<string, dynamic>> ret = new();
-            ret.AddRange(FlagStore
+            ret.AddRange(CurrFlagStore
                 .SelectMany(p => p.Value.Values)
                 .Where(f => f.IsSave && !IgnoredSaveFlags.Contains(f.DataName))
                 .Select(f => f.ToSvByml()));
