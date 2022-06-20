@@ -7,8 +7,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public String256ArrayFlag() : base() { }
         public String256ArrayFlag(SortedDictionary<string, dynamic> dict) : base(dict) { }
 
-        public void OverrideParams(Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides)
+        public void OverrideParams()
         {
+            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides = Resource.GetOverrides();
             OverrideParams(overrides["STANDARD_OVERRIDES"]);
             foreach (KeyValuePair<string, dynamic> pair in overrides["STR256_ARRAY_OVERRIDES"]["INIT_VALUE"]) {
                 if (new Regex(pair.Key).Matches(DataName).Count > 0) {

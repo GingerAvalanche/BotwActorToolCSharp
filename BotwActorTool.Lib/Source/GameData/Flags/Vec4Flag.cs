@@ -57,8 +57,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return byml;
         }
 
-        public void OverrideParams(Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides)
+        public void OverrideParams()
         {
+            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides = Resource.GetOverrides();
             OverrideParams(overrides["STANDARD_OVERRIDES"]);
             foreach (KeyValuePair<string, dynamic> pair in overrides["VEC4_OVERRIDES"]["INIT_VALUE"]) {
                 if (new Regex(pair.Key).Matches(DataName).Count > 0) {

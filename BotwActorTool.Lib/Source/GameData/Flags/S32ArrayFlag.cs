@@ -45,8 +45,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             byml["InitValue"] = InitValue;
             return byml;
         }
-        public void OverrideParams(Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides)
+        public void OverrideParams()
         {
+            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> overrides = Resource.GetOverrides();
             OverrideParams(overrides["STANDARD_OVERRIDES"]);
             foreach (KeyValuePair<string, dynamic> pair in overrides["S32_ARRAY_OVERRIDES"]["INIT_VALUE"]) {
                 if (new Regex(pair.Key).Matches(DataName).Count > 0) {
