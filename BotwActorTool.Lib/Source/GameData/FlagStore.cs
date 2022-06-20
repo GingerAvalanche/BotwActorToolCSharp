@@ -1,4 +1,5 @@
 ﻿using BotwActorTool.Lib.Gamedata.Flags;
+using Nintendo.Byml;
 using System.Collections.ObjectModel;
 
 namespace BotwActorTool.Lib.Gamedata
@@ -105,12 +106,12 @@ namespace BotwActorTool.Lib.Gamedata
 
         public FlagStore() { }
 
-        public void AddFlagsFromByml(string filename, SortedDictionary<string, dynamic> byml)
+        public void AddFlagsFromByml(string filename, Dictionary<string, dynamic> byml)
         {
             bool IsRevival = filename.Contains("revival");
 
             foreach (KeyValuePair<string, dynamic> pair in byml) {
-                foreach (SortedDictionary<string, dynamic> flag in pair.Value)
+                foreach (Dictionary<string, dynamic> flag in pair.Value)
                 {
                     BaseFlag f = pair.Key switch
                     {
@@ -142,12 +143,12 @@ namespace BotwActorTool.Lib.Gamedata
             }
         }
 
-        public void AddFlagsFromBymlNoOverwrite(string filename, SortedDictionary<string, dynamic> byml)
+        public void AddFlagsFromBymlNoOverwrite(string filename, Dictionary<string, dynamic> byml)
         {
             bool IsRevival = filename.Contains("revival");
 
             foreach (KeyValuePair<string, dynamic> pair in byml) {
-                foreach (SortedDictionary<string, dynamic> flag in pair.Value) {
+                foreach (Dictionary<string, dynamic> flag in pair.Value) {
                     BaseFlag f = pair.Key switch
                     {
                         "bool_data" => new BoolFlag(flag, IsRevival),
@@ -305,49 +306,37 @@ namespace BotwActorTool.Lib.Gamedata
                 .ToHashSet();
         }
 
-        public List<SortedDictionary<string, dynamic>> ToBgdata(string prefix)
+        public BymlFile ToBgdata(string prefix)
         {
             string type = prefix.Replace("revival_", "");
-            List<SortedDictionary<string, dynamic>> ret = new();
-            switch (prefix) {
-                case "bool_data":
-                case "bool_array_data":
-                case "s32_data":
-                case "s32_array_data":
-                case "f32_data":
-                case "f32_array_data":
-                case "string_data":
-                case "string64_data":
-                case "string64_array_data":
-                case "string256_data":
-                case "string256_array_data":
-                case "vector2f_data":
-                case "vector2f_array_data":
-                case "vector3f_data":
-                case "vector3f_array_data":
-                case "vector4f_data":
-                    ret.AddRange(CurrFlagStore[type]
-                        .Where(p => !p.Value.IsRevival)
-                        .Select(p => p.Value.ToByml()));
-                    break;
-                case "revival_bool_data":
-                case "revival_s32_data":
-                    ret.AddRange(CurrFlagStore[type]
+            BymlFile file = new(NodeType.Array)
+            {
+                RootNode = prefix switch
+                {
+                    "revival_bool_data" or "revival_s32_data" => CurrFlagStore[type]
                         .Where(p => p.Value.IsRevival)
-                        .Select(p => p.Value.ToByml()));
-                    break;
-            }
-            return ret.OrderBy(f => f["HashValue"]).ToList();
+                        .Select(p => p.Value.ToByml())
+                        .ToList(),
+                    _ => CurrFlagStore[type]
+                        .Where(p => !p.Value.IsRevival)
+                        .Select(p => p.Value.ToByml())
+                        .ToList(),
+                }
+            };
+            return file;
         }
 
-        public List<SortedDictionary<string, dynamic>> ToSvdata()
+        public BymlFile ToSvdata()
         {
-            List<SortedDictionary<string, dynamic>> ret = new();
-            ret.AddRange(CurrFlagStore
-                .SelectMany(p => p.Value.Values)
-                .Where(f => f.IsSave && !IgnoredSaveFlags.Contains(f.DataName))
-                .Select(f => f.ToSvByml()));
-            return ret.OrderBy(f => f["HashValue"]).ToList();
+            BymlFile file = new(NodeType.Array)
+            {
+                RootNode = CurrFlagStore
+                    .SelectMany(p => p.Value.Values)
+                    .Where(f => f.IsSave && !IgnoredSaveFlags.Contains(f.DataName))
+                    .Select(f => f.ToSvByml())
+                    .ToList()
+            };
+            return file;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
     class String64ArrayFlag : StringArrayFlag
     {
         public String64ArrayFlag() : base() { }
-        public String64ArrayFlag(SortedDictionary<string, dynamic> dict) : base(dict) { }
+        public String64ArrayFlag(Dictionary<string, dynamic> dict) : base(dict) { }
 
         public void OverrideParams()
         {

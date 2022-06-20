@@ -5,7 +5,7 @@
         public List<string> InitValue = new List<string>(1);
         public StringArrayFlag() : base() { }
 
-        public StringArrayFlag(SortedDictionary<string, dynamic> dict) : base(dict)
+        public StringArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 foreach (string v in dict["InitValue"][0]["Values"]) {
@@ -14,7 +14,7 @@
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 List<Dictionary<string, List<string>>> iv = dict["InitValue"];
@@ -40,9 +40,9 @@
             return InitValue.TrueForAll(i => InitValue.IndexOf(i) == otherStringArray.InitValue.IndexOf(i));
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["InitValue"] = new List<Dictionary<string, List<string>>>(1);
             byml["InitValue"][0]["Values"] = InitValue;
             return byml;

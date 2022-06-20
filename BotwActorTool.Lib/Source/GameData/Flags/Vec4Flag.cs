@@ -13,14 +13,14 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             MinValue = new Vector4F(0.0f, 0.0f, 0.0f, 0.0f);
         }
 
-        public Vec4Flag(SortedDictionary<string, dynamic> dict) : base(dict)
+        public Vec4Flag(Dictionary<string, dynamic> dict) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 InitValue = new Vector4F(dict["InitValue"][0][0], dict["InitValue"][0][1], dict["InitValue"][0][2], dict["InitValue"][0][3]);
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 float ivx = dict["InitValue"][0][0];
@@ -45,9 +45,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["InitValue"] = new List<List<int>>(1);
             byml["InitValue"][0] = new List<int>(4);
             byml["InitValue"][0][0] = InitValue.X;

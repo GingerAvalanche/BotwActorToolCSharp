@@ -7,7 +7,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public List<float> InitValue = new() { 0.0f };
 
         public F32ArrayFlag() : base() { MaxValue = 360.0f; MinValue = -1.0f; }
-        public F32ArrayFlag(SortedDictionary<string, dynamic> dict) : base(dict)
+        public F32ArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 foreach (float v in dict["InitValue"]) {
@@ -16,7 +16,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 List<float> iv = dict["InitValue"];
@@ -39,9 +39,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return InitValue.TrueForAll(i => InitValue.IndexOf(i) == otherF32Array.InitValue.IndexOf(i));
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["InitValue"] = InitValue;
             return byml;
         }

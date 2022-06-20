@@ -9,7 +9,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public int InitValue = 0;
 
         public S32Flag() : base() { MaxValue = 2147483647; MinValue = 0; }
-        public S32Flag(SortedDictionary<string, dynamic> dict, bool revival = false) : base(dict)
+        public S32Flag(Dictionary<string, dynamic> dict, bool revival = false) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 InitValue = dict["InitValue"];
@@ -17,7 +17,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 int iv = dict["InitValue"];
@@ -39,9 +39,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["InitValue"] = InitValue;
             return byml;
         }

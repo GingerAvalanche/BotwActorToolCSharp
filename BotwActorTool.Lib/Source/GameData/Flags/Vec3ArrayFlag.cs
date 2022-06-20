@@ -12,7 +12,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             MinValue = new Vector3F(0.0f, 0.0f, 0.0f);
         }
 
-        public Vec3ArrayFlag(SortedDictionary<string, dynamic> dict) : base(dict)
+        public Vec3ArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 InitValue.Clear();
@@ -22,7 +22,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 List<Dictionary<string, List<List<float>>>> iv = dict["InitValue"];
@@ -49,9 +49,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["InitValue"] = new List<Dictionary<string, List<List<float>>>>(1);
             byml["InitValue"][0] = new Dictionary<string, List<List<float>>>();
             byml["InitValue"][0]["Values"] = new List<List<float>>(InitValue.Count);

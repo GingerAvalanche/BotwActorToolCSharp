@@ -1,5 +1,4 @@
 ﻿using Aamp.Security.Cryptography;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
@@ -18,7 +17,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public int ResetType = 0;
 
         public BaseFlag() { }
-        public BaseFlag(SortedDictionary<string, dynamic> dict) : this()
+        public BaseFlag(Dictionary<string, dynamic> dict) : this()
         {
             if (ValidateInFlag(dict)) {
                 DataName = dict["DataName"];
@@ -32,7 +31,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 string dn = dict["DataName"];
@@ -69,9 +68,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public SortedDictionary<string, dynamic> ToByml()
+        public Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = new() {
+            Dictionary<string, dynamic> byml = new() {
                 ["DataName"] = DataName,
                 ["HashValue"] = HashValue,
                 ["DeleteRev"] = DeleteRev,
@@ -85,9 +84,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return byml;
         }
 
-        public SortedDictionary<string, dynamic> ToSvByml()
+        public Dictionary<string, dynamic> ToSvByml()
         {
-            SortedDictionary<string, dynamic> byml = new() {
+            Dictionary<string, dynamic> byml = new() {
                 ["DataName"] = DataName,
                 ["HashValue"] = HashValue
             };

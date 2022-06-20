@@ -8,7 +8,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public Vector2F MinValue;
 
         public Vec2BaseFlag() : base() { }
-        public Vec2BaseFlag(SortedDictionary<string, dynamic> dict) : base(dict)
+        public Vec2BaseFlag(Dictionary<string, dynamic> dict) : base(dict)
         {
             if (ValidateInFlag(dict)) {
                 MaxValue = new Vector2F(dict["MaxValue"][0][0], dict["MaxValue"][0][1]);
@@ -16,7 +16,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
         }
 
-        private static bool ValidateInFlag(SortedDictionary<string, dynamic> dict)
+        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
         {
             try {
                 float maxvx = dict["MaxValue"][0][0];
@@ -42,9 +42,9 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new SortedDictionary<string, dynamic> ToByml()
+        public new Dictionary<string, dynamic> ToByml()
         {
-            SortedDictionary<string, dynamic> byml = base.ToByml();
+            Dictionary<string, dynamic> byml = base.ToByml();
             byml["MaxValue"] = new List<List<int>>(1);
             byml["MaxValue"][0] = new List<int>(2);
             byml["MaxValue"][0][0] = MaxValue.X;
