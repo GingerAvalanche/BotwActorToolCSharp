@@ -5,7 +5,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
 {
     class Vec4Flag : Vec4BaseFlag
     {
-        public Vector4F InitValue = new Vector4F(0.0f, 0.0f, 0.0f, 0.0f);
+        public Vector4F InitValue = new(0.0f, 0.0f, 0.0f, 0.0f);
 
         public Vec4Flag() : base()
         {

@@ -5,7 +5,7 @@ namespace BotwActorTool.Lib.Gamedata.Flags
 {
     class Vec3ArrayFlag : Vec3BaseFlag
     {
-        public List<Vector3F> InitValue = new List<Vector3F> { new Vector3F(0.0f, 0.0f, 0.0f) };
+        public List<Vector3F> InitValue = new() { new Vector3F(0.0f, 0.0f, 0.0f) };
         public Vec3ArrayFlag() : base()
         {
             MaxValue = new Vector3F(255.0f, 255.0f, 255.0f);
