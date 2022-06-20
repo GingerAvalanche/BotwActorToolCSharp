@@ -1,21 +1,22 @@
 ﻿using Nintendo.Sarc;
 using Nintendo.Aamp;
 using Nintendo.Byml;
+using Syroot.BinaryData.Core;
 
 namespace BotwActorTool.Lib.Pack
 {
     internal class Pack
     {
         private string _actorname;
-        private Dictionary<string, AampFile> _aampfiles = new();
-        private Dictionary<string, BymlFile> _bymlfiles = new();
-        private Dictionary<string, byte[]> _miscfiles = new();
-        private Dictionary<string, string> _links = new();
+        private readonly Dictionary<string, AampFile> _aampfiles = new();
+        private readonly Dictionary<string, BymlFile> _bymlfiles = new();
+        private readonly Dictionary<string, byte[]> _miscfiles = new();
+        private readonly Dictionary<string, string> _links = new();
         private List<string> _tags = new();
         private List<string> _tags2 = new();
         public string Name { get => _actorname; }
-        public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(", ").ToList(); }
-        public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(", ").ToList(); }
+        public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToList(); }
+        public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToList(); }
 
         public Pack(string actorname, SarcFile sarc)
         {
@@ -126,7 +127,7 @@ namespace BotwActorTool.Lib.Pack
             {
                 if (old_ref == "Dummy")
                 {
-                    _aampfiles[link] = new AampFile(new byte[] { 0x41, 0x41, 0x4D, 0x50, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6C, 0xCB, 0xF6, 0xA4, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00 });
+                    _aampfiles[link] = AampFile.New(2);
                 }
                 else if (linkref == "Dummy")
                 {
@@ -137,7 +138,7 @@ namespace BotwActorTool.Lib.Pack
             {
                 if (old_ref == "Dummy")
                 {
-                    _bymlfiles[link] = new BymlFile(new byte[] { 0x42, 0x59, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0xC1, 0x00, 0x00, 0x00 });
+                    _bymlfiles[link] = new BymlFile(NodeType.Dictionary);
                 }
                 else if (linkref == "Dummy")
                 {
@@ -148,21 +149,129 @@ namespace BotwActorTool.Lib.Pack
 
         public string GetLinkData(string link)
         {
-            throw new NotImplementedException();
+            string linkref = _links[link];
+            if (linkref != "Dummy")
+            {
+                if (Util.AAMP_LINK_REFS.ContainsKey(link))
+                {
+                    return _aampfiles[link].ToYml();
+                }
+                if (Util.BYML_LINK_REFS.ContainsKey(link))
+                {
+                    return _bymlfiles[link].ToYaml();
+                }
+            }
+            return "";
         }
         public void SetLinkData(string link, string data)
         {
-            throw new NotImplementedException();
+            if (Util.AAMP_LINK_REFS.ContainsKey(link))
+            {
+                _aampfiles[link] = AampFile.FromYml(data);
+            }
+            else if (Util.BYML_LINK_REFS.ContainsKey(link))
+            {
+                _bymlfiles[link] = BymlFile.FromYaml(data);
+            }
         }
 
         public AampFile GetActorLink()
         {
-            throw new NotImplementedException();
+            AampFile actorlink = AampFile.New(2);
+
+            byte num_objects = 1;
+            bool tags = _tags.Count > 0;
+            if (tags) num_objects++;
+            bool tags2 = _tags2.Count > 0;
+            if (tags2) num_objects++;
+
+            actorlink.RootNode.ParamObjects = new ParamObject[num_objects];
+            actorlink.RootNode.ParamObjects[0] = new()
+            {
+                HashString = "LinkTarget",
+                ParamEntries = new ParamEntry[_links.Count],
+            };
+            int count = 0;
+            foreach ((string link, string linkref) in _links)
+            {
+                actorlink.RootNode.ParamObjects[0].ParamEntries[count] = new()
+                {
+                    HashString = link,
+                    ParamType = ParamType.StringRef,
+                    Value = new StringEntry(linkref),
+                };
+                count++;
+            }
+            if (tags)
+            {
+                actorlink.RootNode.ParamObjects[1] = new()
+                {
+                    HashString = "Tags",
+                    ParamEntries = new ParamEntry[_tags.Count],
+                };
+                count = 0;
+                foreach (string tag in _tags)
+                {
+                    actorlink.RootNode.ParamObjects[1].ParamEntries[count] = new()
+                    {
+                        HashString = $"Tag{count}",
+                        ParamType = ParamType.StringRef,
+                        Value = new StringEntry(tag),
+                    };
+                    count++;
+                }
+            }
+            if (tags2)
+            {
+                actorlink.RootNode.ParamObjects[2] = new()
+                {
+                    Hash = 1115720914,
+                    ParamEntries = new ParamEntry[_tags2.Count],
+                };
+                count = 0;
+                foreach (string tag in _tags2)
+                {
+                    actorlink.RootNode.ParamObjects[2].ParamEntries[count] = new()
+                    {
+                        HashString = $"Tag{count}",
+                        ParamType = ParamType.StringRef,
+                        Value = new StringEntry(tag),
+                    };
+                    count++;
+                }
+            }
+
+            return actorlink;
         }
 
         public byte[] Write(bool big_endian)
         {
-            throw new NotImplementedException();
+            Dictionary<string, byte[]> files = new();
+            Endian endianness = big_endian ? Endian.Big : Endian.Little;
+
+            string filename = $"Actor/ActorLink/{_actorname}.bxml";
+            files[filename] = GetActorLink().ToBinary();
+
+            foreach ((string link, AampFile file) in _aampfiles)
+            {
+                (string folder, string ext) = Util.AAMP_LINK_REFS[link];
+                filename = $"Actor/{folder}/{GetLink(link)}{ext}";
+                files[filename] = file.ToBinary();
+            }
+
+            foreach ((string link, BymlFile file) in _bymlfiles)
+            {
+                (string folder, string ext) = Util.BYML_LINK_REFS[link];
+                filename = $"Actor/{folder}/{GetLink(link)}{ext}";
+                files[filename] = file.ToBinary();
+            }
+
+            foreach ((string name, byte[] data) in _miscfiles)
+            {
+                files[name] = data;
+            }
+
+            return new SarcFile(files, endianness).ToBinary();
         }
     }
 }
