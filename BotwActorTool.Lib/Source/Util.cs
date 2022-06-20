@@ -114,6 +114,10 @@ namespace BotwActorTool.Lib
 
                 return sarc.Files[parts[^1]];
             }
+            if (File.Exists(filePath))
+            {
+                return File.ReadAllBytes(filePath);
+            }
 
             return null;
         }
