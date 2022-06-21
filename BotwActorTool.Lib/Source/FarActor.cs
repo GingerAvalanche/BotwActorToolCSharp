@@ -564,6 +564,7 @@ namespace BotwActorTool.Lib
             pack.SetLinkData(link, data);
             needs_info_update = true;
         }
+        public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
 
         public void Update()
         {

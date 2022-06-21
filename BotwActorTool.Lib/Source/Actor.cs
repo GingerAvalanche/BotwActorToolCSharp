@@ -8,6 +8,7 @@ using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
+using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
@@ -109,7 +110,7 @@ namespace BotwActorTool.Lib
         public Actor(string filename)
         {
             origname = Path.GetFileNameWithoutExtension(filename);
-            pack = new ActorPack(origname, new(Util.GetFile(filename)));
+            pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
             resident = filename.Contains("TitleBG.pack");
             string far_filename = filename.Replace(origname, $"{origname}_Far");
             if (File.Exists(far_filename))
@@ -158,7 +159,7 @@ namespace BotwActorTool.Lib
             }
             else if (enabled)
             {
-                far_actor = new FarActor(Name, pack.GetPhysicsForFar().ToBinary());
+                far_actor = new FarActor(Name, pack.GetAampFile("PhysicsUser").ToBinary());
                 needs_info_update = true;
                 return true;
             }
@@ -176,6 +177,7 @@ namespace BotwActorTool.Lib
             pack.SetLinkData(link, data);
             needs_info_update = true;
         }
+        public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
 
         private void SetFlags(string name)
         {
