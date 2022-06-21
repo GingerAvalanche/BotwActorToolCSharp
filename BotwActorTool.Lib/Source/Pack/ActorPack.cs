@@ -12,16 +12,16 @@ namespace BotwActorTool.Lib.Pack
         private readonly Dictionary<string, BymlFile> _bymlfiles = new();
         private readonly Dictionary<string, byte[]> _miscfiles = new();
         private readonly Dictionary<string, string> _links = new();
-        private List<string> _tags = new();
-        private List<string> _tags2 = new();
+        private string[] _tags = Array.Empty<string>();
+        private string[] _tags2 = Array.Empty<string>();
         public string Name { get => _actorname; }
-        public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToList(); }
-        public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToList(); }
+        public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToArray(); }
+        public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToArray(); }
 
         public ActorPack(string actorname, SarcFile sarc)
         {
             _actorname = actorname;
-            List<string> handled = new() { $"Actor/ActorLink/{_actorname}.bcml" };
+            List<string> handled = new() { $"Actor/ActorLink/{_actorname}.bxml" };
             AampFile actorlink = new(sarc.Files[handled[0]]);
             foreach (ParamObject obj in actorlink.RootNode.ParamObjects)
             {
@@ -30,20 +30,24 @@ namespace BotwActorTool.Lib.Pack
                     case 723360088: // LinkTarget
                         foreach (ParamEntry entry in obj.ParamEntries)
                         {
-                            _links[entry.HashString] = entry.HashString == "ActorScale" ? ((float)entry.Value!).ToString() : (string)entry.Value!;
+                            _links[entry.HashString] = entry.HashString == "ActorScale" ? ((float)entry.Value!).ToString() : ((StringEntry)entry.Value!).ToString();
                         }
                         break;
                     case 3482204952: // Tags
-                        _tags = obj.ParamEntries.Select(e => (string)e.Value!).ToList();
+                        _tags = obj.ParamEntries.Select(e => ((StringEntry)e.Value!).ToString()).ToArray();
                         break;
                     case 1115720914: // misc tags
-                        _tags2 = obj.ParamEntries.Select(e => (string)e.Value!).ToList();
+                        _tags2 = obj.ParamEntries.Select(e => ((StringEntry)e.Value!).ToString()).ToArray();
                         break;
                 }
             }
 
             foreach ((string link, (string folder, string ext)) in Util.AAMP_LINK_REFS)
             {
+                if (_links[link] == "Dummy")
+                {
+                    continue;
+                }
                 string filename = $"Actor/{folder}/{_links[link]}{ext}";
                 _aampfiles[link] = new AampFile(sarc.Files[filename]);
                 handled.Add(filename);
@@ -51,6 +55,10 @@ namespace BotwActorTool.Lib.Pack
 
             foreach ((string link, (string folder, string ext)) in Util.BYML_LINK_REFS)
             {
+                if (_links[link] == "Dummy")
+                {
+                    continue;
+                }
                 string filename = $"Actor/{folder}/{_links[link]}{ext}";
                 _bymlfiles[link] = new BymlFile(sarc.Files[filename]);
                 handled.Add(filename);
@@ -147,7 +155,7 @@ namespace BotwActorTool.Lib.Pack
             }
         }
 
-        public AampFile GetPhysicsForFar() => _aampfiles["PhysicsUser"];
+        public AampFile GetAampFile(string link) => _aampfiles[link];
 
         public string GetLinkData(string link)
         {
@@ -182,9 +190,9 @@ namespace BotwActorTool.Lib.Pack
             AampFile actorlink = AampFile.New(2);
 
             byte num_objects = 1;
-            bool tags = _tags.Count > 0;
+            bool tags = _tags.Length > 0;
             if (tags) num_objects++;
-            bool tags2 = _tags2.Count > 0;
+            bool tags2 = _tags2.Length > 0;
             if (tags2) num_objects++;
 
             actorlink.RootNode.ParamObjects = new ParamObject[num_objects];
@@ -209,7 +217,7 @@ namespace BotwActorTool.Lib.Pack
                 actorlink.RootNode.ParamObjects[1] = new()
                 {
                     HashString = "Tags",
-                    ParamEntries = new ParamEntry[_tags.Count],
+                    ParamEntries = new ParamEntry[_tags.Length],
                 };
                 count = 0;
                 foreach (string tag in _tags)
@@ -228,7 +236,7 @@ namespace BotwActorTool.Lib.Pack
                 actorlink.RootNode.ParamObjects[2] = new()
                 {
                     Hash = 1115720914,
-                    ParamEntries = new ParamEntry[_tags2.Count],
+                    ParamEntries = new ParamEntry[_tags2.Length],
                 };
                 count = 0;
                 foreach (string tag in _tags2)
