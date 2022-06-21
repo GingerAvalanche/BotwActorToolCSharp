@@ -22,7 +22,7 @@ namespace BotwActorTool.Lib.Texts
             orig_actor_name = ActorName;
             this.profile = profile;
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{this.profile}.msbt") ?? Array.Empty<byte>()));
+            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")!));
             Dictionary<string, MsbtEntry> temp = msbt.GetTexts();
             foreach (KeyValuePair<string, MsbtEntry> kvp in texts) {
                 if (temp.ContainsKey($"{ActorName}_{kvp.Key}")) {
@@ -34,7 +34,7 @@ namespace BotwActorTool.Lib.Texts
         public void DeleteActor(string modRoot)
         {
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt") ?? Array.Empty<byte>()));
+            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")!));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
             AllTexts.Remove($"{orig_actor_name}_BaseName");
             AllTexts.Remove($"{orig_actor_name}_Name");
