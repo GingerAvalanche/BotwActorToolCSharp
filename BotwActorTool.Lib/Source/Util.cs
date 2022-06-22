@@ -208,8 +208,8 @@ namespace BotwActorTool.Lib
             {
                 throw new Exception("Could not find ResidentActors.byml");
             }
-            foreach (var actor in ResidentActorRoot) {
-                ResidentActors.Add(actor["name"]);
+            foreach (BymlNode actor in ResidentActorRoot.Array) {
+                ResidentActors.Add(actor.Hash["name"].String);
             }
             return ResidentActors;
         }
