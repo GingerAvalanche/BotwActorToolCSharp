@@ -1,30 +1,16 @@
-﻿namespace BotwActorTool.Lib.Gamedata.Flags
+﻿using Nintendo.Byml;
+
+namespace BotwActorTool.Lib.Gamedata.Flags
 {
     abstract class StringArrayFlag : StringBaseFlag
     {
-        public List<string> InitValue = new List<string>(1);
+        public List<string> InitValue = new();
         public StringArrayFlag() : base() { }
 
-        public StringArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public StringArrayFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                foreach (string v in dict["InitValue"][0]["Values"]) {
-                    InitValue.Add(v);
-                }
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                List<Dictionary<string, List<string>>> iv = dict["InitValue"];
-                if (iv[0].Count > 1) { throw new System.Exception(); }
-                // This is actually to force errors if the Lists are empty/Dictionary is made wrong
-                if (iv[0]["Values"][0].GetType() == typeof(string)) { }
-                return true;
-            }
-            catch {
-                return false;
+            foreach (BymlNode v in dict.Hash["InitValue"].Array[0].Hash["Values"].Array) {
+                InitValue.Add(v.String);
             }
         }
 
@@ -40,11 +26,12 @@
             return InitValue.TrueForAll(i => InitValue.IndexOf(i) == otherStringArray.InitValue.IndexOf(i));
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = new List<Dictionary<string, List<string>>>(1);
-            byml["InitValue"][0]["Values"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["InitValue"].Array.Add(new BymlNode(new Dictionary<string, BymlNode>()));
+            byml.Hash["InitValue"].Array[0].Hash["Values"] = new BymlNode(InitValue);
             return byml;
         }
     }

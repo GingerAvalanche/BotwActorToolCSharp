@@ -1,4 +1,5 @@
-﻿using Syroot.Maths;
+﻿using Nintendo.Byml;
+using Syroot.Maths;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
@@ -8,28 +9,18 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public Vector3F MinValue;
 
         public Vec3BaseFlag() : base() { }
-        public Vec3BaseFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public Vec3BaseFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                MaxValue = new Vector3F(dict["MaxValue"][0][0], dict["MaxValue"][0][1], dict["MaxValue"][0][2]);
-                MinValue = new Vector3F(dict["MinValue"][0][0], dict["MinValue"][0][1], dict["MinValue"][0][2]);
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                float maxvx = dict["MaxValue"][0][0];
-                float maxvy = dict["MaxValue"][0][1];
-                float maxvz = dict["MaxValue"][0][2];
-                float minvx = dict["MinValue"][0][0];
-                float minvy = dict["MinValue"][0][1];
-                float minvz = dict["MinValue"][0][2];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            MaxValue = new Vector3F(
+                dict.Hash["MaxValue"].Array[0].Array[0].Float,
+                dict.Hash["MaxValue"].Array[0].Array[1].Float,
+                dict.Hash["MaxValue"].Array[0].Array[2].Float
+                );
+            MinValue = new Vector3F(
+                dict.Hash["MinValue"].Array[0].Array[0].Float,
+                dict.Hash["MinValue"].Array[0].Array[1].Float,
+                dict.Hash["MinValue"].Array[0].Array[2].Float
+                );
         }
 
         public new bool Equals(BaseFlag other)
@@ -44,19 +35,19 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["MaxValue"] = new List<List<int>>(1);
-            byml["MaxValue"][0] = new List<int>(3);
-            byml["MaxValue"][0][0] = MaxValue.X;
-            byml["MaxValue"][0][1] = MaxValue.Y;
-            byml["MaxValue"][0][2] = MaxValue.Z;
-            byml["MinValue"] = new List<List<int>>(1);
-            byml["MinValue"][0] = new List<int>(3);
-            byml["MinValue"][0][0] = MinValue.X;
-            byml["MinValue"][0][1] = MinValue.Y;
-            byml["MinValue"][0][2] = MinValue.Z;
+            BymlNode byml = base.ToByml();
+            byml.Hash["MaxValue"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["MaxValue"].Array.Add(new BymlNode(new List<BymlNode>()));
+            byml.Hash["MaxValue"].Array[0].Array.Add(new BymlNode(MaxValue.X));
+            byml.Hash["MaxValue"].Array[0].Array.Add(new BymlNode(MaxValue.Y));
+            byml.Hash["MaxValue"].Array[0].Array.Add(new BymlNode(MaxValue.Z));
+            byml.Hash["MinValue"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["MinValue"].Array.Add(new BymlNode(new List<BymlNode>()));
+            byml.Hash["MinValue"].Array[0].Array.Add(new BymlNode(MinValue.X));
+            byml.Hash["MinValue"].Array[0].Array.Add(new BymlNode(MinValue.Y));
+            byml.Hash["MinValue"].Array[0].Array.Add(new BymlNode(MinValue.Z));
             return byml;
         }
     }

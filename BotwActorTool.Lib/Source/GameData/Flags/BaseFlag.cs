@@ -1,4 +1,5 @@
-﻿using Aamp.Security.Cryptography;
+﻿using Nintendo.Byml;
+using Aamp.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
@@ -17,37 +18,16 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public int ResetType = 0;
 
         public BaseFlag() { }
-        public BaseFlag(Dictionary<string, dynamic> dict) : this()
+        public BaseFlag(BymlNode dict) : this()
         {
-            if (ValidateInFlag(dict)) {
-                DataName = dict["DataName"];
-                DeleteRev = dict["DeleteRev"];
-                IsEventAssociated = dict["IsEventAssociated"];
-                IsOneTrigger = dict["IsOneTrigger"];
-                IsProgramReadable = dict["IsProgramReadable"];
-                IsProgramWritable = dict["IsProgramWritable"];
-                IsSave = dict["IsSave"];
-                ResetType = dict["ResetType"];
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                string dn = dict["DataName"];
-                int hv = dict["HashValue"];
-                int dr = dict["DeleteRev"];
-                bool iea = dict["IsEventAssociated"];
-                bool iot = dict["IsOneTrigger"];
-                bool ipr = dict["IsProgramReadable"];
-                bool ipw = dict["IsProgramWritable"];
-                bool isave = dict["IsSave"];
-                int rt = dict["ResetType"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            DataName = dict.Hash["DataName"].String;
+            DeleteRev = dict.Hash["DeleteRev"].Int;
+            IsEventAssociated = dict.Hash["IsEventAssociated"].Bool;
+            IsOneTrigger = dict.Hash["IsOneTrigger"].Bool;
+            IsProgramReadable = dict.Hash["IsProgramReadable"].Bool;
+            IsProgramWritable = dict.Hash["IsProgramWritable"].Bool;
+            IsSave = dict.Hash["IsSave"].Bool;
+            ResetType = dict.Hash["ResetType"].Int;
         }
 
         public bool Equals(BaseFlag other)
@@ -68,29 +48,29 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public Dictionary<string, dynamic> ToByml()
+        public BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = new() {
-                ["DataName"] = DataName,
-                ["HashValue"] = HashValue,
-                ["DeleteRev"] = DeleteRev,
-                ["IsEventAssociated"] = IsEventAssociated,
-                ["IsOneTrigger"] = IsOneTrigger,
-                ["IsProgramReadable"] = IsProgramReadable,
-                ["IsProgramWritable"] = IsProgramWritable,
-                ["IsSave"] = IsSave,
-                ["ResetType"] = ResetType
+            Dictionary<string, BymlNode> hash = new() {
+                ["DataName"] = new BymlNode(DataName),
+                ["HashValue"] = new BymlNode(HashValue),
+                ["DeleteRev"] = new BymlNode(DeleteRev),
+                ["IsEventAssociated"] = new BymlNode(IsEventAssociated),
+                ["IsOneTrigger"] = new BymlNode(IsOneTrigger),
+                ["IsProgramReadable"] = new BymlNode(IsProgramReadable),
+                ["IsProgramWritable"] = new BymlNode(IsProgramWritable),
+                ["IsSave"] = new BymlNode(IsSave),
+                ["ResetType"] = new BymlNode(ResetType)
             };
-            return byml;
+            return new BymlNode(hash);
         }
 
-        public Dictionary<string, dynamic> ToSvByml()
+        public BymlNode ToSvByml()
         {
-            Dictionary<string, dynamic> byml = new() {
-                ["DataName"] = DataName,
-                ["HashValue"] = HashValue
+            Dictionary<string, BymlNode> hash = new() {
+                ["DataName"] = new BymlNode(DataName),
+                ["HashValue"] = new BymlNode(HashValue)
             };
-            return byml;
+            return new BymlNode(hash);
         }
 
         public bool Exists() => HashValue != 0;

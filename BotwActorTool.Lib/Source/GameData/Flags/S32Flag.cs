@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Nintendo.Byml;
+using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
@@ -9,23 +10,10 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public int InitValue = 0;
 
         public S32Flag() : base() { MaxValue = 2147483647; MinValue = 0; }
-        public S32Flag(Dictionary<string, dynamic> dict, bool revival = false) : base(dict)
+        public S32Flag(BymlNode dict, bool revival = false) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                InitValue = dict["InitValue"];
-                _isRevival = revival;
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                int iv = dict["InitValue"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            InitValue = dict.Hash["InitValue"].Int;
+            _isRevival = revival;
         }
 
         public new bool Equals(BaseFlag other)
@@ -39,10 +27,10 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(InitValue);
             return byml;
         }
 

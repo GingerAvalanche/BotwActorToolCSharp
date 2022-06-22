@@ -1,4 +1,5 @@
-﻿using Syroot.Maths;
+﻿using Nintendo.Byml;
+using Syroot.Maths;
 using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
@@ -12,29 +13,15 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             MinValue = new Vector3F(0.0f, 0.0f, 0.0f);
         }
 
-        public Vec3ArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public Vec3ArrayFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                InitValue.Clear();
-                foreach (List<List<float>> v in dict["InitValue"][0]["Values"]) {
-                    InitValue.Add(new Vector3F(v[0][0], v[0][1], v[0][2]));
-                }
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                List<Dictionary<string, List<List<float>>>> iv = dict["InitValue"];
-                foreach (List<List<float>> v in dict["InitValue"]) {
-                    float ivx = v[0][0];
-                    float ivy = v[0][1];
-                    float ivz = v[0][2];
-                }
-                return true;
-            }
-            catch {
-                return false;
+            InitValue.Clear();
+            foreach (BymlNode v in dict.Hash["InitValue"].Array[0].Hash["Values"].Array[0].Array) {
+                InitValue.Add(new Vector3F(
+                    v.Array[0].Float,
+                    v.Array[1].Float,
+                    v.Array[2].Float
+                    ));
             }
         }
 
@@ -49,14 +36,18 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = new List<Dictionary<string, List<List<float>>>>(1);
-            byml["InitValue"][0] = new Dictionary<string, List<List<float>>>();
-            byml["InitValue"][0]["Values"] = new List<List<float>>(InitValue.Count);
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["InitValue"].Array.Add(new BymlNode(new Dictionary<string, BymlNode>()));
+            byml.Hash["InitValue"].Array[0].Hash["Values"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["InitValue"].Array[0].Hash["Values"].Array.Add(new BymlNode(new List<BymlNode>()));
             for (int i = 0; i < InitValue.Count; i++) {
-                byml["InitValue"][0]["Values"][i] = new List<float> { InitValue[i].X, InitValue[i].Y, InitValue[i].Z };
+                byml.Hash["InitValue"].Array[0].Hash["Values"].Array[0].Array.Add(new BymlNode(new List<BymlNode>()));
+                byml.Hash["InitValue"].Array[0].Hash["Values"].Array[0].Array[i].Array.Add(new BymlNode(InitValue[i].X));
+                byml.Hash["InitValue"].Array[0].Hash["Values"].Array[0].Array[i].Array.Add(new BymlNode(InitValue[i].Y));
+                byml.Hash["InitValue"].Array[0].Hash["Values"].Array[0].Array[i].Array.Add(new BymlNode(InitValue[i].Z));
             }
             return byml;
         }

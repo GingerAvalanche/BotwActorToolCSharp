@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Nintendo.Byml;
+using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
@@ -7,23 +8,11 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public List<float> InitValue = new() { 0.0f };
 
         public F32ArrayFlag() : base() { MaxValue = 360.0f; MinValue = -1.0f; }
-        public F32ArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public F32ArrayFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                foreach (float v in dict["InitValue"]) {
-                    InitValue.Add(v);
-                }
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                List<float> iv = dict["InitValue"];
-                return true;
-            }
-            catch {
-                return false;
+            InitValue.Clear();
+            foreach (BymlNode v in dict.Hash["InitValue"].Array) {
+                InitValue.Add(v.Float);
             }
         }
 
@@ -39,10 +28,14 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return InitValue.TrueForAll(i => InitValue.IndexOf(i) == otherF32Array.InitValue.IndexOf(i));
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(new List<BymlNode>());
+            foreach (float f in InitValue)
+            {
+                byml.Hash["InitValue"].Array.Add(new BymlNode(f));
+            }
             return byml;
         }
 

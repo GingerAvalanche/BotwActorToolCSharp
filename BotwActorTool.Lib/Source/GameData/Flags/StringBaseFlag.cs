@@ -1,31 +1,17 @@
-﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+﻿using Nintendo.Byml;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
     abstract class StringBaseFlag : BaseFlag
     {
-        public string MaxValue;
-        public string MinValue;
+        public string MaxValue = "";
+        public string MinValue = "";
 
         public StringBaseFlag() : base() { }
-        public StringBaseFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public StringBaseFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                MaxValue = dict["MaxValue"];
-                MinValue = dict["MinValue"];
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                string maxv = dict["MaxValue"];
-                string minv = dict["MinValue"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            MaxValue = dict.Hash["MaxValue"].String;
+            MinValue = dict.Hash["MinValue"].String;
         }
 
         public new bool Equals(BaseFlag other)
@@ -40,11 +26,11 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["MaxValue"] = MaxValue;
-            byml["MinValue"] = MinValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["MaxValue"] = new BymlNode(MaxValue);
+            byml.Hash["MinValue"] = new BymlNode(MinValue);
             return byml;
         }
     }

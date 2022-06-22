@@ -1,4 +1,5 @@
-﻿using Syroot.Maths;
+﻿using Nintendo.Byml;
+using Syroot.Maths;
 using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
@@ -13,23 +14,12 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             MinValue = new Vector2F(0.0f, 0.0f);
         }
 
-        public Vec2Flag(Dictionary<string, dynamic> dict) : base(dict)
+        public Vec2Flag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                InitValue = new Vector2F(dict["InitValue"][0][0], dict["InitValue"][0][1]);
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                float ivx = dict["InitValue"][0][0];
-                float ivy = dict["InitValue"][0][1];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            InitValue = new Vector2F(
+                dict.Hash["InitValue"].Array[0].Array[0].Float,
+                dict.Hash["InitValue"].Array[0].Array[1].Float
+                );
         }
 
         public new bool Equals(BaseFlag other)
@@ -43,13 +33,13 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = new List<List<int>>(1);
-            byml["InitValue"][0] = new List<int>(2);
-            byml["InitValue"][0][0] = InitValue.X;
-            byml["InitValue"][0][1] = InitValue.Y;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(new List<BymlNode>());
+            byml.Hash["InitValue"].Array.Add(new BymlNode(new List<BymlNode>()));
+            byml.Hash["InitValue"].Array[0].Array.Add(new BymlNode(InitValue.X));
+            byml.Hash["InitValue"].Array[0].Array.Add(new BymlNode(InitValue.Y));
             return byml;
         }
 

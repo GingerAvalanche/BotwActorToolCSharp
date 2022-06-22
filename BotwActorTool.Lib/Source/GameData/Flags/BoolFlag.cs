@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Nintendo.Byml;
+using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
@@ -10,27 +11,13 @@ namespace BotwActorTool.Lib.Gamedata.Flags
         public int InitValue = 0;
 
         public BoolFlag() : base() { }
-        public BoolFlag(Dictionary<string, dynamic> dict, bool revival = false) : base(dict)
+        public BoolFlag(BymlNode dict, bool revival = false) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                if (dict.ContainsKey("Category")) {
-                    Category = dict["Category"];
-                }
-                InitValue = dict["InitValue"];
-                _isRevival = revival;
+            if (dict.Hash.ContainsKey("Category")) {
+                Category = dict.Hash["Category"].Int;
             }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                int c = dict["Category"];
-                int iv = dict["InitValue"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            InitValue = dict.Hash["InitValue"].Int;
+            _isRevival = revival;
         }
 
         public new bool Equals(BaseFlag other)
@@ -45,11 +32,11 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["Category"] = Category;
-            byml["InitValue"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["Category"] = new BymlNode(Category);
+            byml.Hash["InitValue"] = new BymlNode(InitValue);
             return byml;
         }
 

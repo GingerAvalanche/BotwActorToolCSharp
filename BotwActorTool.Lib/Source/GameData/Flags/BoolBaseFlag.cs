@@ -1,4 +1,6 @@
-﻿namespace BotwActorTool.Lib.Gamedata.Flags
+﻿using Nintendo.Byml;
+
+namespace BotwActorTool.Lib.Gamedata.Flags
 {
     abstract class BoolBaseFlag : BaseFlag
     {
@@ -6,24 +8,10 @@
         public bool MinValue = false;
 
         public BoolBaseFlag() : base() { }
-        public BoolBaseFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public BoolBaseFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                MaxValue = dict["MaxValue"];
-                MinValue = dict["MinValue"];
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                bool maxv = dict["MaxValue"];
-                bool minv = dict["MinValue"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            MaxValue = dict.Hash["MaxValue"].Bool;
+            MinValue = dict.Hash["MinValue"].Bool;
         }
 
         public new bool Equals(BaseFlag other)
@@ -38,11 +26,11 @@
             return false;
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["MaxValue"] = MaxValue;
-            byml["MinValue"] = MinValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["MaxValue"] = new BymlNode(MaxValue);
+            byml.Hash["MinValue"] = new BymlNode(MinValue);
             return byml;
         }
     }

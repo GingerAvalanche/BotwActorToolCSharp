@@ -1,29 +1,18 @@
-﻿using System.Text.RegularExpressions;
+﻿using Nintendo.Byml;
+using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
     class S32ArrayFlag : S32BaseFlag
     {
-        public List<int> InitValue = new List<int> { 0 };
+        public List<int> InitValue = new() { 0 };
 
         public S32ArrayFlag() : base() { MaxValue = 6553500; MinValue = -1; }
-        public S32ArrayFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public S32ArrayFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                foreach (int v in dict["InitValue"]) {
-                    InitValue.Add(v);
-                }
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                List<int> iv = dict["InitValue"];
-                return true;
-            }
-            catch {
-                return false;
+            InitValue.Clear();
+            foreach (BymlNode v in dict.Hash["InitValue"].Array) {
+                InitValue.Add(v.Int);
             }
         }
 
@@ -39,10 +28,14 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             return InitValue.TrueForAll(i => InitValue.IndexOf(i) == otherS32Array.InitValue.IndexOf(i));
         }
 
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(new List<BymlNode>());
+            foreach (int i in InitValue)
+            {
+                byml.Hash["InitValue"].Array.Add(new BymlNode(i));
+            }
             return byml;
         }
         public void OverrideParams()

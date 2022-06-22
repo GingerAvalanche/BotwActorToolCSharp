@@ -106,14 +106,14 @@ namespace BotwActorTool.Lib.Gamedata
 
         public FlagStore() { }
 
-        public void AddFlagsFromByml(string filename, Dictionary<string, dynamic> byml)
+        public void AddFlagsFromByml(string filename, BymlFile byml)
         {
             bool IsRevival = filename.Contains("revival");
 
-            foreach (KeyValuePair<string, dynamic> pair in byml) {
-                foreach (Dictionary<string, dynamic> flag in pair.Value)
+            foreach ((string type, BymlNode hash) in byml.RootNode.Hash) {
+                foreach (BymlNode flag in hash.Array)
                 {
-                    BaseFlag f = pair.Key switch
+                    BaseFlag f = type switch
                     {
                         "bool_data" => new BoolFlag(flag, IsRevival),
                         "bool_array_data" => new BoolArrayFlag(flag),
@@ -131,25 +131,27 @@ namespace BotwActorTool.Lib.Gamedata
                         "vector3f_data" => new Vec3Flag(flag),
                         "vector3f_array_data" => new Vec3ArrayFlag(flag),
                         "vector4f_data" => new Vec4Flag(flag),
-                        _ => throw new Exception($"Unknown flag type {pair.Key}"),
+                        _ => throw new Exception($"Unknown flag type {type}"),
                     };
                     if (f.HashValue == 0)
                     {
                         continue;
                     }
-                    CurrFlagStore[pair.Key].Add(f.HashValue, f);
-                    OrigFlagStore[pair.Key].Add(f.HashValue, f);
+                    CurrFlagStore[type].Add(f.HashValue, f);
+                    OrigFlagStore[type].Add(f.HashValue, f);
                 }
             }
         }
 
-        public void AddFlagsFromBymlNoOverwrite(string filename, Dictionary<string, dynamic> byml)
+        public void AddFlagsFromBymlNoOverwrite(string filename, BymlFile byml)
         {
             bool IsRevival = filename.Contains("revival");
 
-            foreach (KeyValuePair<string, dynamic> pair in byml) {
-                foreach (Dictionary<string, dynamic> flag in pair.Value) {
-                    BaseFlag f = pair.Key switch
+            foreach ((string type, BymlNode hash) in byml.RootNode.Hash)
+            {
+                foreach (BymlNode flag in hash.Array)
+                {
+                    BaseFlag f = type switch
                     {
                         "bool_data" => new BoolFlag(flag, IsRevival),
                         "bool_array_data" => new BoolArrayFlag(flag),
@@ -167,14 +169,14 @@ namespace BotwActorTool.Lib.Gamedata
                         "vector3f_data" => new Vec3Flag(flag),
                         "vector3f_array_data" => new Vec3ArrayFlag(flag),
                         "vector4f_data" => new Vec4Flag(flag),
-                        _ => throw new Exception($"Unknown flag type {pair.Key}"),
+                        _ => throw new Exception($"Unknown flag type {type}"),
                     };
-                    if (f.HashValue == 0 || CurrFlagStore[pair.Key].ContainsKey(f.HashValue))
+                    if (f.HashValue == 0 || CurrFlagStore[type].ContainsKey(f.HashValue))
                     {
                         continue;
                     }
-                    CurrFlagStore[pair.Key].Add(f.HashValue, f);
-                    OrigFlagStore[pair.Key].Add(f.HashValue, f);
+                    CurrFlagStore[type].Add(f.HashValue, f);
+                    OrigFlagStore[type].Add(f.HashValue, f);
                 }
             }
         }
@@ -309,34 +311,47 @@ namespace BotwActorTool.Lib.Gamedata
         public BymlFile ToBgdata(string prefix)
         {
             string type = prefix.Replace("revival_", "");
-            BymlFile file = new(NodeType.Array)
+            Dictionary<string, BymlNode> rootNode = new()
             {
-                RootNode = prefix switch
                 {
-                    "revival_bool_data" or "revival_s32_data" => CurrFlagStore[type]
-                        .Where(p => p.Value.IsRevival)
-                        .Select(p => p.Value.ToByml())
-                        .ToList(),
-                    _ => CurrFlagStore[type]
-                        .Where(p => !p.Value.IsRevival)
-                        .Select(p => p.Value.ToByml())
-                        .ToList(),
+                    prefix,
+                    new(
+                        prefix switch
+                        {
+                            "revival_bool_data" or "revival_s32_data" => CurrFlagStore[type]
+                                .Where(p => p.Value.IsRevival)
+                                .Select(p => p.Value.ToByml())
+                                .ToList(),
+                            _ => CurrFlagStore[type]
+                                .Where(p => !p.Value.IsRevival)
+                                .Select(p => p.Value.ToByml())
+                                .ToList(),
+                        }
+                    )
                 }
             };
-            return file;
+            return new(rootNode);
         }
 
         public BymlFile ToSvdata()
         {
-            BymlFile file = new(NodeType.Array)
+            BymlNode settings = new(new Dictionary<string, BymlNode>()
             {
-                RootNode = CurrFlagStore
+                { "IsCommon", new(false) },
+                { "IsCommonAtSameAccount", new(false) },
+                { "IsSaveSecureCode", new(true) },
+                { "file_name", new("game_data.sav") },
+            });
+            BymlNode flags = new(CurrFlagStore
                     .SelectMany(p => p.Value.Values)
                     .Where(f => f.IsSave && !IgnoredSaveFlags.Contains(f.DataName))
                     .Select(f => f.ToSvByml())
-                    .ToList()
-            };
-            return file;
+                    .ToList());
+            BymlNode array = new(new List<BymlNode>() {
+                settings,
+                flags,
+            });
+            return new BymlFile(new Dictionary<string, BymlNode>() { { "file_list", array } });
         }
     }
 }

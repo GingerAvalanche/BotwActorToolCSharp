@@ -1,28 +1,15 @@
-﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+﻿using Nintendo.Byml;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
     abstract class StringFlag : StringBaseFlag
     {
-        public string InitValue;
+        public string InitValue = "";
 
         public StringFlag() : base() { }
-        public StringFlag(Dictionary<string, dynamic> dict) : base(dict)
+        public StringFlag(BymlNode dict) : base(dict)
         {
-            if (ValidateInFlag(dict)) {
-                InitValue = dict["InitValue"];
-            }
-        }
-
-        private static bool ValidateInFlag(Dictionary<string, dynamic> dict)
-        {
-            try {
-                string iv = dict["InitValue"];
-                return true;
-            }
-            catch {
-                return false;
-            }
+            InitValue = dict.Hash["InitValue"].String;
         }
 
         public new bool Equals(BaseFlag other)
@@ -35,10 +22,10 @@ namespace BotwActorTool.Lib.Gamedata.Flags
             }
             return false;
         }
-        public new Dictionary<string, dynamic> ToByml()
+        public new BymlNode ToByml()
         {
-            Dictionary<string, dynamic> byml = base.ToByml();
-            byml["InitValue"] = InitValue;
+            BymlNode byml = base.ToByml();
+            byml.Hash["InitValue"] = new BymlNode(InitValue);
             return byml;
         }
     }

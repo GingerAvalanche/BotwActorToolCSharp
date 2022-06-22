@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using Nintendo.Byml;
+using System.Text.RegularExpressions;
 
 namespace BotwActorTool.Lib.Gamedata.Flags
 {
     class String64Flag : StringFlag
     {
         public String64Flag() : base() { }
-        public String64Flag(Dictionary<string, dynamic> dict) : base(dict) { }
+        public String64Flag(BymlNode dict) : base(dict) { }
 
         public void OverrideParams()
         {
