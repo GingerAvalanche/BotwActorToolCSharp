@@ -117,11 +117,8 @@ namespace BotwActorTool.Lib.Pack
 
             if (_actorname.Contains("Armor_") && _links["ModelUser"] == _actorname)
             {
-                _aampfiles["ModelUser"].RootNode
-                    .ChildParams.First(l => l.HashString == "ModelData")
-                    .ChildParams.First(l => l.HashString == "ModelData_0")
-                    .ParamObjects.First(o => o.HashString == "Base")
-                    .ParamEntries.First(e => e.HashString == "Folder").Value = string.Join("_", _actorname.Split("_")[..^1]);
+                _aampfiles["ModelUser"].RootNode.Lists("ModelData")!.Lists("ModelData_0")!
+                    .Objects("Base")!.Params("Folder")!.Value = string.Join("_", _actorname.Split("_")[..^1]);
             }
         }
 
@@ -146,7 +143,7 @@ namespace BotwActorTool.Lib.Pack
             {
                 if (old_ref == "Dummy")
                 {
-                    _bymlfiles[link] = new BymlFile(NodeType.Dictionary);
+                    _bymlfiles[link] = new BymlFile(new List<BymlNode>());
                 }
                 else if (linkref == "Dummy")
                 {
