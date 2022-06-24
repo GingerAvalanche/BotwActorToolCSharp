@@ -109,18 +109,19 @@ namespace BotwActorTool.Lib
 
         public Actor(string filename)
         {
+            string modRoot = Util.GetModRoot(filename);
             origname = Path.GetFileNameWithoutExtension(filename);
             pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
             resident = filename.Contains("TitleBG.pack");
             string far_filename = filename.Replace(origname, $"{origname}_Far");
             if (File.Exists(far_filename))
             {
-                far_actor = new FarActor(new(Util.GetFile(far_filename)));
+                far_actor = new FarActor(modRoot, new SarcFile(Util.GetFile(far_filename)));
             }
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(filename, pack.GetLink("ProfileUser"));
-            info = new(this);
+            info = new ActorInfo(this).LoadFromActorInfoByml(modRoot);
         }
 
         public void SetName(string name)
@@ -203,6 +204,7 @@ namespace BotwActorTool.Lib
                 }
             }
         }
+        public BymlNode GetInfo() => info.GetInfoByml();
 
         public void Update()
         {

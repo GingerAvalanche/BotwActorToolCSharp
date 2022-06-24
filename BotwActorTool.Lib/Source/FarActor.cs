@@ -1,6 +1,7 @@
 ﻿using BotwActorTool.Lib.Info;
 using BotwActorTool.Lib.Pack;
 using Nintendo.Aamp;
+using Nintendo.Byml;
 using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
 
@@ -538,11 +539,11 @@ namespace BotwActorTool.Lib
             info = new(this);
             needs_info_update = true;
         }
-        public FarActor(SarcFile sarc)
+        public FarActor(string modRoot, SarcFile sarc)
         {
             origname = Path.GetFileNameWithoutExtension(sarc.Files.Keys.First(s => Path.GetExtension(s) == ".bxml"));
             pack = new ActorPack(origname, sarc);
-            info = new(this);
+            info = new ActorInfo(this).LoadFromActorInfoByml(modRoot);
         }
 
         public void SetName(string name)
@@ -573,6 +574,8 @@ namespace BotwActorTool.Lib
                 info.Update();
             }
         }
+
+        public BymlNode GetInfo() => info.GetInfoByml();
 
         public void Write(string mod_root, bool big_endian)
         {
