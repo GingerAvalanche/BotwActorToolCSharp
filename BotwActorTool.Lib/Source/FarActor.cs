@@ -10,6 +10,13 @@ namespace BotwActorTool.Lib
 {
     public class FarActor
     {
+        private static readonly string[] FAR_LINKS = new string[]
+        {
+            "GParamUser",
+            "LifeConditionUser",
+            "ModelUser",
+            "PhysicsUser",
+        };
         private static readonly Dictionary<string, string> FAR_LINK_DEFAULTS = new()
         {
             { "ActorNameJpn", "" },
@@ -42,11 +49,12 @@ namespace BotwActorTool.Lib
             { "ActorScale", "1.0" },
         };
 
-        private readonly ActorInfo info;
-        private readonly ActorPack pack;
-        private bool needs_info_update;
-        private readonly string origname;
+        private protected readonly ActorInfo info;
+        private protected readonly ActorPack pack;
+        private protected bool needs_info_update;
+        private protected readonly string origname;
         public string Name { get => pack.Name; }
+        public virtual bool HasFar { get => false; }
         public string Tags { get => pack.Tags; set { pack.Tags = value; needs_info_update = true; } }
         public string Tags2 { get => pack.Tags2; set { pack.Tags2 = value; needs_info_update = true; } }
 
@@ -540,31 +548,46 @@ namespace BotwActorTool.Lib
             info = new(this);
             needs_info_update = true;
         }
-        public FarActor(SarcFile sarc)
+        public FarActor(string filename)
         {
-            origname = Path.GetFileNameWithoutExtension(sarc.Files.Keys.First(s => Path.GetExtension(s) == ".bxml"));
-            pack = new ActorPack(origname, sarc);
+            origname = Path.GetFileNameWithoutExtension(filename);
+            pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
+            ActorInfo.LoadActorInfoFile(Util.GetModRoot(filename));
             info = new ActorInfo(this).LoadFromActorInfoByml();
         }
 
-        public void SetName(string name)
+        public virtual void SetName(string name)
         {
             pack.SetName(name);
             needs_info_update = true;
         }
 
         public string GetLink(string link) => pack.GetLink(link);
-        public void SetLink(string link, string linkref)
+        public virtual void SetLink(string link, string linkref)
         {
-            pack.SetLink(link, linkref);
-            needs_info_update = true;
+            if (link == "LifeConditionUser" && linkref == "Dummy")
+            {
+                return;
+            }
+            else if (FAR_LINKS.Contains(link))
+            {
+                pack.SetLink(link, linkref);
+                needs_info_update = true;
+            }
         }
 
         public string GetLinkData(string link) => pack.GetLinkData(link);
-        public void SetLinkData(string link, string data)
+        public virtual void SetLinkData(string link, string data)
         {
-            pack.SetLinkData(link, data);
-            needs_info_update = true;
+            if (link == "LifeConditionUser" && GetLink(link) == "Dummy")
+            {
+                return;
+            }
+            else if (FAR_LINKS.Contains(link))
+            {
+                pack.SetLinkData(link, data);
+                needs_info_update = true;
+            }
         }
         public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
 
@@ -579,9 +602,13 @@ namespace BotwActorTool.Lib
 
         public BymlNode GetInfo() => info.GetInfoByml();
 
-        public void Write(string mod_root)
+        public virtual void Write(string modRoot)
         {
-            string actor_path = $"{mod_root}/Actor/Pack/{pack.Name}.sbactorpack";
+            string actor_path = $"{modRoot}/Actor/Pack/{pack.Name}.sbactorpack";
+            if (!File.Exists(actor_path))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(actor_path)!);
+            }
             byte[] compressed_bytes = Yaz0.Compress(pack.Write());
             File.WriteAllBytes(actor_path, compressed_bytes);
             Update();

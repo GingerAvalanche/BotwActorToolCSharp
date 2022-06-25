@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace BotwActorTool.Lib
 {
@@ -14,8 +13,7 @@ namespace BotwActorTool.Lib
         {
             if (GenericLinkFiles == null)
             {
-                Assembly assembly = Assembly.GetCallingAssembly();
-                using Stream stream = assembly.GetManifestResourceStream("BotwActorTool.Lib.Data.GenericLinkFiles.json")!;
+                using Stream stream = File.OpenRead("Data/GenericLinkFiles.json");
                 GenericLinkFiles = (Dictionary<string, Dictionary<string, string>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, string>>))!;
             }
             return GenericLinkFiles;
@@ -24,8 +22,7 @@ namespace BotwActorTool.Lib
         {
             if (InstSizeData == null)
             {
-                Assembly assembly = Assembly.GetCallingAssembly();
-                using Stream stream = assembly.GetManifestResourceStream("BotwActorTool.Lib.Data.InstSizeData.json")!;
+                using Stream stream = File.OpenRead("Data/InstSizeData.json");
                 InstSizeData = (Dictionary<string, Dictionary<string, float>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, float>>))!;
             }
             return InstSizeData;
@@ -34,8 +31,7 @@ namespace BotwActorTool.Lib
         {
             if (KeysByProfile == null)
             {
-                Assembly assembly = Assembly.GetCallingAssembly();
-                using Stream stream = assembly.GetManifestResourceStream("BotwActorTool.Lib.Data.KeysByProfile.json")!;
+                using Stream stream = File.OpenRead("Data/KeysByProfile.json");
                 KeysByProfile = (Dictionary<string, Dictionary<string, List<string>>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, List<string>>>))!;
             }
             return KeysByProfile;
@@ -44,8 +40,7 @@ namespace BotwActorTool.Lib
         {
             if (Overrides == null)
             {
-                Assembly assembly = Assembly.GetCallingAssembly();
-                using Stream stream = assembly.GetManifestResourceStream("BotwActorTool.Lib.Data.Overrides.json")!;
+                using Stream stream = File.OpenRead("Data/Overrides.json");
                 Overrides = (Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>>))!;
             }
             return Overrides;
@@ -54,8 +49,7 @@ namespace BotwActorTool.Lib
         {
             if (VanillaParams == null)
             {
-                Assembly assembly = Assembly.GetCallingAssembly();
-                using Stream stream = assembly.GetManifestResourceStream("BotwActorTool.Lib.Data.VanillaParams.json")!;
+                using Stream stream = File.OpenRead("VanillaParams.json");
                 VanillaParams = (Dictionary<string, Dictionary<string, string>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, string>>))!;
             }
             return VanillaParams;

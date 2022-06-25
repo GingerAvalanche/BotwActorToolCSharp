@@ -7,19 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\GenericLinkFiles.json" />
-    <None Remove="Data\InstSizeData.json" />
-    <None Remove="Data\KeysByProfile.json" />
-    <None Remove="Data\Overrides.json" />
-    <None Remove="Data\VanillaParams.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Data\GenericLinkFiles.json" />
-    <EmbeddedResource Include="Data\InstSizeData.json" />
-    <EmbeddedResource Include="Data\KeysByProfile.json" />
-    <EmbeddedResource Include="Data\Overrides.json" />
-    <EmbeddedResource Include="Data\VanillaParams.json" />
+    <Content Include="Data\GenericLinkFiles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\InstSizeData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\KeysByProfile.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Overrides.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\VanillaParams.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
