@@ -2,7 +2,7 @@
 
 namespace BotwActorTool.Lib
 {
-    public class Resource
+    internal class Resource
     {
         private static Dictionary<string, Dictionary<string, string>>? GenericLinkFiles { get; set; }
         private static Dictionary<string, Dictionary<string, float>>? InstSizeData { get; set; }
@@ -36,7 +36,7 @@ namespace BotwActorTool.Lib
             }
             return KeysByProfile;
         }
-        public static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> GetOverrides()
+        internal static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> GetOverrides()
         {
             if (Overrides == null)
             {
