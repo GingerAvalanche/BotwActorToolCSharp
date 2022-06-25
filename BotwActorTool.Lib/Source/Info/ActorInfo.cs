@@ -8,6 +8,7 @@
 using Byml.Security.Cryptography;
 using Nintendo.Aamp;
 using Nintendo.Byml;
+using Syroot.BinaryData.Core;
 using Syroot.Maths;
 using System.Reflection;
 using Yaz0Library;
@@ -16,6 +17,7 @@ namespace BotwActorTool.Lib.Info
 {
     internal class ActorInfo
     {
+        private static BymlFile? actor_info_file;
         private Actor? actor;
         private FarActor? far;
 
@@ -289,11 +291,20 @@ namespace BotwActorTool.Lib.Info
             this.far = far;
         }
 
-        public ActorInfo LoadFromActorInfoByml(string modRoot)
+        public static void LoadActorInfoFile(string modRoot)
         {
-            BymlFile actor_info = new(Yaz0.Decompress(Util.GetFileAnywhere(modRoot, "Actor/ActorInfo.product.sbyml")));
+            if (actor_info_file == null)
+                actor_info_file = new(Yaz0.Decompress(Util.GetFileAnywhere(modRoot, "Actor/ActorInfo.product.sbyml")));
+        }
+        public static void ReleaseActorInfoFile() => actor_info_file = null;
+        public ActorInfo LoadFromActorInfoByml()
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
             string actor_name = actor?.Name ?? far!.Name;
-            foreach (BymlNode actor in actor_info.RootNode.Hash["Actors"].Array)
+            foreach (BymlNode actor in actor_info_file.RootNode.Hash["Actors"].Array)
             {
                 if (actor.Hash["name"].String == actor_name)
                 {
@@ -811,6 +822,39 @@ namespace BotwActorTool.Lib.Info
             };
         }
 
+        public void Apply()
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
+            uint hash = Crc32.Compute(name);
+
+            for (int i = 0; i < actor_info_file.RootNode.Hash["Hashes"].Array.Count; i++)
+            {
+                if (hash > actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
+                {
+                    BymlNode hash_node = hash < 0x80000000 ? new BymlNode((int)hash) : new BymlNode(hash);
+                    actor_info_file.RootNode.Hash["Hashes"].Array.Insert(i, hash_node);
+                    actor_info_file.RootNode.Hash["Actors"].Array.Insert(i, GetInfoByml());
+                    break;
+                }
+                else if (hash == actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
+                {
+                    actor_info_file.RootNode.Hash["Actors"].Array[i] = GetInfoByml();
+                    break;
+                }
+            }
+        }
+        public static void Write(string modRoot)
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
+            string actor_info_path = $"{modRoot}/Actor/ActorInfo.product.sbyml";
+            File.WriteAllBytes(actor_info_path, Yaz0.Compress(actor_info_file.ToBinary()));
+        }
         public BymlNode GetInfoByml() => new(new Dictionary<string, BymlNode>(typeof(ActorInfo)
                 .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(f => f.GetValue(this) != null && f.FieldType != typeof(Actor) && f.FieldType != typeof(FarActor))
@@ -818,7 +862,7 @@ namespace BotwActorTool.Lib.Info
                     f.Name,
                     f.Name == "tags" ? CompileTags((f.GetValue(this) as Dictionary<string, int>)!) : CompileNode(f.GetValue(this))
                 ))));
-        public BymlNode CompileNode<T>(T prop)
+        private BymlNode CompileNode<T>(T prop)
         {
             return prop switch
             {
@@ -867,7 +911,7 @@ namespace BotwActorTool.Lib.Info
                 _ => throw new ArgumentException($"Unexpected property type: {prop!.GetType()} {prop}"),
             };
         }
-        public BymlNode CompileDict<T>(Dictionary<string, T> dict)
+        private BymlNode CompileDict<T>(Dictionary<string, T> dict)
         {
             Dictionary<string, BymlNode> hash = new();
             foreach ((string key, T val) in dict)

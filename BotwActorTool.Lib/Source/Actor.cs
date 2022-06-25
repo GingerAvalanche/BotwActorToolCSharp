@@ -109,19 +109,21 @@ namespace BotwActorTool.Lib
 
         public Actor(string filename)
         {
-            string modRoot = Util.GetModRoot(filename);
             origname = Path.GetFileNameWithoutExtension(filename);
             pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
             resident = filename.Contains("TitleBG.pack");
-            string far_filename = filename.Replace(origname, $"{origname}_Far");
-            if (File.Exists(far_filename))
-            {
-                far_actor = new FarActor(modRoot, new SarcFile(Util.GetFile(far_filename)));
-            }
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(filename, pack.GetLink("ProfileUser"));
-            info = new ActorInfo(this).LoadFromActorInfoByml(modRoot);
+
+            ActorInfo.LoadActorInfoFile(Util.GetModRoot(filename));
+            info = new ActorInfo(this).LoadFromActorInfoByml();
+            string far_filename = filename.Replace(origname, $"{origname}_Far");
+            if (File.Exists(far_filename))
+            {
+                far_actor = new FarActor(new SarcFile(Util.GetFile(far_filename)));
+            }
+            ActorInfo.ReleaseActorInfoFile();
         }
 
         public void SetName(string name)
@@ -154,7 +156,7 @@ namespace BotwActorTool.Lib
 
         public bool SetHasFar(bool enabled)
         {
-            if (resident || !enabled ^ HasFar)
+            if (resident || (enabled ^ HasFar))
             {
                 return false;
             }
@@ -164,12 +166,8 @@ namespace BotwActorTool.Lib
                 needs_info_update = true;
                 return true;
             }
-            else if (!enabled)
-            {
-                far_actor = null;
-                return true;
-            }
-            return false;
+            far_actor = null;
+            return true;
         }
 
         public string GetLinkData(string link) => pack.GetLinkData(link);
@@ -211,12 +209,53 @@ namespace BotwActorTool.Lib
             if (needs_info_update)
             {
                 info.Update();
+                needs_info_update = false;
             }
         }
 
-        public void Write(string mod_root, bool big_endian)
+        public void Write(string modRoot)
         {
-            throw new NotImplementedException();
+            Endian test = Util.GetFileAnywhere(modRoot, "Pack/Bootup.pack")[6] == 0xFE ? Endian.Big : Endian.Little;
+            string console = pack.Endianness == Endian.Big ? "WiiU" : "Switch";
+            if (test != pack.Endianness)
+            {
+                throw new InvalidDataException(
+                    $@"Actor pack is {pack.Endianness} endian but loaded Bootup.pack is {test} endian! 
+                    This would cause game errors, if saved. Please set your dumps in settings to {console} 
+                    dumps to save this actor."
+                );
+            }
+
+            string actor_path = $"Actor/Pack/{pack.Name}.sbactorpack";
+            byte[] compressed_bytes = Yaz0.Compress(pack.Write());
+            if (resident)
+            {
+                string titlebg_path = $"{modRoot}/Pack/TitleBG.pack";
+                if (!File.Exists(titlebg_path))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(titlebg_path)!);
+                    File.Copy(Util.FindFileOrig("Pack/TitleBG.pack", console), titlebg_path);
+                }
+                Util.InjectFile(modRoot, actor_path, compressed_bytes);
+            }
+            else
+            {
+                actor_path = $"{modRoot}/{actor_path}";
+                if (!File.Exists(actor_path))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(actor_path)!);
+                }
+                File.WriteAllBytes(actor_path, compressed_bytes);
+            }
+
+            texts.Write(modRoot);
+
+            ActorInfo.LoadActorInfoFile(modRoot);
+            Update();
+            info.Apply();
+            far_actor?.Write(modRoot);
+            ActorInfo.Write(modRoot);
+            ActorInfo.ReleaseActorInfoFile();
         }
     }
 }

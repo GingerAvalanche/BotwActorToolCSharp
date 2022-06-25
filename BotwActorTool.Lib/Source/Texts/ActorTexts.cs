@@ -22,11 +22,11 @@ namespace BotwActorTool.Lib.Texts
             orig_actor_name = ActorName;
             this.profile = profile;
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")!));
+            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
             Dictionary<string, MsbtEntry> temp = msbt.GetTexts();
-            foreach (KeyValuePair<string, MsbtEntry> kvp in texts) {
-                if (temp.ContainsKey($"{ActorName}_{kvp.Key}")) {
-                    texts[kvp.Key] = temp[$"{ActorName}_{kvp.Key}"];
+            foreach (string key in texts.Keys) {
+                if (temp.ContainsKey($"{ActorName}_{key}")) {
+                    texts[key] = temp[$"{ActorName}_{key}"];
                 }
             }
         }
@@ -34,7 +34,7 @@ namespace BotwActorTool.Lib.Texts
         public void DeleteActor(string modRoot)
         {
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")!));
+            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
             AllTexts.Remove($"{orig_actor_name}_BaseName");
             AllTexts.Remove($"{orig_actor_name}_Name");
@@ -47,10 +47,10 @@ namespace BotwActorTool.Lib.Texts
         public void Write(string modRoot)
         {
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt") ?? Array.Empty<byte>()));
+            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
-            foreach (KeyValuePair<string, MsbtEntry> kvp in texts) {
-                AllTexts[$"{ActorName}_{kvp.Key}"] = kvp.Value;
+            foreach ((string key, MsbtEntry entry) in texts) {
+                AllTexts[$"{ActorName}_{key}"] = entry;
             }
             msbt.SetTexts(AllTexts);
             Util.InjectFile(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt", msbt.Write());
