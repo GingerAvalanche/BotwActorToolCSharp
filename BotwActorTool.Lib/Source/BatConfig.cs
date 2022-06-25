@@ -1,4 +1,6 @@
-﻿global using static BotwActorTool.Lib.BatConfig;
+﻿#pragma warning disable CA1822 // Mark members as static
+
+global using static BotwActorTool.Lib.BatConfig;
 
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -23,6 +25,9 @@ namespace BotwActorTool.Lib
         #region Expand
 
         [JsonIgnore]
+        public string UpdateDirNx { get => GameDirNx; }
+
+        [JsonIgnore]
         public string DataFolder {
             get {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -38,7 +43,6 @@ namespace BotwActorTool.Lib
         public string UpdateDir { get; set; } = "";
         public string DlcDir { get; set; } = "";
         public string GameDirNx { get; set; } = "";
-        public string UpdateDirNx { get => GameDirNx; }
         public string DlcDirNx { get; set; } = "";
         public string Theme { get; set; } = "System";
         public string Lang { get; set; } = "USen";
@@ -61,40 +65,19 @@ namespace BotwActorTool.Lib
             return this;
         }
 
-        public bool ValidateGameDir(string path)
+        public bool ValidateDir(string path, string mode)
         {
-            if (!Directory.Exists(path)) {
+            if (File.Exists(path))
                 return false;
-            }
-            if (!File.Exists($"{path}/Pack/Dungeon000.pack")) {
-                return false;
-            }
 
-            return true;
-        }
-
-        public bool ValidateUpdateDir(string path)
-        {
-            if (!Directory.Exists(path)) {
-                return false;
-            }
-            if (!File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack")) {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool ValidateDlcDir(string path)
-        {
-            if (!Directory.Exists(path)) {
-                return false;
-            }
-            if (!File.Exists($"{path}/Pack/AocMainField.pack")) {
-                return false;
-            }
-
-            return true;
+            return mode switch {
+                "base" => File.Exists($"{path}\\Pack\\Dungeon000.pack") && path.EndsWith("content"),
+                "update" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && path.EndsWith("content"),
+                "dlc" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("content\\0010"),
+                "baseNx" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && File.Exists($"{path}\\Pack\\Dungeon000.pack")  && path.EndsWith("romfs"),
+                "dlcNx" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("romfs"),
+                _ => false,
+            };
         }
     }
 }
