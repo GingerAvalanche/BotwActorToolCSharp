@@ -225,7 +225,7 @@ namespace BotwActorTool.Lib
             else {
                 ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack", GetConsole(modRoot))}//Actor/ResidentActors.byml";
             }
-            var ResidentActorRoot = BymlFile.FromBinary(GetFile(ResidentActorPath)).RootNode;
+            BymlNode? ResidentActorRoot = BymlFile.FromBinary(GetFile(ResidentActorPath)).RootNode;
             if (ResidentActorRoot == null)
             {
                 throw new Exception("Could not find ResidentActors.byml");
