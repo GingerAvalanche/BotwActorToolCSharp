@@ -216,7 +216,7 @@ namespace BotwActorTool.Lib
         public void Write(string modRoot)
         {
             Endian test = Util.GetFileAnywhere(modRoot, "Pack/Bootup.pack")[6] == 0xFE ? Endian.Big : Endian.Little;
-            string console = pack.Endianness == Endian.Big ? "WiiU" : "Switch";
+            Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
             if (test != pack.Endianness)
             {
                 throw new InvalidDataException(
