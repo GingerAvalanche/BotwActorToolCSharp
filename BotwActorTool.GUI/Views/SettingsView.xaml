@@ -15,58 +15,119 @@
         <StackPanel Margin="15">
 
             <!--  Base Game Path  -->
-            <TextBlock Text="Base Game Path" />
-            <Grid Margin="15,5,0,0">
+            <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="5" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox BorderBrush="{Binding BaseGameBrush}" Text="{Binding BaseGame, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="2"
+                <TextBlock VerticalAlignment="Center" Text="Base Game" />
+                <TextBox Grid.Column="2"
+                         BorderBrush="{Binding BaseGameBrush}"
+                         Text="{Binding BaseGame, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="4"
                         Command="{s:Action Browse}"
                         CommandParameter="base"
-                        Content="Browse" />
+                        Content="Browse"
+                        IsTabStop="False" />
             </Grid>
 
             <!--  Update Path  -->
-            <TextBlock Margin="0,15,0,0"
-                       Text="Update Path"
-                       Visibility="{Binding ShowUpdate}" />
-            <Grid Margin="15,5,0,0" Visibility="{Binding ShowUpdate}">
+            <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="5" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox BorderBrush="{Binding UpdateBrush}" Text="{Binding Update, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="2"
+                <TextBlock VerticalAlignment="Center" Text="Update" />
+                <TextBox Grid.Column="2"
+                         BorderBrush="{Binding UpdateBrush}"
+                         Text="{Binding Update, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="4"
                         Command="{s:Action Browse}"
                         CommandParameter="update"
-                        Content="Browse" />
+                        Content="Browse"
+                        IsTabStop="False" />
             </Grid>
 
             <!--  DLC Path  -->
-            <TextBlock Margin="0,15,0,0" Text="DLC Path" />
-            <Grid Margin="15,5,0,0">
+            <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="5" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox BorderBrush="{Binding DlcBrush}" Text="{Binding Dlc, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="2"
+                <TextBlock VerticalAlignment="Center" Text="DLC" />
+                <TextBox Grid.Column="2"
+                         BorderBrush="{Binding DlcBrush}"
+                         Text="{Binding Dlc, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="4"
                         Command="{s:Action Browse}"
                         CommandParameter="dlc"
-                        Content="Browse" />
+                        Content="Browse"
+                        IsTabStop="False" />
             </Grid>
 
+            <!--  Game NX Path  -->
+            <Grid Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock VerticalAlignment="Center" Text="Base Game NX" />
+                <TextBox Grid.Column="2"
+                         BorderBrush="{Binding BaseGameNxBrush}"
+                         Text="{Binding BaseGameNx, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="4"
+                        Command="{s:Action Browse}"
+                        CommandParameter="baseNx"
+                        Content="Browse"
+                        IsTabStop="False" />
+            </Grid>
+
+            <!--  DLC Path  -->
+            <Grid Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock VerticalAlignment="Center" Text="DLC NX" />
+                <TextBox Grid.Column="2"
+                         BorderBrush="{Binding DlcNxBrush}"
+                         Text="{Binding DlcNx, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="4"
+                        Command="{s:Action Browse}"
+                        CommandParameter="dlcNx"
+                        Content="Browse"
+                        IsTabStop="False" />
+            </Grid>
+
+            <Border Height="2"
+                    Margin="0,15,0,0"
+                    Background="{DynamicResource PrimaryHueMidBrush}" />
+
             <!--  Theme Settings  -->
-            <TextBlock Margin="0,15,0,0" Text="Theme" />
-            <Grid Margin="15,5,0,0">
+            <TextBlock Margin="0,15,0,10"
+                       VerticalAlignment="Center"
+                       Text="Theme" />
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="5" />
@@ -75,15 +136,18 @@
                     <ColumnDefinition Width="23" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" />
-
+                <ComboBox Margin="15,0,0,0"
+                          ItemsSource="{Binding Themes}"
+                          SelectedItem="{Binding Theme}" />
                 <Button Grid.Column="2"
                         Command="{s:Action EditTheme}"
-                        Content="Customize" />
+                        Content="Customize"
+                        IsTabStop="False" />
 
                 <Button Grid.Column="4"
                         Padding="0"
                         Command="{s:Action DeleteTheme}"
+                        IsTabStop="False"
                         ToolTip="Delete Theme">
                     <wpf:PackIcon Kind="Trash" />
                 </Button>
@@ -115,13 +179,8 @@
                     Orientation="Horizontal">
 
             <ComboBox Width="120"
-                      Margin="15,0,5,0"
-                      Text="{Binding Mode}">
-                <ComboBoxItem Content="WiiU" />
-                <ComboBoxItem Content="Switch" />
-            </ComboBox>
-
-            <ComboBox Width="120" Text="{Binding Lang}">
+                      Margin="15,0,0,0"
+                      Text="{Binding Lang}">
                 <ComboBoxItem Content="USen" />
                 <Separator />
                 <ComboBoxItem Content="EUen" />
