@@ -61,7 +61,7 @@ namespace BotwActorTool.Lib
 
         public bool ValidateGameDir(string path)
         {
-            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+            if (!Directory.Exists(path)) {
                 return false;
             }
             if (!File.Exists($"{path}/Pack/Dungeon000.pack")) {
@@ -73,7 +73,7 @@ namespace BotwActorTool.Lib
 
         public bool ValidateUpdateDir(string path)
         {
-            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+            if (!Directory.Exists(path)) {
                 return false;
             }
             if (!File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack")) {
@@ -85,7 +85,7 @@ namespace BotwActorTool.Lib
 
         public bool ValidateDlcDir(string path)
         {
-            if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory)) {
+            if (!Directory.Exists(path)) {
                 return false;
             }
             if (!File.Exists($"{path}/Pack/AocMainField.pack")) {

@@ -56,8 +56,9 @@
                                           Margin="3"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
-                                          Foreground="{DynamicResource SecondaryHueLightBrush}"
-                                          Kind="{Binding Path=Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+                                          Foreground="{DynamicResource SecondaryHueLightBrush}" />
+
+                            <!--  Kind="{Binding Path=Icon, RelativeSource={RelativeSource TemplatedParent}}"  -->
 
                             <Border Grid.Column="1"
                                     HorizontalAlignment="Left"
