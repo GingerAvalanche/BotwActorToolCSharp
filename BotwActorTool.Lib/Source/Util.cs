@@ -5,6 +5,11 @@ using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
+    public enum Console
+    {
+        WiiU,
+        Switch,
+    }
     public class Util
     {
         public static readonly List<string> LINKS = new()
@@ -89,7 +94,7 @@ namespace BotwActorTool.Lib
             "TWzh"
         };
 
-        public static byte[]? GetFile(string filePath)
+        public static byte[] GetFile(string filePath)
         {
             string[] parts = filePath.Split("//");
 
@@ -107,8 +112,9 @@ namespace BotwActorTool.Lib
                             sarc = SarcFile.FromBinary(sarcBytes);
                         }
                     }
-                    else {
-                        return null;
+                    else
+                    {
+                        throw new FileNotFoundException($"{parts[i]} doesn't exist.");
                     }
                 }
 
@@ -119,15 +125,15 @@ namespace BotwActorTool.Lib
                 return File.ReadAllBytes(filePath);
             }
 
-            return null;
+            throw new FileNotFoundException($"{filePath} doesn't exist.");
         }
 
-        public static byte[]? GetFileAnywhere(string modRoot, string relPath)
+        public static byte[] GetFileAnywhere(string modRoot, string relPath)
         {
-            byte[]? bytes = GetFile($"{modRoot}/{relPath}");
+            byte[] bytes = GetFile($"{modRoot}/{relPath}");
 
             if (bytes == null || bytes.Length == 0) {
-                bytes = GetFile(FindFileOrig(relPath));
+                bytes = GetFile(FindFileOrig(relPath, GetConsole(modRoot)));
             }
 
             return bytes;
@@ -141,7 +147,7 @@ namespace BotwActorTool.Lib
         public static void InjectFile(string modRoot, string relPath, byte[] data)
         {
             string[] parts = relPath.Split("//");
-            byte[] bytes = GetFileAnywhere(modRoot, relPath) ?? Array.Empty<byte>();
+            byte[] bytes = GetFileAnywhere(modRoot, relPath);
             bool yazd = UnYazIfNeeded(ref bytes);
 
             bytes = InjectHelper(new(bytes), string.Join("", parts[1..^0]), data);
@@ -176,32 +182,48 @@ namespace BotwActorTool.Lib
             }
         }
 
-        public static string FindFileOrig(string RelPath)
+        public static string FindFileOrig(string relPath, Console console)
         {
-            string[] parts = RelPath.Split(new[] { "//" }, StringSplitOptions.None);
-            if (File.Exists($"{Config.UpdateDir}/{parts[0]}")) {
-                return $"{Config.UpdateDir}/{RelPath}";
+            string[] parts = relPath.Split(new[] { "//" }, StringSplitOptions.None);
+            switch (console)
+            {
+                case Console.WiiU:
+                    if (File.Exists($"{Config.UpdateDir}/{parts[0]}"))
+                    {
+                        return $"{Config.UpdateDir}/{relPath}";
+                    }
+                    else if (File.Exists($"{Config.DlcDir}/{parts[0]}"))
+                    {
+                        return $"{Config.DlcDir}/{relPath}";
+                    }
+                    else if (File.Exists($"{Config.GameDir}/{parts[0]}"))
+                    {
+                        return $"{Config.GameDir}/{relPath}";
+                    }
+                    break;
+                case Console.Switch:
+                    if (File.Exists($"{Config.DlcDirNx}/{parts[0]}"))
+                    {
+                        return $"{Config.DlcDirNx}/{relPath}";
+                    }
+                    else if (File.Exists($"{Config.GameDirNx}/{parts[0]}"))
+                    {
+                        return $"{Config.GameDirNx}/{relPath}";
+                    }
+                    break;
             }
-            else if (File.Exists($"{Config.DlcDir}/{parts[0]}")) {
-                return $"{Config.DlcDir}/{RelPath}";
-            }
-            else if (File.Exists($"{Config.GameDir}/{parts[0]}")) {
-                return $"{Config.GameDir}/{RelPath}";
-            }
-            else {
-                throw new FileNotFoundException($"{RelPath} doesn't seem to exist.");
-            }
+            throw new FileNotFoundException($"{relPath} wasn't found in the {console} files.");
         }
 
-        public static List<string> GetResidentActors(string ModRoot)
+        public static List<string> GetResidentActors(string modRoot)
         {
             List<string> ResidentActors = new();
             string ResidentActorPath;
-            if (File.Exists($"{ModRoot}/Pack/Bootup.pack")) {
-                ResidentActorPath = $"{ModRoot}/Pack/Bootup.pack//Actor/ResidentActors.byml";
+            if (File.Exists($"{modRoot}/Pack/Bootup.pack")) {
+                ResidentActorPath = $"{modRoot}/Pack/Bootup.pack//Actor/ResidentActors.byml";
             }
             else {
-                ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack")}//Actor/ResidentActors.byml";
+                ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack", GetConsole(modRoot))}//Actor/ResidentActors.byml";
             }
             var ResidentActorRoot = BymlFile.FromBinary(GetFile(ResidentActorPath)).RootNode;
             if (ResidentActorRoot == null)
@@ -214,20 +236,25 @@ namespace BotwActorTool.Lib
             return ResidentActors;
         }
 
-        public static string GetActorRelPath(string Name, string ModRoot = "")
+        public static string GetActorRelPath(string name, string modRoot = "")
         {
             List<string> parts = new();
-            if (GetResidentActors(ModRoot).Contains(Name)) {
+            if (GetResidentActors(modRoot).Contains(name)) {
                 parts.Add($"Pack/TitleBG.pack");
             }
-            parts.Add($"Actor/Pack/{Name}.sbactorpack");
+            parts.Add($"Actor/Pack/{name}.sbactorpack");
             return string.Join("//", parts);
         }
 
-        public static string GetModRoot(string AbsPath)
+        public static string GetModRoot(string absPath)
         {
-            IEnumerable<string> reversed_path = AbsPath.Split('/').Reverse();
+            IEnumerable<string> reversed_path = absPath.Split('/').Reverse();
             return string.Join("/", reversed_path.Skip(reversed_path.TakeWhile(s => s != "content" && s != "romfs").Count()).Reverse());
+        }
+
+        public static Console GetConsole(string modRoot)
+        {
+            return modRoot.Contains("romfs") ? Console.Switch : Console.WiiU;
         }
 
         public static bool UnYazIfNeeded(ref Stream stream)
