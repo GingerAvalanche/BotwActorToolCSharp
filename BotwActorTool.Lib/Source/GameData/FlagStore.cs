@@ -6,7 +6,7 @@ namespace BotwActorTool.Lib.Gamedata
 {
     public class FlagStore
     {
-        private static readonly ReadOnlyCollection<string> IgnoredSaveFlags = new(new List<string>
+        private static readonly ReadOnlyCollection<string> IGNORED_SAVE_FLAGS = new(new List<string>
         {
             "AlbumPictureIndex",
             "IsGet_Obj_AmiiboItem",
@@ -308,32 +308,57 @@ namespace BotwActorTool.Lib.Gamedata
                 .ToHashSet();
         }
 
-        public BymlFile ToBgdata(string prefix)
+        public SortedDictionary<string, BymlFile> ToBgdata()
         {
-            string type = prefix.Replace("revival_", "");
-            Dictionary<string, BymlNode> rootNode = new()
+            SortedDictionary<string, BymlFile> bgdata_files = new();
+            Dictionary<string, int> file_counts = new();
+            Dictionary<string, int> flag_counts = new()
             {
-                {
-                    prefix,
-                    new(
-                        prefix switch
-                        {
-                            "revival_bool_data" or "revival_s32_data" => CurrFlagStore[type]
-                                .Where(p => p.Value.IsRevival)
-                                .Select(p => p.Value.ToByml())
-                                .ToList(),
-                            _ => CurrFlagStore[type]
-                                .Where(p => !p.Value.IsRevival)
-                                .Select(p => p.Value.ToByml())
-                                .ToList(),
-                        }
-                    )
-                }
+                { "bool_array_data", 4096 }, // forces the loop to create the first file on the first iteration
+                { "bool_data", 4096 },
+                { "f32_array_data", 4096 },
+                { "f32_data", 4096 },
+                { "revival_bool_data", 4096 },
+                { "revival_s32_data", 4096 },
+                { "s32_array_data", 4096 },
+                { "s32_data", 4096 },
+                { "string256_array_data", 4096 },
+                { "string256_data", 4096 },
+                { "string32_data", 4096 },
+                { "string64_array_data", 4096 },
+                { "string64_data", 4096 },
+                { "vector2f_array_data", 4096 },
+                { "vector2f_data", 4096 },
+                { "vector3f_array_data", 4096 },
+                { "vector3f_data", 4096 },
+                { "vector4f_data", 4096 },
             };
-            return new(rootNode);
+            string filename;
+            string file_key;
+            foreach ((string type, Dictionary<int, BaseFlag> flags) in CurrFlagStore)
+            {
+                foreach (BaseFlag flag in flags.Values)
+                {
+                    file_key = flag.IsRevival ? $"revival_{type}" : type;
+                    if (flag_counts[file_key] == 4096)
+                    {
+                        bgdata_files[$"/{file_key}_{file_counts[file_key]++}"] = new(
+                            new Dictionary<string, BymlNode>()
+                            {
+                                { type, new(new List<BymlNode>()) }
+                            }
+                        );
+                        flag_counts[file_key] = 0;
+                    }
+                    filename = $"/{file_key}_{file_counts[file_key]}";
+                    bgdata_files[filename].RootNode.Hash[type].Array.Add(flag.ToByml());
+                    flag_counts[file_key]++;
+                }
+            }
+            return bgdata_files;
         }
 
-        public BymlFile ToSvdata()
+        public SortedDictionary<string, BymlFile> ToSvdata()
         {
             BymlNode settings = new(new Dictionary<string, BymlNode>()
             {
@@ -342,16 +367,51 @@ namespace BotwActorTool.Lib.Gamedata
                 { "IsSaveSecureCode", new(true) },
                 { "file_name", new("game_data.sav") },
             });
-            BymlNode flags = new(CurrFlagStore
-                    .SelectMany(p => p.Value.Values)
-                    .Where(f => f.IsSave && !IgnoredSaveFlags.Contains(f.DataName))
-                    .Select(f => f.ToSvByml())
-                    .ToList());
-            BymlNode array = new(new List<BymlNode>() {
-                settings,
-                flags,
-            });
-            return new BymlFile(new Dictionary<string, BymlNode>() { { "file_list", array } });
+            SortedDictionary<string, BymlFile> svdata_files = new();
+            int file_count = 0;
+            int flag_count = 8192; // forces the loop to create the first file on the first iteration
+            string filename;
+            foreach (Dictionary<int, BaseFlag> flags in CurrFlagStore.Values)
+            {
+                foreach (BaseFlag flag in flags.Values)
+                {
+                    if (!flag.IsSave || IGNORED_SAVE_FLAGS.Contains(flag.DataName))
+                    {
+                        continue;
+                    }
+                    if (flag_count == 8192)
+                    {
+                        svdata_files[$"/saveformat_{file_count++}"] = new(new Dictionary<string, BymlNode>()
+                        {
+                            {
+                                "file_list",
+                                new(new List<BymlNode>()
+                                {
+                                    settings,
+                                    new(new List<BymlNode>())
+                                })
+                            }
+                        });
+                        flag_count = 0;
+                    }
+                    filename = $"/saveformat_{file_count}";
+                    svdata_files[filename].RootNode.Hash["file_list"].Array[1].Array.Add(flag.ToByml());
+                    flag_count++;
+                }
+            }
+            foreach (BymlFile byml in svdata_files.Values)
+            {
+                byml.RootNode.Hash["save_info"] = new(new List<BymlNode>()
+                {
+                    new BymlNode(new Dictionary<string, BymlNode>()
+                    {
+                        { "directory_num", new BymlNode(file_count + 3) },
+                        { "is_build_machine", new BymlNode(true) },
+                        { "revision", new BymlNode(18203) },
+                    })
+                });
+            }
+            return svdata_files;
         }
     }
 }

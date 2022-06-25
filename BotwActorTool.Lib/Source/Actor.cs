@@ -3,6 +3,8 @@ using BotwActorTool.Lib.Gamedata.Flags;
 using BotwActorTool.Lib.Info;
 using BotwActorTool.Lib.Texts;
 using MsbtLib;
+using Nintendo.Byml;
+using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
 using Yaz0Library;
 
@@ -167,13 +169,13 @@ namespace BotwActorTool.Lib
         public override void Write(string modRoot)
         {
             ActorInfo.LoadActorInfoFile(modRoot);
+            Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
             if (resident)
             {
                 string titlebg_path = $"{modRoot}/Pack/TitleBG.pack";
                 if (!File.Exists(titlebg_path))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(titlebg_path)!);
-                    Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
                     File.Copy(Util.FindFileOrig("Pack/TitleBG.pack", console), titlebg_path);
                 }
                 string actor_path = $"Actor/Pack/{pack.Name}.sbactorpack";
@@ -192,6 +194,41 @@ namespace BotwActorTool.Lib
             ActorInfo.ReleaseActorInfoFile();
 
             texts.Write(modRoot);
+
+            string bootup_path = $"{modRoot}/Pack/Bootup.pack";
+            if (!File.Exists(bootup_path))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(bootup_path)!);
+                File.Copy(Util.FindFileOrig("Pack/Bootup.pack", console), bootup_path);
+            }
+            SarcFile gamedata_sarc = new(Yaz0.Decompress(Util.GetFile($"{bootup_path}/GameData/gamedata.ssarc")));
+            foreach ((string name, byte[] data) in gamedata_sarc.Files)
+            {
+                store.AddFlagsFromBymlNoOverwrite(name, new(data));
+            }
+
+            gamedata_sarc = new(new Dictionary<string, byte[]>(), pack.Endianness);
+            foreach ((string filename, BymlFile file) in store.ToBgdata())
+            {
+                gamedata_sarc.Files[filename] = file.ToBinary();
+            }
+            SortedDictionary<string, BymlFile> savedata_files = store.ToSvdata();
+            int format_num = savedata_files.Count;
+            foreach (BymlFile file in Util.GetAccountSaveFormatFiles(modRoot))
+            {
+                savedata_files[$"/saveformat_{format_num}"] = file;
+                format_num++;
+            }
+            SarcFile savedata_sarc = new(new Dictionary<string, byte[]>(), pack.Endianness);
+            foreach ((string filename, BymlFile file) in savedata_files)
+            {
+                savedata_sarc.Files[filename] = file.ToBinary();
+            }
+            Util.InjectFilesIntoBootup(modRoot, new()
+            {
+                ("GameData/gamedata.ssarc", gamedata_sarc.ToBinary()),
+                ("GameData/savedataformat.ssarc", savedata_sarc.ToBinary()),
+            });
         }
     }
 }

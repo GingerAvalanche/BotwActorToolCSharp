@@ -139,6 +139,25 @@ namespace BotwActorTool.Lib
             return bytes;
         }
 
+        public static BymlFile[] GetAccountSaveFormatFiles(string modRoot)
+        {
+            BymlFile[] files = new BymlFile[2];
+            SarcFile saveformat_sarc = new(Yaz0.Decompress(GetFileAnywhere(modRoot, "Pack/Bootup.pack//GameData/savedataformat.ssarc")));
+            foreach (byte[] file in saveformat_sarc.Files.Values)
+            {
+                BymlFile byml = new(file);
+                if (byml.RootNode.Hash["file_list"].Array[0].Hash["file_name"].String == "caption.sav")
+                {
+                    files[0] = byml;
+                }
+                else if (byml.RootNode.Hash["file_list"].Array[0].Hash["file_name"].String == "option.sav")
+                {
+                    files[1] = byml;
+                }
+            }
+            return files;
+        }
+
         public static void InjectFilesIntoBootup(string modRoot, List<(string, byte[])> files)
         {
             files.ForEach(t => InjectFile(modRoot, $"Pack/Bootup.pack//{t.Item1}", t.Item2));
