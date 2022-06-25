@@ -37,9 +37,11 @@ namespace BotwActorTool.Lib
         public string GameDir { get; set; } = "";
         public string UpdateDir { get; set; } = "";
         public string DlcDir { get; set; } = "";
+        public string GameDirNx { get; set; } = "";
+        public string UpdateDirNx { get => GameDirNx; }
+        public string DlcDirNx { get; set; } = "";
         public string Theme { get; set; } = "System";
         public string Lang { get; set; } = "USen";
-        public string Mode { get; set; } = "WiiU";
 
         #endregion
 

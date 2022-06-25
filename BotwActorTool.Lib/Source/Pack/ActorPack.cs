@@ -14,13 +14,16 @@ namespace BotwActorTool.Lib.Pack
         private readonly Dictionary<string, string> _links = new();
         private string[] _tags = Array.Empty<string>();
         private string[] _tags2 = Array.Empty<string>();
+        private readonly Endian endianness;
         public string Name { get => _actorname; }
         public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToArray(); }
         public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToArray(); }
+        public Endian Endianness { get => endianness; }
 
         public ActorPack(string actorname, SarcFile sarc)
         {
             _actorname = actorname;
+            endianness = sarc.Endianness;
             List<string> handled = new() { $"Actor/ActorLink/{_actorname}.bxml" };
             AampFile actorlink = new(sarc.Files[handled[0]]);
             foreach (ParamObject obj in actorlink.RootNode.ParamObjects)
@@ -143,7 +146,7 @@ namespace BotwActorTool.Lib.Pack
             {
                 if (old_ref == "Dummy")
                 {
-                    _bymlfiles[link] = new BymlFile(new List<BymlNode>());
+                    _bymlfiles[link] = new(new List<BymlNode>()) { Endianness = endianness };
                 }
                 else if (linkref == "Dummy")
                 {
@@ -251,10 +254,9 @@ namespace BotwActorTool.Lib.Pack
             return actorlink;
         }
 
-        public byte[] Write(bool big_endian)
+        public byte[] Write()
         {
             Dictionary<string, byte[]> files = new();
-            Endian endianness = big_endian ? Endian.Big : Endian.Little;
 
             string filename = $"Actor/ActorLink/{_actorname}.bxml";
             files[filename] = GetActorLink().ToBinary();

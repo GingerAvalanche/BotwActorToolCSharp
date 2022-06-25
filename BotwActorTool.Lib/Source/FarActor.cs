@@ -1,8 +1,10 @@
 ﻿using BotwActorTool.Lib.Info;
 using BotwActorTool.Lib.Pack;
 using Nintendo.Aamp;
+using Nintendo.Byml;
 using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
+using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
@@ -542,7 +544,7 @@ namespace BotwActorTool.Lib
         {
             origname = Path.GetFileNameWithoutExtension(sarc.Files.Keys.First(s => Path.GetExtension(s) == ".bxml"));
             pack = new ActorPack(origname, sarc);
-            info = new(this);
+            info = new ActorInfo(this).LoadFromActorInfoByml();
         }
 
         public void SetName(string name)
@@ -571,12 +573,19 @@ namespace BotwActorTool.Lib
             if (needs_info_update)
             {
                 info.Update();
+                needs_info_update = false;
             }
         }
 
-        public void Write(string mod_root, bool big_endian)
+        public BymlNode GetInfo() => info.GetInfoByml();
+
+        public void Write(string mod_root)
         {
-            throw new NotImplementedException();
+            string actor_path = $"{mod_root}/Actor/Pack/{pack.Name}.sbactorpack";
+            byte[] compressed_bytes = Yaz0.Compress(pack.Write());
+            File.WriteAllBytes(actor_path, compressed_bytes);
+            Update();
+            info.Apply();
         }
     }
 }

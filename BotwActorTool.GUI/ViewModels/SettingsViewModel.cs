@@ -9,8 +9,9 @@ namespace BotwActorTool.GUI.ViewModels
 {
     public class SettingsViewModel : Screen
     {
-        private readonly Brush _valid = "#0CED5F".ToBrush();
-        private readonly Brush _invalid = "#ED2A64".ToBrush();
+        private static readonly Brush _default = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        private static readonly Brush _valid = "#0CED5F".ToBrush();
+        private static readonly Brush _invalid = "#ED2A64".ToBrush();
         private readonly ShellViewModel _shellViewModel;
 
         private string _baseGame = "";
@@ -18,7 +19,11 @@ namespace BotwActorTool.GUI.ViewModels
             get => _baseGame;
             set {
                 SetAndNotify(ref _baseGame, value);
-                if (Config.ValidateGameDir(value)) {
+                if (_baseGame == "")
+                {
+                    BaseGameBrush = _default;
+                }
+                else if (Config.ValidateGameDir(value)) {
                     BaseGameBrush = _valid;
                 }
                 else {
@@ -33,7 +38,11 @@ namespace BotwActorTool.GUI.ViewModels
             get => _update;
             set {
                 SetAndNotify(ref _update, value);
-                if (Config.ValidateUpdateDir(value)) {
+                if (_update == "")
+                {
+                    UpdateBrush = _default;
+                }
+                else if (Config.ValidateUpdateDir(value)) {
                     UpdateBrush = _valid;
                 }
                 else {
@@ -47,7 +56,11 @@ namespace BotwActorTool.GUI.ViewModels
             get => _dlc;
             set {
                 SetAndNotify(ref _dlc, value);
-                if (Config.ValidateDlcDir(value)) {
+                if (_dlc == "")
+                {
+                    DlcBrush = _default;
+                }
+                else if (Config.ValidateDlcDir(value)) {
                     DlcBrush = _valid;
                 }
                 else {
@@ -56,37 +69,87 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
-        private Brush _baseGameBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        private string _baseGameNx = "";
+        public string BaseGameNx
+        {
+            get => _baseGameNx;
+            set
+            {
+                SetAndNotify(ref _baseGameNx, value);
+                if (_baseGameNx == "")
+                {
+                    BaseGameNxBrush = _default;
+                }
+                else if (Config.ValidateGameDir(value) && Config.ValidateUpdateDir(value))
+                {
+                    BaseGameNxBrush = _valid;
+                }
+                else
+                {
+                    BaseGameNxBrush = _invalid;
+                }
+            }
+
+        }
+
+        private string _dlcNx = "";
+        public string DlcNx
+        {
+            get => _dlcNx;
+            set
+            {
+                SetAndNotify(ref _dlcNx, value);
+                if (_dlcNx == "")
+                {
+                    DlcNxBrush = _default;
+                }
+                else if (Config.ValidateDlcDir(value))
+                {
+                    DlcNxBrush = _valid;
+                }
+                else
+                {
+                    DlcNxBrush = _invalid;
+                }
+            }
+        }
+
+        private Brush _baseGameBrush = _default;
         public Brush BaseGameBrush {
             get => _baseGameBrush;
             set => SetAndNotify(ref _baseGameBrush, value);
         }
 
-        private Brush _updateBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        private Brush _updateBrush = _default;
         public Brush UpdateBrush {
             get => _updateBrush;
             set => SetAndNotify(ref _updateBrush, value);
         }
 
-        private Brush _dlcBrush = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
+        private Brush _dlcBrush = _default;
         public Brush DlcBrush {
             get => _dlcBrush;
             set => SetAndNotify(ref _dlcBrush, value);
+        }
+
+        private Brush _baseGameNxBrush = _default;
+        public Brush BaseGameNxBrush
+        {
+            get => _baseGameNxBrush;
+            set => SetAndNotify(ref _baseGameNxBrush, value);
+        }
+
+        private Brush _dlcNxBrush = _default;
+        public Brush DlcNxBrush
+        {
+            get => _dlcNxBrush;
+            set => SetAndNotify(ref _dlcNxBrush, value);
         }
 
         private string _lang = "USen";
         public string Lang {
             get => _lang;
             set => SetAndNotify(ref _lang, value);
-        }
-
-        private string _mode = "WiiU";
-        public string Mode {
-            get => _mode;
-            set {
-                SetAndNotify(ref _mode, value);
-                ShowUpdate = _mode == "Switch" ? Visibility.Collapsed : Visibility.Visible;
-            }
         }
 
         private Visibility _showUpdate = Visibility.Visible;
@@ -120,12 +183,30 @@ namespace BotwActorTool.GUI.ViewModels
         public void Save()
         {
             if (BaseGameBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The game path is invalid or nor set.\nPlease correct it before saving.", "Error");
+                _shellViewModel.WindowManager.Show("The Wii U game path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
-            if (UpdateBrush == _invalid && Mode != "Switch") {
-                _shellViewModel.WindowManager.Show("The update path is invalid or nor set.\nPlease correct it before saving.", "Error");
+            if (UpdateBrush == _invalid) {
+                _shellViewModel.WindowManager.Show("The Wii U update path is invalid.\nPlease correct or delete it before saving.", "Error");
+                return;
+            }
+
+            if (DlcBrush == _invalid)
+            {
+                _shellViewModel.WindowManager.Show("The Wii U DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
+                return;
+            }
+
+            if (BaseGameNxBrush == _invalid)
+            {
+                _shellViewModel.WindowManager.Show("The Switch game/update path is invalid.\nPlease correct or delete it before saving.", "Error");
+                return;
+            }
+
+            if (DlcNxBrush == _invalid)
+            {
+                _shellViewModel.WindowManager.Show("The Switch DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
@@ -134,7 +215,6 @@ namespace BotwActorTool.GUI.ViewModels
             Config.DlcDir = Dlc;
             Config.Theme = Theme;
             Config.Lang = Lang;
-            Config.Mode = Mode;
             Config.Save();
 
             Close();
@@ -153,6 +233,14 @@ namespace BotwActorTool.GUI.ViewModels
                 }
                 else if (mode == "dlc") {
                     Dlc = browse.SelectedPath;
+                }
+                else if (mode == "baseNx")
+                {
+                    BaseGameNx = browse.SelectedPath;
+                }
+                else if (mode == "dlcNx")
+                {
+                    DlcNx = browse.SelectedPath;
                 }
             }
         }
@@ -203,8 +291,9 @@ namespace BotwActorTool.GUI.ViewModels
             BaseGame = Config.GameDir;
             Update = Config.UpdateDir;
             Dlc = Config.DlcDir;
+            BaseGameNx = Config.GameDirNx;
+            DlcNx = Config.DlcDirNx;
             Lang = Config.Lang;
-            Mode = Config.Mode;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0169, CS0649, IDE0044
+﻿#pragma warning disable CS0169, CS0414, CS0649, IDE0044
 // Reflection - the fields are assigned to/used, just not in a way the compiler can verify
 
 /*
@@ -7,20 +7,24 @@
 
 using Byml.Security.Cryptography;
 using Nintendo.Aamp;
+using Nintendo.Byml;
+using Syroot.BinaryData.Core;
 using Syroot.Maths;
 using System.Reflection;
+using Yaz0Library;
 
 namespace BotwActorTool.Lib.Info
 {
     internal class ActorInfo
     {
+        private static BymlFile? actor_info_file;
         private Actor? actor;
         private FarActor? far;
 
         #region ActorInfo Params
         private Dictionary<string, int>? Chemical;
-        private float? aabbMax;
-        private float? aabbMin;
+        private Dictionary<string, float>? aabbMax;
+        private Dictionary<string, float>? aabbMin;
         private float? actorScale;
         private float? addColorA;
         private float? addColorB;
@@ -75,7 +79,7 @@ namespace BotwActorTool.Lib.Info
         private int? horseGearTopChargeNum;
         private int? horseNature;
         private int? horseUnitRiddenAnimalType;
-        public int? instSize { get; set; }
+        private int? instSize;
         private string[]? invalidTimes;
         private string[]? invalidWeathers;
         private bool? isHasFar;
@@ -98,7 +102,7 @@ namespace BotwActorTool.Lib.Info
         private string? name;
         private string[]? normal0ItemNames;
         private int[]? normal0ItemNums;
-        private int? normal0ItemStuffNum;
+        private int? normal0StuffNum;
         private int? pictureBookLiveSpot1;
         private int? pictureBookLiveSpot2;
         private int? pictureBookSpecialDrop;
@@ -108,10 +112,10 @@ namespace BotwActorTool.Lib.Info
         private bool? seriesArmorEnableCompBonus;
         private string? seriesArmorSeriesType;
         private string? slink;
-        public int? sortKey { get; set; }
+        private int? sortKey;
         private bool? systemIsGetItemSelf;
         private string? systemSameGroupActorName;
-        private Dictionary<string, dynamic>? tags;
+        private Dictionary<string, int>? tags;
         private string[]? terrainTextures;
         private string? travelerAppearGameDataName;
         private string? travelerDeleteGameDataName;
@@ -147,6 +151,8 @@ namespace BotwActorTool.Lib.Info
         private int? weaponCommonStickDamage;
         private string? xlink;
         private string? yLimitAlgorithm;
+        public int? InstSize { get => instSize; set => instSize = value; }
+        public int? SortKey { get => sortKey; set => sortKey = value; }
         #endregion
 
         #region Param Maps
@@ -285,9 +291,49 @@ namespace BotwActorTool.Lib.Info
             this.far = far;
         }
 
+        public static void LoadActorInfoFile(string modRoot)
+        {
+            if (actor_info_file == null)
+                actor_info_file = new(Yaz0.Decompress(Util.GetFileAnywhere(modRoot, "Actor/ActorInfo.product.sbyml")));
+        }
+        public static void ReleaseActorInfoFile() => actor_info_file = null;
+        public ActorInfo LoadFromActorInfoByml()
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
+            string actor_name = actor?.Name ?? far!.Name;
+            foreach (BymlNode actor in actor_info_file.RootNode.Hash["Actors"].Array)
+            {
+                if (actor.Hash["name"].String == actor_name)
+                {
+                    foreach ((string key, BymlNode node) in actor.Hash)
+                    {
+                        if (key == "homeArea")
+                        {
+                            homeArea = node.Array.Select(n => RetrieveStringHash(n)).ToArray();
+                        }
+                        else if (key == "locators")
+                        {
+                            locators = node.Array.Select(n => RetrieveDynamicHash(n)).ToArray();
+                        }
+                        else
+                        {
+                            typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
+                                .SetValue(this, Retrieve(node));
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return this;
+        }
+
         public void Update()
         {
-            name = actor?.Name ?? far?.Name ?? throw new Exception("No Actor for this Info?");
+            name = actor?.Name ?? far!.Name;
             isHasFar = actor?.HasFar == false ? null : true; // coerce false to null
             UpdateFromActorLink();
             UpdateFromTags();
@@ -304,7 +350,7 @@ namespace BotwActorTool.Lib.Info
             foreach ((string prop_name, string link) in INFO_LINKS)
             {
                 string linkref = GetLink(link);
-                if (linkref == "Dummy" || linkref == "1.0")
+                if (linkref == "Dummy" || linkref == "1")
                 {
                     typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
                         .SetValue(this, null);
@@ -323,13 +369,12 @@ namespace BotwActorTool.Lib.Info
         }
         private void UpdateFromTags()
         {
-            string tags = actor?.Tags ?? far?.Tags ?? throw new Exception("No Actor for this Info?");
+            string tags = actor?.Tags ?? far!.Tags;
             this.tags = new();
             foreach (string tag in tags.Split(", "))
             {
-                dynamic v = Crc32.Compute(tag);
-                v = v >= 0x80000000 ? v : (int)v;
-                this.tags.Add(string.Format("tag{0:00000000X}", Crc32.Compute(tag)), v);
+                int v = (int)Crc32.Compute(tag);
+                this.tags.Add($"tag{Crc32.Compute(tag):x8}", v);
             }
         }
         private void UpdateFromChemical()
@@ -353,14 +398,7 @@ namespace BotwActorTool.Lib.Info
             {
                 chem["Burnable"] = 1;
             }
-            if (chem.Count > 0)
-            {
-                Chemical = chem;
-            }
-            else
-            {
-                Chemical = null;
-            }
+            Chemical = chem.Count > 0 ? chem : null;
         }
         private void UpdateFromDropTable()
         {
@@ -374,23 +412,15 @@ namespace BotwActorTool.Lib.Info
             foreach ((string obj_name, string param_name) in DROPTABLE_MAP)
             {
                 ParamObject? obj = file.RootNode.Objects(obj_name);
-                if (obj == null)
+                if (obj != null)
                 {
-                    continue;
+                    normal_drops[obj_name] = obj.ParamEntries
+                        .Where(e => e.HashString.Contains(param_name))
+                        .Select(e => (string)Retrieve(e))
+                        .ToArray();
                 }
-                normal_drops[obj_name] = obj.ParamEntries
-                    .Where(e => e.HashString.Contains(param_name))
-                    .Select(e => (string)Retrieve(e))
-                    .ToArray();
             }
-            if (normal_drops.Keys.Count > 0)
-            {
-                drops = normal_drops;
-            }
-            else
-            {
-                drops = null;
-            }
+            drops = normal_drops.Keys.Count > 0 ? normal_drops : null;
         }
         private void UpdateFromGParam()
         {
@@ -407,24 +437,23 @@ namespace BotwActorTool.Lib.Info
             foreach ((string prop_name, (string obj_name, string param_name)) in GPARAM_MAP)
             {
                 ParamObject? obj = file.RootNode.Objects(obj_name);
-                if (obj == null)
+                if (obj != null)
                 {
-                    continue;
-                }
-                if (param_name.Contains('{'))
-                {
-                    string[] points = new string[28];
-                    for (int i = 0; i < points.Length; i++)
+                    if (param_name.Contains('{'))
                     {
-                        points[i] = Retrieve(obj.Params(string.Format(param_name, i))!);
+                        string[] points = new string[28];
+                        for (int i = 0; i < points.Length; i++)
+                        {
+                            points[i] = Retrieve(obj.Params(string.Format(param_name, i))!);
+                        }
+                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                            .SetValue(this, points.Where(s => !IsDefault(s)).ToArray());
                     }
-                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                        .SetValue(this, points.Where(s => !IsDefault(s)).ToArray());
-                }
-                else
-                {
-                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                        .SetValue(this, Retrieve(obj.Params(param_name)!));
+                    else
+                    {
+                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                            .SetValue(this, Retrieve(obj.Params(param_name)!));
+                    }
                 }
             }
         }
@@ -443,20 +472,19 @@ namespace BotwActorTool.Lib.Info
             foreach ((string prop_name, (string obj_name, string param_name)) in LIFECONDITION_MAP)
             {
                 ParamObject? obj = file.RootNode.Objects(obj_name);
-                if (obj == null)
+                if (obj != null)
                 {
-                    continue;
-                }
-                if (param_name.Contains('{'))
-                {
-                    string[] strings = obj.ParamEntries.Select((e, i) => (string)Retrieve(e, i)).ToArray();
-                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                        .SetValue(this, strings);
-                }
-                else
-                {
-                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                        .SetValue(this, Retrieve(obj.Params(param_name)!));
+                    if (param_name.Contains('{'))
+                    {
+                        string[] strings = obj.ParamEntries.Select((e, i) => (string)Retrieve(e, i)).ToArray();
+                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                            .SetValue(this, strings);
+                    }
+                    else
+                    {
+                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                            .SetValue(this, Retrieve(obj.Params(param_name)!));
+                    }
                 }
             }
         }
@@ -489,12 +517,11 @@ namespace BotwActorTool.Lib.Info
             foreach ((string prop_name, (string obj_name, string param_name)) in MODELLIST_MAP)
             {
                 obj = file.RootNode.Objects(obj_name);
-                if (obj == null)
+                if (obj != null)
                 {
-                    continue;
+                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, Retrieve(obj.Params(param_name)!));
                 }
-                typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                    .SetValue(this, Retrieve(obj.Params(param_name)!));
             }
             if (IsDefault(variationMatAnim!))
             {
@@ -507,10 +534,10 @@ namespace BotwActorTool.Lib.Info
             if (obj != null)
             {
                 entry = obj.Params("LookAtOffset")!;
-                Vector3F vec = Retrieve(entry);
-                if (!0f.NearlyEquals(vec.Y))
+                float offset = Retrieve(entry, prop: "Y");
+                if (!0f.NearlyEquals(offset))
                 {
-                    lookAtOffsetY = vec.Y;
+                    lookAtOffsetY = offset;
                 }
                 else
                 {
@@ -622,7 +649,15 @@ namespace BotwActorTool.Lib.Info
                 .Params("center_of_mass");
             if (entry != null)
             {
-                rigidBodyCenterY = Retrieve(entry);
+                float y_val = Retrieve(entry, prop: "Y");
+                if (!0f.NearlyEquals(y_val))
+                {
+                    rigidBodyCenterY = y_val;
+                }
+                else
+                {
+                    rigidBodyCenterY = null;
+                }
             }
             else
             {
@@ -646,81 +681,136 @@ namespace BotwActorTool.Lib.Info
                 .Objects(RECIPE_MAP["normal0ItemNames"].Item1)?
                 .ParamEntries
                 .Where(e => e.HashString.Contains(RECIPE_MAP["normal0ItemNames"].Item2))
-                .Select((e, i) => (string)Retrieve(e, i))
+                .Select(e => (string)Retrieve(e))
                 .ToArray();
             normal0ItemNums = file.RootNode
                 .Objects(RECIPE_MAP["normal0ItemNums"].Item1)?
                 .ParamEntries
                 .Where(e => e.HashString.Contains(RECIPE_MAP["normal0ItemNums"].Item2))
-                .Select((e, i) => (int)Retrieve(e, i))
+                .Select(e => (int)Retrieve(e))
                 .ToArray();
             ParamEntry? col_num = file.RootNode
                     .Objects(RECIPE_MAP["normal0StuffNum"].Item1)?
                     .Params(RECIPE_MAP["normal0StuffNum"].Item2);
-            if (col_num != null)
-            {
-                normal0ItemStuffNum = Retrieve(col_num);
-            }
-            else
-            {
-                normal0ItemStuffNum = null;
-            }
+            normal0StuffNum = col_num != null ? Retrieve(col_num) : null;
         }
 
-        private string GetLink(string link)
-        {
-            string linkref;
-            if (actor != null)
-            {
-                linkref = actor.GetLink(link);
-            }
-            else
-            {
-                linkref = far!.GetLink(link);
-            }
-            return linkref;
-        }
-        private AampFile GetFile(string link)
-        {
-            AampFile file;
-            if (actor != null)
-            {
-                file = actor.GetPackAampFile(link);
-            }
-            else
-            {
-                file = far!.GetPackAampFile(link);
-            }
-            return file;
-        }
+        private string GetLink(string link) => actor != null ? actor.GetLink(link) : far!.GetLink(link);
+        private AampFile GetFile(string link) => actor != null ? actor.GetPackAampFile(link) : far!.GetPackAampFile(link);
 
-        private static dynamic Retrieve(ParamEntry entry, int index = 0, string prop = "\0")
+        private static dynamic Retrieve(ParamEntry entry, int index = -1, string prop = "\0")
         {
             return entry.ParamType switch
             {
-                ParamType.Boolean => (bool)entry.Value!,
-                ParamType.Float => (float)entry.Value!,
-                ParamType.Int => (int)entry.Value!,
-                ParamType.Vector2F => ((Vector2F)entry.Value!)[index],
-                ParamType.Vector3F => ((Vector3F)entry.Value!)[index],
-                ParamType.Vector4F => ((Vector4F)entry.Value!)[index],
-                ParamType.Color4F => typeof(Color4F).GetProperty(prop)?.GetValue((Color4F)entry.Value!)!,
-                ParamType.String32 => ((StringEntry)entry.Value!).ToString(),
-                ParamType.String64 => ((StringEntry)entry.Value!).ToString(),
-                ParamType.Curve1 => (Curve[])entry.Value!,
-                ParamType.Curve2 => (Curve[])entry.Value!,
-                ParamType.Curve3 => (Curve[])entry.Value!,
-                ParamType.Curve4 => (Curve[])entry.Value!,
-                ParamType.BufferInt => (int[])entry.Value!,
-                ParamType.BufferFloat => (float[])entry.Value!,
-                ParamType.String256 => ((StringEntry)entry.Value!).ToString(),
-                ParamType.Quat => ((float[])entry.Value!)[index],
-                ParamType.Uint => (uint)entry.Value!,
-                ParamType.BufferUint => (uint[])entry.Value!,
-                ParamType.BufferBinary => (byte[])entry.Value!,
-                ParamType.StringRef => ((StringEntry)entry.Value!).ToString(),
+                ParamType.Boolean => (bool)entry.Value,
+                ParamType.Float => (float)entry.Value,
+                ParamType.Int => (int)entry.Value,
+                ParamType.Vector2F => prop == "\0" ? (Vector2F)entry.Value! : typeof(Vector2F).GetField(prop)?.GetValue((Vector2F)entry.Value)!,
+                ParamType.Vector3F => prop == "\0" ? (Vector3F)entry.Value! : typeof(Vector3F).GetField(prop)?.GetValue((Vector3F)entry.Value)!,
+                ParamType.Vector4F => prop == "\0" ? (Vector4F)entry.Value! : typeof(Vector4F).GetField(prop)?.GetValue((Vector4F)entry.Value)!,
+                ParamType.Color4F => prop == "\0" ? (Color4F)entry.Value! : typeof(Color4F).GetField(prop)?.GetValue((Color4F)entry.Value)!,
+                ParamType.String32 => ((StringEntry)entry.Value).ToString(),
+                ParamType.String64 => ((StringEntry)entry.Value).ToString(),
+                ParamType.Curve1 => index == -1 ? (Curve[])entry.Value : ((Curve[])entry.Value)[index],
+                ParamType.Curve2 => index == -1 ? (Curve[])entry.Value : ((Curve[])entry.Value)[index],
+                ParamType.Curve3 => index == -1 ? (Curve[])entry.Value : ((Curve[])entry.Value)[index],
+                ParamType.Curve4 => index == -1 ? (Curve[])entry.Value : ((Curve[])entry.Value)[index],
+                ParamType.BufferInt => index == -1 ? (int[])entry.Value : ((int[])entry.Value)[index],
+                ParamType.BufferFloat => index == -1 ? (float[])entry.Value : ((float[])entry.Value)[index],
+                ParamType.String256 => ((StringEntry)entry.Value).ToString(),
+                ParamType.Quat => index == -1 ? (float[])entry.Value : ((float[])entry.Value)[index],
+                ParamType.Uint => (uint)entry.Value,
+                ParamType.BufferUint => index == -1 ? (uint[])entry.Value : ((uint[])entry.Value)[index],
+                ParamType.BufferBinary => index == -1 ? (byte[])entry.Value : ((byte[])entry.Value)[index],
+                ParamType.StringRef => ((StringEntry)entry.Value).ToString(),
                 _ => throw new ArgumentException("IMPOSSIBRU!"),
             };
+        }
+
+        private static dynamic Retrieve(BymlNode node)
+        {
+            return node.Type switch
+            {
+                NodeType.String => node.String,
+                NodeType.Binary => node.Binary,
+                NodeType.Bool => node.Bool,
+                NodeType.Int => node.Int,
+                NodeType.Float => node.Float,
+                NodeType.UInt => node.UInt,
+                NodeType.Int64 => node.Int64,
+                NodeType.UInt64 => node.UInt64,
+                NodeType.Double => node.Double,
+                NodeType.Array => node.Array.Select(x => Retrieve(x)).ToArray(),
+                NodeType.Hash => RetrieveHash(node),
+                _ => throw new ArgumentException($"Invalid node type {node.Type}"),
+            };
+        }
+        private static dynamic RetrieveHash(BymlNode node)
+        {
+            NodeType type = NodeType.None;
+            foreach ((string key, BymlNode child) in node.Hash) // messy hash type retrieval
+            {
+                type = child.Type;
+                break;
+            }
+            return type switch
+            {
+                NodeType.String => RetrieveStringHash(node),
+                NodeType.Int => RetrieveIntHash(node),
+                NodeType.Float => RetrieveFloatHash(node),
+                NodeType.UInt => RetrieveUIntHash(node),
+                _ => throw new InvalidDataException($"Bad hash child node type {type}"),
+            };
+        }
+        private static Dictionary<string, string> RetrieveStringHash(BymlNode node)
+        {
+            Dictionary<string, string> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.String;
+            }
+            return hash;
+        }
+        private static Dictionary<string, int> RetrieveIntHash(BymlNode node)
+        {
+            Dictionary<string, int> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.Int;
+            }
+            return hash;
+        }
+        private static Dictionary<string, float> RetrieveFloatHash(BymlNode node)
+        {
+            Dictionary<string, float> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.Float;
+            }
+            return hash;
+        }
+        private static Dictionary<string, uint> RetrieveUIntHash(BymlNode node)
+        {
+            Dictionary<string, uint> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.UInt;
+            }
+            return hash;
+        }
+        private static Dictionary<string, dynamic> RetrieveDynamicHash(BymlNode node)
+        {
+            Dictionary<string, dynamic> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.Type switch
+                {
+                    NodeType.Float => child.Float,
+                    NodeType.String => child.String,
+                    _ => throw new InvalidDataException("locators children only contain string and float"),
+                };
+            }
+            return hash;
         }
 
         private static bool IsDefault(dynamic val)
@@ -730,6 +820,118 @@ namespace BotwActorTool.Lib.Info
                 string v => v == "''",
                 _ => throw new ArgumentException($"ActorInfo.IsDefault - Handle {val.GetType()}"),
             };
+        }
+
+        public void Apply()
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
+            uint hash = Crc32.Compute(name);
+
+            for (int i = 0; i < actor_info_file.RootNode.Hash["Hashes"].Array.Count; i++)
+            {
+                if (hash > actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
+                {
+                    BymlNode hash_node = hash < 0x80000000 ? new BymlNode((int)hash) : new BymlNode(hash);
+                    actor_info_file.RootNode.Hash["Hashes"].Array.Insert(i, hash_node);
+                    actor_info_file.RootNode.Hash["Actors"].Array.Insert(i, GetInfoByml());
+                    break;
+                }
+                else if (hash == actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
+                {
+                    actor_info_file.RootNode.Hash["Actors"].Array[i] = GetInfoByml();
+                    break;
+                }
+            }
+        }
+        public static void Write(string modRoot)
+        {
+            if (actor_info_file == null)
+            {
+                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
+            }
+            string actor_info_path = $"{modRoot}/Actor/ActorInfo.product.sbyml";
+            File.WriteAllBytes(actor_info_path, Yaz0.Compress(actor_info_file.ToBinary()));
+        }
+        public BymlNode GetInfoByml() => new(new Dictionary<string, BymlNode>(typeof(ActorInfo)
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.GetValue(this) != null && f.FieldType != typeof(Actor) && f.FieldType != typeof(FarActor))
+                .Select(f => new KeyValuePair<string, BymlNode>(
+                    f.Name,
+                    f.Name == "tags" ? CompileTags((f.GetValue(this) as Dictionary<string, int>)!) : CompileNode(f.GetValue(this))
+                ))));
+        private BymlNode CompileNode<T>(T prop)
+        {
+            return prop switch
+            {
+                string str => new BymlNode(str),
+                bool b => new BymlNode(b),
+                int i => new BymlNode(i),
+                uint u => new BymlNode(u),
+                long l => new BymlNode(l),
+                ulong ul => new BymlNode(ul),
+                float f => new BymlNode(f),
+                double d => new BymlNode(d),
+                string[] strs => new BymlNode(strs.Select(s => CompileNode(s)).ToList()),
+                bool[] bools => new BymlNode(bools.Select(b => CompileNode(b)).ToList()),
+                int[] ints => new BymlNode(ints.Select(i => CompileNode(i)).ToList()),
+                uint[] uints => new BymlNode(uints.Select(u => CompileNode(u)).ToList()),
+                long[] longs => new BymlNode(longs.Select(l => CompileNode(l)).ToList()),
+                ulong[] ulongs => new BymlNode(ulongs.Select(ul => CompileNode(ul)).ToList()),
+                float[] floats => new BymlNode(floats.Select(f => CompileNode(f)).ToList()),
+                double[] doubles => new BymlNode(doubles.Select(d => CompileNode(d)).ToList()),
+                Dictionary<string, string> dict => CompileDict(dict),
+                Dictionary<string, bool> dict => CompileDict(dict),
+                Dictionary<string, int> dict => CompileDict(dict),
+                Dictionary<string, uint> dict => CompileDict(dict),
+                Dictionary<string, long> dict => CompileDict(dict),
+                Dictionary<string, ulong> dict => CompileDict(dict),
+                Dictionary<string, float> dict => CompileDict(dict),
+                Dictionary<string, double> dict => CompileDict(dict),
+                Dictionary<string, string[]> dict => CompileDict(dict),
+                Dictionary<string, bool[]> dict => CompileDict(dict),
+                Dictionary<string, int[]> dict => CompileDict(dict),
+                Dictionary<string, uint[]> dict => CompileDict(dict),
+                Dictionary<string, long[]> dict => CompileDict(dict),
+                Dictionary<string, ulong[]> dict => CompileDict(dict),
+                Dictionary<string, float[]> dict => CompileDict(dict),
+                Dictionary<string, double[]> dict => CompileDict(dict),
+                Dictionary<string, string>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, bool>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, int>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, uint>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, long>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, ulong>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, float>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, double>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                Dictionary<string, dynamic> dict => CompileDict(dict),
+                Dictionary<string, dynamic>[] dicts => new BymlNode(dicts.Select(d => CompileDict(d)).ToList()),
+                _ => throw new ArgumentException($"Unexpected property type: {prop!.GetType()} {prop}"),
+            };
+        }
+        private BymlNode CompileDict<T>(Dictionary<string, T> dict)
+        {
+            Dictionary<string, BymlNode> hash = new();
+            foreach ((string key, T val) in dict)
+            {
+                BymlNode node = CompileNode(val);
+                hash.Add(key, node);
+            }
+            return new(hash);
+        }
+        private static BymlNode CompileTags(Dictionary<string, int> prop)
+        {
+            Dictionary<string, BymlNode> hash = new();
+            foreach ((string key, int value) in prop)
+            {
+                hash.Add(
+                    key,
+                    value < 0 ? new BymlNode((uint)value) : new BymlNode(value)
+                );
+            }
+            return new(hash);
         }
     }
 }
