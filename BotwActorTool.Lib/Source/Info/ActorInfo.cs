@@ -18,8 +18,7 @@ namespace BotwActorTool.Lib.Info
     internal class ActorInfo
     {
         private static BymlFile? actor_info_file;
-        private Actor? actor;
-        private FarActor? far;
+        private FarActor actor;
 
         #region ActorInfo Params
         private Dictionary<string, int>? Chemical;
@@ -282,13 +281,9 @@ namespace BotwActorTool.Lib.Info
         };
         #endregion
 
-        public ActorInfo(Actor actor)
+        public ActorInfo(FarActor actor)
         {
             this.actor = actor;
-        }
-        public ActorInfo(FarActor far)
-        {
-            this.far = far;
         }
 
         public static void LoadActorInfoFile(string modRoot)
@@ -303,10 +298,9 @@ namespace BotwActorTool.Lib.Info
             {
                 throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
             }
-            string actor_name = actor?.Name ?? far!.Name;
             foreach (BymlNode actor in actor_info_file.RootNode.Hash["Actors"].Array)
             {
-                if (actor.Hash["name"].String == actor_name)
+                if (actor.Hash["name"].String == this.actor.Name)
                 {
                     foreach ((string key, BymlNode node) in actor.Hash)
                     {
@@ -333,7 +327,7 @@ namespace BotwActorTool.Lib.Info
 
         public void Update()
         {
-            name = actor?.Name ?? far!.Name;
+            name = actor.Name;
             isHasFar = actor?.HasFar == false ? null : true; // coerce false to null
             UpdateFromActorLink();
             UpdateFromTags();
@@ -369,12 +363,11 @@ namespace BotwActorTool.Lib.Info
         }
         private void UpdateFromTags()
         {
-            string tags = actor?.Tags ?? far!.Tags;
-            this.tags = new();
-            foreach (string tag in tags.Split(", "))
+            tags = new();
+            foreach (string tag in actor.Tags.Split(", "))
             {
                 int v = (int)Crc32.Compute(tag);
-                this.tags.Add($"tag{Crc32.Compute(tag):x8}", v);
+                tags.Add($"tag{Crc32.Compute(tag):x8}", v);
             }
         }
         private void UpdateFromChemical()
@@ -695,8 +688,8 @@ namespace BotwActorTool.Lib.Info
             normal0StuffNum = col_num != null ? Retrieve(col_num) : null;
         }
 
-        private string GetLink(string link) => actor != null ? actor.GetLink(link) : far!.GetLink(link);
-        private AampFile GetFile(string link) => actor != null ? actor.GetPackAampFile(link) : far!.GetPackAampFile(link);
+        private string GetLink(string link) => actor.GetLink(link);
+        private AampFile GetFile(string link) => actor.GetPackAampFile(link);
 
         private static dynamic Retrieve(ParamEntry entry, int index = -1, string prop = "\0")
         {

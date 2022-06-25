@@ -1,26 +1,15 @@
 ﻿using BotwActorTool.Lib.Gamedata;
 using BotwActorTool.Lib.Gamedata.Flags;
 using BotwActorTool.Lib.Info;
-using BotwActorTool.Lib.Pack;
 using BotwActorTool.Lib.Texts;
 using MsbtLib;
-using Nintendo.Aamp;
-using Nintendo.Byml;
-using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
 using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
-    public class Actor
+    public class Actor : FarActor
     {
-        private static readonly string[] FAR_LINKS = new string[]
-        {
-            "GParamUser",
-            "LifeConditionUser",
-            "ModelUser",
-            "PhysicsUser",
-        };
         private static readonly Dictionary<string, Type> FLAG_CLASSES = new()
         {
             { "_DispNameFlag", typeof(BoolFlag) },
@@ -90,68 +79,48 @@ namespace BotwActorTool.Lib
                 }
             },
         };
-
-        private readonly ActorInfo info;
-        private readonly ActorPack pack;
+        
         private readonly ActorTexts texts;
         private bool needs_info_update;
         private FarActor? far_actor;
         private readonly FlagStore store;
         private readonly Dictionary<string, HashSet<int>> flag_hashes;
         private bool resident;
-        private readonly string origname;
-        public string Name { get => pack.Name; }
-        public bool HasFar { get => far_actor != null; }
+        public override bool HasFar { get => far_actor != null; }
         public bool Resident { get => resident; set => resident = value; }
-        public string Tags { get => pack.Tags; set { pack.Tags = value; needs_info_update = true; } }
-        public string Tags2 { get => pack.Tags2; set { pack.Tags2 = value; needs_info_update = true; } }
         public Dictionary<string, MsbtEntry> Texts { get => texts.Texts; }
-
-        public Actor(string filename)
+        public Actor(string filename) : base(filename)
         {
-            origname = Path.GetFileNameWithoutExtension(filename);
-            pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
             resident = filename.Contains("TitleBG.pack");
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(filename, pack.GetLink("ProfileUser"));
 
-            ActorInfo.LoadActorInfoFile(Util.GetModRoot(filename));
-            info = new ActorInfo(this).LoadFromActorInfoByml();
             string far_filename = filename.Replace(origname, $"{origname}_Far");
             if (File.Exists(far_filename))
             {
-                far_actor = new FarActor(new SarcFile(Util.GetFile(far_filename)));
+                far_actor = new FarActor(far_filename);
             }
             ActorInfo.ReleaseActorInfoFile();
         }
 
-        public void SetName(string name)
+        public override void SetName(string name)
         {
-            pack.SetName(name);
+            base.SetName(name);
             texts.ActorName = name;
             SetFlags(name);
-            needs_info_update = true;
             far_actor?.SetName($"{name}_Far");
         }
-
-        public string GetLink(string link) => pack.GetLink(link);
-        public bool SetLink(string link, string linkref)
+        public override void SetLink(string link, string linkref)
         {
-            if (HasFar)
-            {
-                if (link == "LifeConditionUser" && linkref == "Dummy")
-                {
-                    return false;
-                }
-                else if (FAR_LINKS.Contains(link))
-                {
-                    far_actor?.SetLink(link, linkref);
-                }
-            }
+            base.SetLink(link, linkref);
             pack.SetLink(link, linkref);
             needs_info_update = true;
-            return true;
+        }
+        public override void SetLinkData(string link, string data)
+        {
+            pack.SetLinkData(link, data);
+            needs_info_update = true;
         }
 
         public bool SetHasFar(bool enabled)
@@ -169,14 +138,6 @@ namespace BotwActorTool.Lib
             far_actor = null;
             return true;
         }
-
-        public string GetLinkData(string link) => pack.GetLinkData(link);
-        public void SetLinkData(string link, string data)
-        {
-            pack.SetLinkData(link, data);
-            needs_info_update = true;
-        }
-        public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
 
         private void SetFlags(string name)
         {
@@ -202,60 +163,35 @@ namespace BotwActorTool.Lib
                 }
             }
         }
-        public BymlNode GetInfo() => info.GetInfoByml();
 
-        public void Update()
+        public override void Write(string modRoot)
         {
-            if (needs_info_update)
-            {
-                info.Update();
-                needs_info_update = false;
-            }
-        }
-
-        public void Write(string modRoot)
-        {
-            Endian test = Util.GetFileAnywhere(modRoot, "Pack/Bootup.pack")[6] == 0xFE ? Endian.Big : Endian.Little;
-            Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
-            if (test != pack.Endianness)
-            {
-                throw new InvalidDataException(
-                    $@"Actor pack is {pack.Endianness} endian but loaded Bootup.pack is {test} endian! 
-                    This would cause game errors, if saved. Please set your dumps in settings to {console} 
-                    dumps to save this actor."
-                );
-            }
-
-            string actor_path = $"Actor/Pack/{pack.Name}.sbactorpack";
-            byte[] compressed_bytes = Yaz0.Compress(pack.Write());
+            ActorInfo.LoadActorInfoFile(modRoot);
             if (resident)
             {
                 string titlebg_path = $"{modRoot}/Pack/TitleBG.pack";
                 if (!File.Exists(titlebg_path))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(titlebg_path)!);
+                    Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
                     File.Copy(Util.FindFileOrig("Pack/TitleBG.pack", console), titlebg_path);
                 }
+                string actor_path = $"Actor/Pack/{pack.Name}.sbactorpack";
+                byte[] compressed_bytes = Yaz0.Compress(pack.Write());
                 Util.InjectFile(modRoot, actor_path, compressed_bytes);
+                Update();
+                info.Apply();
             }
             else
             {
-                actor_path = $"{modRoot}/{actor_path}";
-                if (!File.Exists(actor_path))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(actor_path)!);
-                }
-                File.WriteAllBytes(actor_path, compressed_bytes);
+                base.Write(modRoot);
             }
 
-            texts.Write(modRoot);
-
-            ActorInfo.LoadActorInfoFile(modRoot);
-            Update();
-            info.Apply();
             far_actor?.Write(modRoot);
             ActorInfo.Write(modRoot);
             ActorInfo.ReleaseActorInfoFile();
+
+            texts.Write(modRoot);
         }
     }
 }
