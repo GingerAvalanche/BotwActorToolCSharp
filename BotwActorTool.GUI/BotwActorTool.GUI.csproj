@@ -8,7 +8,15 @@
     <UseWindowsForms>False</UseWindowsForms>
     <ApplicationIcon>ViewResources\Images\icon.ico</ApplicationIcon>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<BaseOutputPath>D:\VMs\Garuda\Shared</BaseOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+    <Page Remove="Models\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Data\Theme\Default.json" />
@@ -43,7 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="ViewResources\Fonts\" />
   </ItemGroup>
 

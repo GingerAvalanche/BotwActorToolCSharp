@@ -12,30 +12,37 @@
              mc:Ignorable="d">
     <Grid>
 
-        <StackPanel Margin="15">
+        <!--<StackPanel Margin="15">
 
-            <!--  Base Game Path  -->
-            <Grid Margin="0,5,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="85" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
+        -->
+        <!--  Base Game Path  -->
+        <Grid Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="85" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
 
-                <TextBlock VerticalAlignment="Center" Text="Base Game" />
-                <TextBox Grid.Column="2"
-                         BorderBrush="{Binding BaseGameBrush}"
-                         Text="{Binding BaseGame, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="4"
-                        Command="{s:Action Browse}"
-                        CommandParameter="base"
-                        Content="Browse"
-                        IsTabStop="False" />
-            </Grid>
+            <TextBlock VerticalAlignment="Center" Text="Base Game" />
 
-            <!--  Update Path  -->
+            <!--  Commenting this out fixes it  -->
+            <!--  I also tested with default (<TextBox Style={x:Null} />) params so it's the Windows default.  -->
+            <TextBox Grid.Column="2"
+                     BorderBrush="{Binding BaseGameBrush}"
+                     Text="{Binding BaseGame, UpdateSourceTrigger=PropertyChanged}" />
+            <!--  Commenting this out fixes it  -->
+
+            <Button Grid.Column="4"
+                    Command="{s:Action Browse}"
+                    CommandParameter="base"
+                    Content="Browse"
+                    IsTabStop="False" />
+        </Grid>
+
+        <!--  Update Path  -->
+        <!--
             <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85" />
@@ -56,7 +63,9 @@
                         IsTabStop="False" />
             </Grid>
 
-            <!--  DLC Path  -->
+        -->
+        <!--  DLC Path  -->
+        <!--
             <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85" />
@@ -77,7 +86,9 @@
                         IsTabStop="False" />
             </Grid>
 
-            <!--  Game NX Path  -->
+        -->
+        <!--  Game NX Path  -->
+        <!--
             <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85" />
@@ -98,7 +109,9 @@
                         IsTabStop="False" />
             </Grid>
 
-            <!--  DLC Path  -->
+        -->
+        <!--  DLC Path  -->
+        <!--
             <Grid Margin="0,15,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85" />
@@ -123,7 +136,9 @@
                     Margin="0,15,0,0"
                     Background="{DynamicResource PrimaryHueMidBrush}" />
 
-            <!--  Theme Settings  -->
+        -->
+        <!--  Theme Settings  -->
+        <!--
             <TextBlock Margin="0,15,0,10"
                        VerticalAlignment="Center"
                        Text="Theme" />
@@ -189,6 +204,6 @@
             </ComboBox>
         </StackPanel>
 
-        <ContentControl s:View.Model="{Binding ThemeViewModel}" />
+        <ContentControl s:View.Model="{Binding ThemeViewModel}" />-->
     </Grid>
 </UserControl>
