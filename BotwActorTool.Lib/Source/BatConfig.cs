@@ -44,7 +44,7 @@ namespace BotwActorTool.Lib
         public string DlcDir { get; set; } = "";
         public string GameDirNx { get; set; } = "";
         public string DlcDirNx { get; set; } = "";
-        public string Theme { get; set; } = "System";
+        public bool IsDarkTheme { get; set; } = true;
         public string Lang { get; set; } = "USen";
 
         #endregion
