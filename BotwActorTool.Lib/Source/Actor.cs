@@ -3,6 +3,7 @@ using BotwActorTool.Lib.Gamedata.Flags;
 using BotwActorTool.Lib.Info;
 using BotwActorTool.Lib.Texts;
 using MsbtLib;
+using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Sarc;
 using Syroot.BinaryData.Core;
@@ -83,11 +84,11 @@ namespace BotwActorTool.Lib
         };
         
         private readonly ActorTexts texts;
-        private bool needs_info_update;
         private FarActor? far_actor;
         private readonly FlagStore store;
         private readonly Dictionary<string, HashSet<int>> flag_hashes;
         private bool resident;
+        public string[] AnimSeqNames { get => pack.AnimSeqNames; }
         public override bool HasFar { get => far_actor != null; }
         public bool Resident { get => resident; set => resident = value; }
         public Dictionary<string, MsbtEntry> Texts { get => texts.Texts; }
@@ -124,6 +125,35 @@ namespace BotwActorTool.Lib
             pack.SetLinkData(link, data);
             needs_info_update = true;
         }
+
+        public string GetAnimSeqList() => pack.GetLinkData("ASUser");
+        public void SetAnimSeqList(string data)
+        {
+            List<string> as_names = new();
+            AampFile aamp = AampFile.FromYml(data);
+            foreach (ParamObject obj in aamp.RootNode.Lists("ASDefines")!.ParamObjects)
+            {
+                as_names.Add((string)obj.Params("Filename")!.Value);
+            }
+            string[] existing_names = pack.AnimSeqNames;
+            foreach (string name in as_names)
+            {
+                if (!existing_names.Contains(name))
+                {
+                    pack.SetAnimSeq(name, AampFile.New(2).ToYml());
+                }
+            }
+            foreach (string name in existing_names)
+            {
+                if (!as_names.Contains(name))
+                {
+                    pack.RemoveAnimSeq(name);
+                }
+            }
+            pack.SetLinkData("ASUser", data);
+        }
+        public string GetAnimSeq(string name) => pack.GetAnimSeq(name);
+        public void SetAnimSeq(string name, string data) => pack.SetAnimSeq(name, data);
 
         public bool SetHasFar(bool enabled)
         {

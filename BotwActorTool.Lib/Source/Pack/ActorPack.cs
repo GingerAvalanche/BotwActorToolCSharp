@@ -9,6 +9,7 @@ namespace BotwActorTool.Lib.Pack
     {
         private string _actorname;
         private readonly Dictionary<string, AampFile> _aampfiles = new();
+        private readonly Dictionary<string, AampFile> _animseqfiles = new();
         private readonly Dictionary<string, BymlFile> _bymlfiles = new();
         private readonly Dictionary<string, byte[]> _miscfiles = new();
         private readonly Dictionary<string, string> _links = new();
@@ -16,6 +17,7 @@ namespace BotwActorTool.Lib.Pack
         private string[] _tags2 = Array.Empty<string>();
         private readonly Endian endianness;
         public string Name { get => _actorname; }
+        public string[] AnimSeqNames { get => _animseqfiles.Keys.OrderBy(k => k).ToArray(); }
         public string Tags { get => string.Join(", ", _tags); set => _tags = value.Split(",").Select(s => s.Trim()).ToArray(); }
         public string Tags2 { get => string.Join(", ", _tags2); set => _tags2 = value.Split(",").Select(s => s.Trim()).ToArray(); }
         public Endian Endianness { get => endianness; }
@@ -69,7 +71,12 @@ namespace BotwActorTool.Lib.Pack
 
             foreach ((string name, byte[] data) in sarc.Files)
             {
-                if (!handled.Contains(name))
+                if (name.StartsWith("Actor/AS/"))
+                {
+                    _animseqfiles[name.Replace("Actor/AS/", "")] = new AampFile(data);
+                    handled.Add(name);
+                }
+                else if (!handled.Contains(name))
                 {
                     _miscfiles.Add(name, data);
                 }
@@ -185,6 +192,10 @@ namespace BotwActorTool.Lib.Pack
             }
         }
 
+        public string GetAnimSeq(string name) => _animseqfiles[name].ToYml();
+        public void RemoveAnimSeq(string name) => _animseqfiles.Remove(name);
+        public void SetAnimSeq(string name, string data) => _animseqfiles[name] = AampFile.FromYml(data);
+
         public AampFile GetActorLink()
         {
             AampFile actorlink = AampFile.New(2);
@@ -272,6 +283,12 @@ namespace BotwActorTool.Lib.Pack
             {
                 (string folder, string ext) = Util.BYML_LINK_REFS[link];
                 filename = $"Actor/{folder}/{GetLink(link)}{ext}";
+                files[filename] = file.ToBinary();
+            }
+
+            foreach ((string name, AampFile file) in _animseqfiles.OrderBy(p => p.Key))
+            {
+                filename = $"Actor/AS/{name}";
                 files[filename] = file.ToBinary();
             }
 

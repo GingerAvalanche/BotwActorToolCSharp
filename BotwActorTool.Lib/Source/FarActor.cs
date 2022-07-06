@@ -589,6 +589,7 @@ namespace BotwActorTool.Lib
                 needs_info_update = true;
             }
         }
+
         public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
 
         public void Update()
