@@ -44,11 +44,5 @@
     <Compile Update="Views\BrowserView.axaml.cs">
       <DependentUpon>BrowserView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Browsers\ModView.axaml.cs">
-      <DependentUpon>ModView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Browsers\VanillaView.axaml.cs">
-      <DependentUpon>VanillaView.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>
