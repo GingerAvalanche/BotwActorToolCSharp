@@ -27,7 +27,20 @@ namespace BotwActorTool.GUI.ViewModels
         public void OpenActor(string actorpack, string name)
         {
             SetStatus("Unpacking Actor", MaterialIconKind.SemanticWeb);
-            DocumentDock.VisibleDockables.Add(new ActorViewModel(new(PathExtensions.ToAltPathSeparator(actorpack))) { Title = name });
+
+            var actorDoc = new ActorViewModel(new(PathExtensions.ToAltPathSeparator(actorpack))) {
+                Title = name
+            };
+
+            if (DocumentDock.VisibleDockables == null) {
+                DocumentDock.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
+            }
+            else {
+                DocumentDock.VisibleDockables.Add(actorDoc);
+            }
+
+            DocumentDock.ActiveDockable = actorDoc;
+
             SetStatus();
         }
         
