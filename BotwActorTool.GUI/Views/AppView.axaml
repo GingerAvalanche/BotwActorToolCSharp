@@ -1,0 +1,162 @@
+<Window x:Class="BotwActorTool.GUI.Views.AppView"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:mdix="using:Material.Icons.Avalonia"
+        xmlns:app="BotwActorTool.GUI"
+        Title="Botw Actor Tool"
+        Width="680"
+        Height="450"
+        MinWidth="600"
+        MinHeight="400"
+		WindowState="Normal"
+        d:DesignHeight="450"
+        d:DesignWidth="800"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="NoChrome"
+		TransparencyLevelHint="AcrylicBlur"
+        Icon="/Assets/icon.ico"
+        mc:Ignorable="d">
+
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+
+		<!--  CONTENT  -->
+		
+		<Panel Grid.Row="1">
+			<ExperimentalAcrylicBorder IsHitTestVisible="False">
+				<ExperimentalAcrylicBorder.Material>
+					<ExperimentalAcrylicMaterial
+						BackgroundSource="Digger"
+						TintColor="{DynamicResource SystemAltHighColor}"
+						TintOpacity="0.9"
+						MaterialOpacity="0.65" />
+				</ExperimentalAcrylicBorder.Material>
+			</ExperimentalAcrylicBorder>
+		</Panel>
+
+		<ContentControl Content="{Binding SettingsView}" Grid.Row="1" />
+
+		<!--  CHROME BAR  -->
+
+		<Border IsHitTestVisible="False" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+
+		<Image Width="24"
+               Height="24"
+               Margin="3"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"
+               Source="/Assets/icon.ico" />
+
+		<Menu Margin="33,0,0,0" HorizontalAlignment="Left">
+			<MenuItem Header="_File" Height="30">
+				<MenuItem Header="Open Vanilla Actor"
+						  HotKey="Ctrl+N"
+						  Icon="Save"
+						  Command="{Binding OpenVanillaActor}"
+						  InputGesture="Ctrl + N" />
+				<MenuItem Header="Open Mod Actor"
+						  HotKey="Ctrl+O"
+						  Command="{Binding OpenModActor}"
+						  Icon="/Assets/icon.ico"
+						  InputGesture="Ctrl + O" />
+				<Separator />
+				<MenuItem Header="Save Actor"
+						  HotKey="Ctrl+S"
+						  Command="{Binding SaveActor}"
+						  Icon="/Assets/icon.ico"
+						  InputGesture="Ctrl + S" />
+				<Separator />
+				<MenuItem Header="Quit"
+						  HotKey="Ctrl+Q"
+						  Command="{Binding Quit}"
+						  Icon="/Assets/icon.ico"
+						  InputGesture="Ctrl + Q" />
+			</MenuItem>
+			<MenuItem Header="_Tools" Height="30">
+				<MenuItem Header="Some Tool (?)" Command="{Binding Temp_PlaceHolder}" />
+				<Separator />
+				<MenuItem Header="Settings" Command="{Binding Settings}" />
+			</MenuItem>
+			<MenuItem Header="_About" Height="30">
+				<MenuItem Header="Help" Command="{Binding Help}" />
+				<MenuItem Header="Credits" Command="{Binding Credits}" />
+			</MenuItem>
+		</Menu>
+
+		<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+			<Button CornerRadius="0"
+					Command="{Binding Minimize}"
+					Height="30"
+					BorderThickness="0"
+					Background="Transparent"
+					Width="40">
+				<mdix:MaterialIcon Kind="Minus" Margin="0,2,0,0">
+					<mdix:MaterialIcon.RenderTransform>
+						<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+					</mdix:MaterialIcon.RenderTransform>
+				</mdix:MaterialIcon>
+			</Button>
+
+			<Button CornerRadius="0"
+					Command="{Binding ChangeState}"
+					Height="30"
+					BorderThickness="0"
+					Background="Transparent"
+					IsVisible="{Binding IsWindows}"
+					Width="40">
+				<Grid>
+					<mdix:MaterialIcon Kind="Fullscreen"
+									   Margin="0,1,0,0"
+									   IsVisible="{Binding !IsMaximized}">
+						<mdix:MaterialIcon.RenderTransform>
+							<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+						</mdix:MaterialIcon.RenderTransform>
+					</mdix:MaterialIcon>
+					<mdix:MaterialIcon Kind="WindowRestore"
+									   Margin="0,1,0,0"
+									   IsVisible="{Binding IsMaximized}">
+						<mdix:MaterialIcon.RenderTransform>
+							<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+						</mdix:MaterialIcon.RenderTransform>
+					</mdix:MaterialIcon>
+				</Grid>
+			</Button>
+
+			<Button Command="{Binding Quit}"
+					CornerRadius="0"
+					Height="30"
+					BorderThickness="0"
+					Background="Transparent"
+					Width="40">
+				<mdix:MaterialIcon Kind="Close" Margin="0,1,0,0">
+					<mdix:MaterialIcon.RenderTransform>
+						<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+					</mdix:MaterialIcon.RenderTransform>
+				</mdix:MaterialIcon>
+			</Button>
+			
+		</StackPanel>
+
+		<!--  FOOTER  -->
+
+		<Grid Grid.Row="2" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+		
+			<ProgressBar VerticalAlignment="Top"
+						 Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+						 IsIndeterminate="{Binding IsLoading}" />
+			
+		</Grid>
+		
+    </Grid>
+</Window>

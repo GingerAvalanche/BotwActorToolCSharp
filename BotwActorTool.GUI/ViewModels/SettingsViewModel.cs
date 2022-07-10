@@ -1,6 +1,7 @@
 ﻿using BotwActorTool.GUI.ViewResources.Helpers;
 using BotwActorTool.GUI.ViewThemes.App;
 using Stylet;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -254,6 +255,8 @@ namespace BotwActorTool.GUI.ViewModels
             BaseGameNx = Config.GameDirNx;
             DlcNx = Config.DlcDirNx;
             Lang = Config.Lang;
+
+            Console.WriteLine("0.0.6");
         }
     }
 }
