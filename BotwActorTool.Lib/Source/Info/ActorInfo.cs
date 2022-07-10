@@ -312,6 +312,10 @@ namespace BotwActorTool.Lib.Info
                         {
                             locators = node.Array.Select(n => RetrieveDynamicHash(n)).ToArray();
                         }
+                        else if (key == "tags")
+                        {
+                            tags = RetrieveIntHash(node);
+                        }
                         else
                         {
                             typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
@@ -740,12 +744,7 @@ namespace BotwActorTool.Lib.Info
         }
         private static dynamic RetrieveHash(BymlNode node)
         {
-            NodeType type = NodeType.None;
-            foreach ((string key, BymlNode child) in node.Hash) // messy hash type retrieval
-            {
-                type = child.Type;
-                break;
-            }
+            NodeType type = node.Hash.First().Value.Type;
             return type switch
             {
                 NodeType.String => RetrieveStringHash(node),
