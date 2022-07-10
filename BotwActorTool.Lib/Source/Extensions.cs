@@ -50,6 +50,9 @@ namespace BotwActorTool.Lib
 
     public static class PathExtensions
     {
-        public static string ToAltPathSeparator(this string path) => path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        public static string ToAltPathSeparator(this string path)
+        {
+            return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
     }
 }
