@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.GUI", "BotwActorTool.GUI\BotwActorTool.GUI.csproj", "{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.Lib", "BotwActorTool.Lib\BotwActorTool.Lib.csproj", "{676537ED-112E-47BC-B6D7-B30AA8987838}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BATLibTests", "BATLibTests\BATLibTests.csproj", "{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BATLibTests", "BATLibTests\BATLibTests.csproj", "{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwActorTool.GUI", "BotwActorTool.GUI\BotwActorTool.GUI.csproj", "{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FED90FF-C36C-448F-87DC-3DA1FB2FE308}.Release|Any CPU.Build.0 = Release|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676537ED-112E-47BC-B6D7-B30AA8987838}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
