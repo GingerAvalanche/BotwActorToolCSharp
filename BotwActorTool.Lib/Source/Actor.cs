@@ -118,6 +118,10 @@ namespace BotwActorTool.Lib
         {
             base.SetLink(link, linkref);
             pack.SetLink(link, linkref);
+            if (link == "ProfileUser")
+            {
+                texts.SetProfile(linkref);
+            }
             needs_info_update = true;
         }
         public override void SetLinkData(string link, string data)

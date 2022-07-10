@@ -4,6 +4,44 @@ namespace BotwActorTool.Lib.Texts
 {
     class ActorTexts
     {
+        private static readonly HashSet<string> msbtProfiles = new()
+        {
+            "ArmorHead",
+            "ArmorLower",
+            "ArmorUpper",
+            "Bullet",
+            "CapturedActor",
+            "CookResult",
+            "DemoNPC",
+            "Dragon",
+            "Enemy",
+            "GelEnemy",
+            "GiantEnemy",
+            "Guardian",
+            "Horse",
+            "HorseObject",
+            "HorseReins",
+            "HorseSaddle",
+            "Item",
+            "LastBoss",
+            "MapConstActive",
+            "MapConstPassive",
+            "MapDynamicActive",
+            "MapDynamicPassive",
+            "NPC",
+            "PlayerItem",
+            "Prey",
+            "Sandworm",
+            "Siteboss",
+            "Swarm",
+            "WeaponBow",
+            "WeaponLargeSword",
+            "WeaponShield",
+            "WeaponSmallSword",
+            "WeaponSpear",
+        };
+        private bool hasTexts;
+        public bool HasTexts { get; }
         public string ActorName { private get; set; }
         public Dictionary<string, MsbtEntry> Texts { get => texts; }
         private readonly string orig_actor_name;
@@ -21,8 +59,13 @@ namespace BotwActorTool.Lib.Texts
             ActorName = Path.GetFileNameWithoutExtension(pack);
             orig_actor_name = ActorName;
             this.profile = profile;
+            hasTexts = msbtProfiles.Contains(profile);
+            if (!hasTexts)
+            {
+                return;
+            }
             string lang = Config.Lang;
-            MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
+            MSBT msbt = new(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt"));
             Dictionary<string, MsbtEntry> temp = msbt.GetTexts();
             foreach (string key in texts.Keys) {
                 if (temp.ContainsKey($"{ActorName}_{key}")) {
@@ -31,8 +74,17 @@ namespace BotwActorTool.Lib.Texts
             }
         }
 
+        public void SetProfile(string profile)
+        {
+            hasTexts = msbtProfiles.Contains(profile);
+        }
+
         public void DeleteActor(string modRoot)
         {
+            if (!hasTexts)
+            {
+                return;
+            }
             string lang = Config.Lang;
             MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
@@ -46,6 +98,10 @@ namespace BotwActorTool.Lib.Texts
 
         public void Write(string modRoot)
         {
+            if (!hasTexts)
+            {
+                return;
+            }
             string lang = Config.Lang;
             MSBT msbt = new(new MemoryStream(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt")));
             Dictionary<string, MsbtEntry> AllTexts = msbt.GetTexts();
