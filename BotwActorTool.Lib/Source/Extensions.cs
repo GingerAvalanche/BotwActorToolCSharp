@@ -1,5 +1,4 @@
 ﻿using Nintendo.Sarc;
-using System.Text;
 using Yaz0Library;
 
 namespace BotwActorTool.Lib
@@ -46,6 +45,13 @@ namespace BotwActorTool.Lib
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             return ms.ToArray();
+        }
+    }
+    public static class PathExtensions
+    {
+        public static string ToAltPathSeparator(string path)
+        {
+            return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
     }
 }
