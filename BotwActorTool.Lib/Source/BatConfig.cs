@@ -53,6 +53,22 @@ namespace BotwActorTool.Lib
         {
             if (File.Exists($"{Config.DataFolder}\\Config.json"))
                 Config = JsonSerializer.Deserialize<BatConfig>(File.ReadAllText($"{Config.DataFolder}\\Config.json")) ?? new();
+            else if (File.Exists($"{Config.DataFolder}\\..\\bcml\\settings.json")) {
+
+                Config = new();
+
+                Dictionary<string, object> settings =
+                    JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText($"{Config.DataFolder}\\..\\bcml\\settings.json")) ?? new();
+
+                Config.Lang = settings["lang"].ToString() ?? "";
+                Config.GameDir = settings["game_dir"].ToString() ?? "";
+                Config.GameDirNx = settings["game_dir_nx"].ToString() ?? "";
+                Config.UpdateDir = settings["update_dir"].ToString() ?? "";
+                Config.DlcDir = settings["dlc_dir"].ToString() ?? "";
+                Config.DlcDirNx = settings["dlc_dir_nx"].ToString() ?? "";
+
+                Config.Save();
+            }
             else {
                 Config = new BatConfig().Save();
             }
