@@ -1,0 +1,29 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:BotwActorTool.GUI"
+             x:Class="BotwActorTool.GUI.App">
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+		<StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentDark.xaml" />
+		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
+		<StyleInclude Source="avares://Dock.Avalonia/Themes/DockFluentTheme.axaml"/>
+		<Style>
+			<Style.Resources>
+				<SolidColorBrush x:Key="DockApplicationAccentBrushLow" Color="{DynamicResource SystemBaseLowColor}" />
+				<SolidColorBrush x:Key="DockApplicationAccentBrushMed" Color="{DynamicResource SystemListMediumColor}" />
+				<SolidColorBrush x:Key="DockApplicationAccentForegroundBrush" Color="{DynamicResource SystemBaseHighColor}" />
+			</Style.Resources>
+		</Style>
+		<Style>
+			<Style.Resources>
+				<SolidColorBrush x:Key="DockThemeBorderLowBrush" Color="{DynamicResource SystemBaseLowColor}" />
+				<SolidColorBrush x:Key="DockThemeBackgroundBrush" Color="{DynamicResource SystemChromeLowColor}" />
+				<SolidColorBrush x:Key="DockThemeAccentBrush" Color="{DynamicResource SystemBaseLowColor}" />
+				<SolidColorBrush x:Key="DockThemeForegroundBrush" Color="{DynamicResource SystemBaseHighColor}" />
+			</Style.Resources>
+		</Style>
+    </Application.Styles>
+</Application>

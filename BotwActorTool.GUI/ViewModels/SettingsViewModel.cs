@@ -1,14 +1,26 @@
-﻿using BotwActorTool.GUI.ViewResources.Helpers;
-using BotwActorTool.GUI.ViewThemes.App;
-using Stylet;
-using System.IO;
-using System.Windows;
-using System.Windows.Media;
+﻿#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+using Avalonia.Controls;
+using Avalonia.Dialogs;
+using Avalonia.Media;
+using Avalonia.Themes.Fluent;
+using BotwActorTool.GUI.Extensions;
+using BotwActorTool.GUI.Views;
+using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.ViewModels
 {
-    public class SettingsViewModel : Screen
+    public class SettingsViewModel : ReactiveObject
     {
+        //
+        // Misc
+
         private Brush ValidatePath(string path, string mode)
         {
             if (string.IsNullOrEmpty(path)) {
@@ -22,150 +34,159 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
-        private static readonly Brush _default = new SolidColorBrush(SysTheme.ITheme.PrimaryMid.Color);
-        private static readonly Brush _valid = "#0CED5F".ToBrush();
-        private static readonly Brush _invalid = "#ED2A64".ToBrush();
-        private readonly ShellViewModel _shellViewModel;
+        private static readonly Brush _default = "#00000000".ToBrush();
+        private static readonly Brush _valid = "#00CC1C".ToBrush();
+        private static readonly Brush _invalid = "#FF0000".ToBrush();
 
-        private string _baseGame = "";
+        public SettingsView View { get; set; }
+        public SettingsViewModel(SettingsView view)
+        {
+            View = view;
+
+            BaseGame = Config.GameDir;
+            Update = Config.UpdateDir;
+            Dlc = Config.DlcDir;
+            BaseGameNx = Config.GameDirNx;
+            DlcNx = Config.DlcDirNx;
+
+            View.FindControl<ToggleSwitch>("ThemeToggle").IsChecked = Config.IsDarkTheme;
+        }
+
+        //
+        // Properties
+
+        private string baseGame = "";
         public string BaseGame {
-            get => _baseGame;
+            get => baseGame;
             set {
-                SetAndNotify(ref _baseGame, value);
-                BaseGameBrush = ValidatePath(value, "base");
+                this.RaiseAndSetIfChanged(ref baseGame, value);
+                BaseGameBrush = ValidatePath(value, "BaseGame");
             }
-
         }
 
-        private string _update = "";
+        private string update = "";
         public string Update {
-            get => _update;
+            get => update;
             set {
-                SetAndNotify(ref _update, value);
-                UpdateBrush = ValidatePath(value, "update");
+                this.RaiseAndSetIfChanged(ref update, value);
+                UpdateBrush = ValidatePath(value, "Update");
             }
         }
 
-        private string _dlc = "";
+        private string dlc = "";
         public string Dlc {
-            get => _dlc;
+            get => dlc;
             set {
-                SetAndNotify(ref _dlc, value);
-                DlcBrush = ValidatePath(value, "dlc");
+                this.RaiseAndSetIfChanged(ref dlc, value);
+                DlcBrush = ValidatePath(value, "Dlc");
             }
         }
 
-        private string _baseGameNx = "";
+        private string baseGameNx = "";
         public string BaseGameNx {
-            get => _baseGameNx;
+            get => baseGameNx;
             set {
-                SetAndNotify(ref _baseGameNx, value);
-                BaseGameNxBrush = ValidatePath(value, "baseNx");
+                this.RaiseAndSetIfChanged(ref baseGameNx, value);
+                BaseGameNxBrush = ValidatePath(value, "BaseGameNx");
             }
-
         }
 
-        private string _dlcNx = "";
+        private string dlcNx = "";
         public string DlcNx {
-            get => _dlcNx;
+            get => dlcNx;
             set {
-                SetAndNotify(ref _dlcNx, value);
-                DlcNxBrush = ValidatePath(value, "dlcNx");
+                this.RaiseAndSetIfChanged(ref dlcNx, value);
+                DlcNxBrush = ValidatePath(value, "DlcNx");
             }
         }
 
-        private Brush _baseGameBrush = _default;
+        private Brush baseGameBrush = _default;
         public Brush BaseGameBrush {
-            get => _baseGameBrush;
-            set => SetAndNotify(ref _baseGameBrush, value);
+            get => baseGameBrush;
+            set => this.RaiseAndSetIfChanged(ref baseGameBrush, value);
         }
 
-        private Brush _updateBrush = _default;
+        private Brush updateBrush = _default;
         public Brush UpdateBrush {
-            get => _updateBrush;
-            set => SetAndNotify(ref _updateBrush, value);
+            get => updateBrush;
+            set => this.RaiseAndSetIfChanged(ref updateBrush, value);
         }
 
-        private Brush _dlcBrush = _default;
+        private Brush dlcBrush = _default;
         public Brush DlcBrush {
-            get => _dlcBrush;
-            set => SetAndNotify(ref _dlcBrush, value);
+            get => dlcBrush;
+            set => this.RaiseAndSetIfChanged(ref dlcBrush, value);
         }
 
-        private Brush _baseGameNxBrush = _default;
+        private Brush baseGameNxBrush = _default;
         public Brush BaseGameNxBrush {
-            get => _baseGameNxBrush;
-            set => SetAndNotify(ref _baseGameNxBrush, value);
+            get => baseGameNxBrush;
+            set => this.RaiseAndSetIfChanged(ref baseGameNxBrush, value);
         }
 
-        private Brush _dlcNxBrush = _default;
+        private Brush dlcNxBrush = _default;
         public Brush DlcNxBrush {
-            get => _dlcNxBrush;
-            set => SetAndNotify(ref _dlcNxBrush, value);
+            get => dlcNxBrush;
+            set => this.RaiseAndSetIfChanged(ref dlcNxBrush, value);
         }
 
-        private string _lang = "USen";
-        public string Lang {
-            get => _lang;
-            set => SetAndNotify(ref _lang, value);
-        }
+        //
+        // Functions
 
-        private BindableCollection<string> _themes = new();
-        public BindableCollection<string> Themes {
-            get => _themes;
-            set => SetAndNotify(ref _themes, value);
-        }
+        public void ChangeTheme()
+            => App.Fluent.Mode = App.Fluent.Mode == FluentThemeMode.Dark ? App.Fluent.Mode = FluentThemeMode.Light : App.Fluent.Mode = FluentThemeMode.Dark;
 
-        private string _theme = SysTheme.Name;
-        public string Theme {
-            get => _theme;
-            set {
-                SetAndNotify(ref _theme, value);
+        public async void Close(bool warn = true)
+        {
+            if (warn) {
 
-                if (value == "New. . .") {
-                    EditTheme();
-                }
-                else {
-                    SysTheme.Load(value);
+                if (Config.GameDir != BaseGame || Config.UpdateDir != Update || Config.DlcDir != Dlc ||
+                    Config.GameDirNx != BaseGameNx || Config.DlcDirNx != DlcNx) {
+                    var result = await View.Window.ShowMessageBox("Are you sure you want to discard chages?", "Warning", MessageBoxButtons.YesNoCancel);
+                    if (result == MessageBoxResult.No || result == MessageBoxResult.Cancel) {
+                        return;
+                    }
                 }
             }
+
+            ((AppViewModel)View.Window.DataContext).SettingsView = null;
+            ((AppViewModel)View.Window.DataContext).IsSettingsOpen = false;
         }
 
-        public void Close() => _shellViewModel.SettingsViewModel = null;
         public void Save()
         {
             if (BaseGameBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The WiiU game path is invalid.\nPlease correct or delete it before saving.", "Error");
+                View.Window.ShowMessageBox("The WiiU game path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
             if (UpdateBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The WiiU update path is invalid.\nPlease correct or delete it before saving.", "Error");
+                View.Window.ShowMessageBox("The WiiU update path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
             if (DlcBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The WiiU DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
+                View.Window.ShowMessageBox("The WiiU DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
             if (BaseGameNxBrush == _invalid && BaseGameBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The Switch game/update path is invalid.\nPlease correct or delete it before saving.", "Error");
+                View.Window.ShowMessageBox("The Switch game/update path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
             if (DlcNxBrush == _invalid) {
-                _shellViewModel.WindowManager.Show("The Switch DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
+                View.Window.ShowMessageBox("The Switch DLC path is invalid.\nPlease correct or delete it before saving.", "Error");
                 return;
             }
 
             if (BaseGameBrush == _default && UpdateBrush == _default && BaseGameNxBrush == _default) {
-                _shellViewModel.WindowManager.Show("No game path has been set for Switch or WiiU.\nPlease set one of them before saving.", "Error");
+                View.Window.ShowMessageBox("No game path has been set for Switch or WiiU.\nPlease set one of them before saving.", "Error");
                 return;
             }
 
-            if (BaseGameBrush == _valid && UpdateBrush == _default ) {
-                _shellViewModel.WindowManager.Show("The WiiU update path has not been set.\nPlease set it before saving.", "Error");
+            if (BaseGameBrush == _valid && UpdateBrush == _default) {
+                View.Window.ShowMessageBox("The WiiU update path has not been set.\nPlease set it before saving.", "Error");
                 return;
             }
 
@@ -174,86 +195,38 @@ namespace BotwActorTool.GUI.ViewModels
             Config.DlcDir = Dlc;
             Config.GameDirNx = BaseGameNx;
             Config.DlcDirNx = DlcNx;
-            Config.Theme = Theme;
-            Config.Lang = Lang;
+            Config.IsDarkTheme = App.Fluent.Mode == FluentThemeMode.Dark;
 
             Config.Save();
-
-            Close();
+            Close(false);
         }
 
-        public void Browse(string mode)
+        private string? lastSelectedDir = null;
+        public async void Browse(string mode)
         {
-            System.Windows.Forms.FolderBrowserDialog browse = new();
+            var result = await new OpenFolderDialog() {
+                Title = $"Select the {mode} Folder",
+                Directory = lastSelectedDir
+            }.ShowAsync(View.Window);
 
-            if (browse.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                if (mode == "base") {
-                    BaseGame = browse.SelectedPath;
+            if (!string.IsNullOrEmpty(result)) {
+                lastSelectedDir = result;
+                if (mode == "Base Game") {
+                    BaseGame = result;
                 }
-                else if (mode == "update") {
-                    Update = browse.SelectedPath;
+                else if (mode == "Update") {
+                    Update = result;
                 }
-                else if (mode == "dlc") {
-                    Dlc = browse.SelectedPath;
+                else if (mode == "DLC") {
+                    Dlc = result;
                 }
-                else if (mode == "baseNx") {
-                    BaseGameNx = browse.SelectedPath;
+                else if (mode == "Base Game (Switch)") {
+                    BaseGameNx = result;
                 }
-                else if (mode == "dlcNx") {
-                    DlcNx = browse.SelectedPath;
+                else if (mode == "DLC (Switch)") {
+                    DlcNx = result;
                 }
             }
-        }
-
-        public void EditTheme()
-        {
-            ThemeViewModel = new(_shellViewModel.WindowManager, this);
-            ThemeViewModel.ThemeName = Theme == "New. . ." ? "New Theme" : Theme;
-        }
-
-        public void DeleteTheme()
-        {
-            if (Theme == "System") {
-                _shellViewModel.WindowManager.Show($"You can't delete the system theme.", "Error");
-                return;
-            }
-
-            if (File.Exists($"{SysTheme.Folder}\\{Theme}.json")) {
-                if (_shellViewModel.WindowManager.Show($"Are you sure you want to delete '{Theme}'?", "Warning", true)) {
-
-                    // Delete theme resource
-                    File.Delete($"{SysTheme.Folder}\\{Theme}.json");
-
-                    // Update current theme list and current selection
-                    Themes = SysTheme.GetThemes(true);
-
-                    try {
-                        Theme = SysTheme.Load(SysTheme.Last);
-                    }
-                    catch {
-                        Theme = SysTheme.Load(SysTheme.Default);
-                    }
-                }
-            }
-        }
-
-        private ThemeViewModel? _themeViewModel = null;
-        public ThemeViewModel? ThemeViewModel {
-            get => _themeViewModel;
-            set => SetAndNotify(ref _themeViewModel, value);
-        }
-
-        public SettingsViewModel(ShellViewModel shell)
-        {
-            _shellViewModel = shell;
-            Themes = SysTheme.GetThemes(true);
-
-            BaseGame = Config.GameDir;
-            Update = Config.UpdateDir;
-            Dlc = Config.DlcDir;
-            BaseGameNx = Config.GameDirNx;
-            DlcNx = Config.DlcDirNx;
-            Lang = Config.Lang;
         }
     }
 }
