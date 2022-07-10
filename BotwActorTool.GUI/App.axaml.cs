@@ -19,21 +19,25 @@ namespace BotwActorTool.GUI
             // Load the user config
             LoadConfig();
 
-            // Create actor dock
-            var factory = new AppDockFactory(null);
-            var layout = factory.CreateLayout();
-            factory.InitLayout(layout);
-
-            // Create tools dock
-            var toolFactory = new ToolDockFactory(null);
-            var toolLayout = toolFactory.CreateLayout();
-            toolFactory.InitLayout(toolLayout);
-
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
+                // Create desktop instance
                 AppView appView = new();
-                appView.DataContext = new AppViewModel(appView, factory, layout, toolFactory, toolLayout);
                 desktop.MainWindow = appView;
+
+                // Create data context
+                AppViewModel dataContext = new(appView);
+                appView.DataContext = dataContext;
+
+                // Create actor dock
+                var factory = new AppDockFactory(dataContext);
+                var layout = factory.CreateLayout();
+                factory.InitLayout(layout);
+
+                // Create tools dock
+                var toolFactory = new ToolDockFactory(dataContext);
+                var toolLayout = toolFactory.CreateLayout();
+                toolFactory.InitLayout(toolLayout);
             }
 
             Fluent.Mode = Config.IsDarkTheme ? FluentThemeMode.Dark : FluentThemeMode.Dark;
