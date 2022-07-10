@@ -56,7 +56,9 @@
 						  Grid.Column="1"
 						  Background="Transparent"
 						  Width="2" />
-			<idc:DockControl Layout="{Binding Layout}" Grid.Column="2" Margin="5" />
+			<idc:DockControl Layout="{Binding Layout}"
+							 Grid.Column="2"
+							 Margin="5" />
 		</Grid>
 
 		<ContentControl Content="{Binding SettingsView}" Grid.Row="1" />
