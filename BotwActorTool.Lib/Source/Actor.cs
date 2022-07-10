@@ -91,7 +91,15 @@ namespace BotwActorTool.Lib
         public string[] AnimSeqNames { get => pack.AnimSeqNames; }
         public override bool HasFar { get => far_actor != null; }
         public bool Resident { get => resident; set => resident = value; }
-        public Dictionary<string, MsbtEntry> Texts { get => texts.Texts; }
+        public Dictionary<string, MsbtEntry>? Texts
+        {
+            get
+            {
+                if (texts.HasTexts)
+                    return texts.Texts;
+                return null;
+            }
+        }
         public Actor(string filename) : base(filename)
         {
             resident = filename.Contains("TitleBG.pack");
