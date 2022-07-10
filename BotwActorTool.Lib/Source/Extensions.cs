@@ -47,11 +47,9 @@ namespace BotwActorTool.Lib
             return ms.ToArray();
         }
     }
+
     public static class PathExtensions
     {
-        public static string ToAltPathSeparator(string path)
-        {
-            return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        }
+        public static string ToAltPathSeparator(this string path) => path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
     }
 }
