@@ -18,7 +18,7 @@ namespace BotwActorTool.GUI.Views
             this.FindControl<TextBlock>("TitleBox").Text = title;
             this.FindControl<Button>("Copy").Click += async (_, _) => {
                 if (Application.Current != null && Application.Current.Clipboard != null)
-                    await Application.Current.Clipboard.SetTextAsync($"**{title}**\n{text}");
+                    await Application.Current.Clipboard.SetTextAsync($"**{title}**\n```\n{text}\n```");
             };
         }
 
