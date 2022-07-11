@@ -12,6 +12,8 @@ using Material.Icons;
 using BotwActorTool.Lib;
 using Dock.Model.ReactiveUI.Controls;
 using System.Threading.Tasks;
+using BotwActorTool.GUI.Extensions;
+using System;
 
 namespace BotwActorTool.GUI.ViewModels
 {
@@ -24,31 +26,55 @@ namespace BotwActorTool.GUI.ViewModels
             StatusIcon = icon;
         }
 
-        public void OpenActor(string actorpack, string name)
+        public async void OpenActor(string actorpack, string modRoot)
         {
             SetStatus("Unpacking Actor", MaterialIconKind.SemanticWeb);
 
-            var actorDoc = new ActorViewModel(new(PathExtensions.ToAltPathSeparator(actorpack))) {
-                Title = name
-            };
+            try {
 
-            if (DocumentDock.VisibleDockables == null) {
-                DocumentDock.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
-            }
-            else {
-                DocumentDock.VisibleDockables.Add(actorDoc);
-            }
+                var actorDoc = new ActorViewModel($"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToAltPathSeparator()) {
+                    Title = actorpack.Length >= 20  ? actorpack[0..14] + "..." + actorpack[(actorpack.Length-6)..actorpack.Length] : actorpack,
+                    Id = actorpack,
+                };
 
-            DocumentDock.ActiveDockable = actorDoc;
+                if (DocumentDock.VisibleDockables == null) {
+                    DocumentDock.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
+                }
+                else {
+                    foreach (var doc in DocumentDock.VisibleDockables) {
+                        if (doc.Id != actorpack || await View.ShowMessageBox(
+                                $"An actor with the name '{actorpack}' is already open. Are you sure you want to open it again?", "Warning", MessageBoxButtons.YesNo
+                            ) == MessageBoxResult.Yes) {
+                            DocumentDock.VisibleDockables.Add(actorDoc);
+                            break;
+                        }
+                    }
+                }
+
+                DocumentDock.ActiveDockable = actorDoc;
+            }
+            catch (Exception ex) {
+                await View.ShowMessageBox(ex.ToString(), actorpack);
+            }
 
             SetStatus();
         }
         
         //
         // Dock References
-        public DocumentDock DocumentDock => Layout.VisibleDockables[0] as DocumentDock;
-        public ActorViewModel CurrentActor => DocumentDock.ActiveDockable as ActorViewModel;
 
+        public IDock layoutRoot;
+        public DocumentDock DocumentDock {
+            get {
+                if (Layout.VisibleDockables.Count == 0) {
+                    Factory.CreateLayout();
+                    Factory.InitLayout(Layout);
+                }
+
+                return Layout.VisibleDockables[0] as DocumentDock;
+            }
+        }
+        public ActorViewModel CurrentActor => DocumentDock.ActiveDockable as ActorViewModel;
 
         //
         // App References

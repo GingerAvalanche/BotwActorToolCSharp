@@ -30,19 +30,6 @@
         </Grid.RowDefinitions>
 
 		<!--  CONTENT  -->
-		
-		<Panel Grid.Row="1" IsVisible="False">
-			<ExperimentalAcrylicBorder IsHitTestVisible="False">
-				<ExperimentalAcrylicBorder.Material>
-					<ExperimentalAcrylicMaterial
-						BackgroundSource="Digger"
-						TintColor="{DynamicResource SystemAltHighColor}"
-						TintOpacity="0.9"
-						MaterialOpacity="0.65" />
-				</ExperimentalAcrylicBorder.Material>
-			</ExperimentalAcrylicBorder>
-		</Panel>
-
 
 		<Grid Grid.Row="1" IsVisible="{Binding !IsSettingsOpen}">
 			<Grid.ColumnDefinitions>
@@ -56,6 +43,7 @@
 						  Grid.Column="1"
 						  Background="Transparent"
 						  Width="2" />
+			
 			<idc:DockControl Layout="{Binding Layout}"
 							 Grid.Column="2"
 							 Margin="5" />
