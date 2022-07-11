@@ -15,7 +15,7 @@ namespace BotwActorTool.GUI.Extensions
 
     public static class ViewExt
     {
-        public static Task<MessageBoxResult> ShowMessageBox(this Window parent, string text, string title, MessageBoxButtons buttons = MessageBoxButtons.Ok)
+        public static Task<MessageBoxResult> ShowMessageBox(this Window parent, string text, string title = "Warning", MessageBoxButtons buttons = MessageBoxButtons.Ok)
             => Show(text, title, buttons, parent);
     }
 }
