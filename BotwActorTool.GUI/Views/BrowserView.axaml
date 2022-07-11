@@ -12,7 +12,8 @@
 
 	<Grid RowDefinitions="37,*,Auto" Margin="0,0,0,7">
 
-		<TextBox AcceptsReturn="False"
+		<TextBox Name="SearchField"
+				 AcceptsReturn="False"
 				 AcceptsTab="False"
 				 Watermark="Search"
 				 Margin="5,7"
@@ -42,14 +43,6 @@
 				</Style>
 			</ListBox.Styles>
 		</ListBox>
-
-		<ComboBox Name="Modes"
-			      Margin="5,7"
-				  Grid.Row="2"
-				  HorizontalAlignment="Stretch"
-				  Items="{Binding BrowsingModes}"
-				  SelectedItem="{Binding BrowseMode}"
-				  VerticalAlignment="Bottom" />
 
 	</Grid>
 

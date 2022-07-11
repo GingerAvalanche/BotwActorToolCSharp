@@ -17,46 +17,54 @@ using Yaz0Library;
 
 namespace BotwActorTool.GUI.ViewModels
 {
-    public delegate void OnSelectionExecute(string field, string modRoot);
+    public delegate void OnSelectionExecute(string field);
     public class BrowserViewModel : Tool
     {
-        private readonly Dictionary<string, Dictionary<string, string>> baseRoot = new();
-        public BrowserViewModel(OnSelectionExecute _onSelectionExecuted, object? obj = null)
+        private Dictionary<string, string> baseRoot = new();
+        public Dictionary<string, string> BaseRoot {
+            get => baseRoot;
+            set {
+                baseRoot = value;
+                Root = new(value);
+            }
+        }
+
+        public void SetRoot(object? obj = null, bool isMod = false)
         {
-            onSelectionExecuted = _onSelectionExecuted;
-
-            if (obj == null) {
-
-                baseRoot["Normal"] = new();
-                baseRoot["Far"] = new();
-
-                BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFileAnywhere(Config.GetDir(Dir.Update), "/Actor/ActorInfo.product.sbyml")));
+            if (obj is string str) {
+                BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFileAnywhere(str, "/Actor/ActorInfo.product.sbyml")));
 
                 foreach (var actor in actorInfo.RootNode.Hash["Actors"].Array) {
                     if (actor.Hash["name"].String is string name) {
 
+                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}/Actor/Pack/{name}.sbactorpack".ToSystemPath())) {
+                            continue;
+                        }
+
                         string desc = string.Join("\n",
                             "Name: " + "WIP",
-                            "Bfres: " + (actor.Hash.ContainsKey("bfres") ? actor.Hash["bfres"].String : "???"),
-                            "Model: " + (actor.Hash.ContainsKey("mainModel") ? actor.Hash["mainModel"].String : "???"),
-                            "Profile: " + (actor.Hash.ContainsKey("profile") ? actor.Hash["profile"].String : "???")
+                            "Bfres: " + (actor.Hash.ContainsKey("bfres") ? actor.Hash["bfres"].String : "∅"),
+                            "Model: " + (actor.Hash.ContainsKey("mainModel") ? actor.Hash["mainModel"].String : "∅"),
+                            "Profile: " + (actor.Hash.ContainsKey("profile") ? actor.Hash["profile"].String : "∅")
                         );
 
-                        if (name.EndsWith("_Far")) {
-                            baseRoot["Far"][name] = desc;
-                        }
-                        else {
-                            baseRoot["Normal"][name] = desc;
+                        if (!name.EndsWith("_Far")) {
+                            baseRoot[name] = desc;
                         }
                     }
                 }
             }
-            else if (obj is List<string> list) {
-                // baseRoot = new(list);
+            else if (obj is Dictionary<string, string> dict) {
+                baseRoot = dict;
             }
 
-            BrowseMode = BrowsingModes.First();
-            Root =new(baseRoot[BrowseMode]);
+            BaseRoot = baseRoot;
+        }
+
+        public BrowserViewModel(OnSelectionExecute _onSelectionExecuted, object? obj = null, bool isMod = false)
+        {
+            onSelectionExecuted = _onSelectionExecuted;
+            SetRoot(obj);
         }
 
         private SortedDictionary<string, string> root = new();
@@ -78,10 +86,10 @@ namespace BotwActorTool.GUI.ViewModels
                 this.RaiseAndSetIfChanged(ref searchField, value);
 
                 if (string.IsNullOrEmpty(searchField)) {
-                    Root = new(baseRoot[BrowseMode]);
+                    Root = new(BaseRoot);
                 }
                 else {
-                    Root = new(baseRoot[BrowseMode].Where(
+                    Root = new(BaseRoot.Where(
                         s => s.Key.ToLower().Contains(searchField.ToLower())
                     ).OrderBy(
                         entry => entry.Value).ToDictionary(entry => entry.Key, entry => entry.Value)
@@ -90,18 +98,7 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
-        public List<string> BrowsingModes => baseRoot.Keys.ToList();
-
-        private string browseMode = "Vanilla";
-        public string BrowseMode {
-            get => browseMode;
-            set {
-                this.RaiseAndSetIfChanged(ref browseMode, value);
-                SearchField = searchField;
-            }
-        }
-
         private readonly OnSelectionExecute onSelectionExecuted;
-        public void ExecuteSelectionChanged(object _) => onSelectionExecuted(Selected.Key, BrowseMode);
+        public void ExecuteSelectionChanged(object _) => onSelectionExecuted(Selected.Key);
     }
 }
