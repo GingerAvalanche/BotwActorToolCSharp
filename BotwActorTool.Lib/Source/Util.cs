@@ -94,7 +94,7 @@ namespace BotwActorTool.Lib
             "TWzh"
         };
 
-        public static byte[] GetFile(string filePath)
+        public static byte[]? GetFile(string filePath)
         {
             string[] parts = filePath.Split("//");
 
@@ -125,18 +125,18 @@ namespace BotwActorTool.Lib
                 return File.ReadAllBytes(filePath);
             }
 
-            throw new FileNotFoundException($"{filePath} doesn't exist.");
+            return null;
         }
 
         public static byte[] GetFileAnywhere(string modRoot, string relPath)
         {
-            byte[] bytes = GetFile($"{modRoot}/{relPath}");
+            byte[]? bytes = GetFile($"{modRoot}/{relPath}");
 
             if (bytes == null || bytes.Length == 0) {
                 bytes = GetFile(FindFileOrig(relPath, GetConsole(modRoot)));
             }
 
-            return bytes;
+            return bytes!;
         }
 
         public static BymlFile[] GetAccountSaveFormatFiles(string modRoot)
