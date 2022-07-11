@@ -1,4 +1,5 @@
 ﻿using Nintendo.Sarc;
+using System.Runtime.InteropServices;
 using Yaz0Library;
 
 namespace BotwActorTool.Lib
@@ -50,9 +51,14 @@ namespace BotwActorTool.Lib
 
     public static class PathExtensions
     {
-        public static string ToAltPathSeparator(this string path)
+        public static string ToSystemPath(this string path, bool forceUnix = false)
         {
-            return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !forceUnix) {
+                return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            }
+            else {
+                return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
         }
     }
 }
