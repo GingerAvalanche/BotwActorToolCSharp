@@ -10,9 +10,9 @@ namespace BotwActorTool.GUI.ViewModels
 {
     public class ActorViewModel : Document
     {
-        public ActorViewModel(Actor actor)
+        public ActorViewModel(string actorpack)
         {
-            // do stuff with the actor :)
+            Actor actor = new(actorpack);
         }
     }
 }
