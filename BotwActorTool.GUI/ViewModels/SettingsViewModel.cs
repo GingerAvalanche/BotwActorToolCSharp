@@ -250,16 +250,13 @@ namespace BotwActorTool.GUI.ViewModels
             Close(false);
         }
 
-        private string? lastSelectedDir = null;
         public async void Browse(string mode)
         {
             var result = await new OpenFolderDialog() {
-                Title = $"Select the {mode} Folder",
-                Directory = lastSelectedDir
+                Title = $"Select the {mode} Folder"
             }.ShowAsync(View.Window);
 
             if (!string.IsNullOrEmpty(result)) {
-                lastSelectedDir = result;
                 if (mode == "Base Game") {
                     BaseGame = result;
                 }
