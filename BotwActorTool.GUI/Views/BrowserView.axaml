@@ -10,7 +10,7 @@
 			 xmlns:sys="using:System"
              x:Class="BotwActorTool.GUI.Views.BrowserView">
 
-	<Grid RowDefinitions="37,*,Auto" Margin="0,0,0,9">
+	<Grid RowDefinitions="37,*,Auto" Margin="0,0,0,7">
 
 		<TextBox AcceptsReturn="False"
 				 AcceptsTab="False"
@@ -27,8 +27,10 @@
 				 Background="Transparent">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding}"
-							   ToolTip.Tip="{Binding}"
+					<TextBlock Text="{Binding Key}"
+							   ToolTip.Tip="{Binding Value}"
+							   Background="Transparent"
+							   HorizontalAlignment="Stretch"
 							   VerticalAlignment="Center"
 							   FontSize="12" />
 				</DataTemplate>
@@ -47,7 +49,7 @@
 				  HorizontalAlignment="Stretch"
 				  Items="{Binding BrowsingModes}"
 				  SelectedItem="{Binding BrowseMode}"
-				  VerticalAlignment="Top" />
+				  VerticalAlignment="Bottom" />
 
 	</Grid>
 
