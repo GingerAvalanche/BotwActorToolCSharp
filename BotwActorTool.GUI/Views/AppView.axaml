@@ -11,7 +11,7 @@
         Height="450"
         MinWidth="700"
         MinHeight="400"
-		WindowState="Normal"
+		WindowState="Maximized"
         d:DesignHeight="450"
         d:DesignWidth="800"
         Background="{DynamicResource SystemChromeLowColor}"
@@ -19,7 +19,6 @@
 		ExtendClientAreaChromeHints="NoChrome"
         Icon="/Assets/icon.ico"
         mc:Ignorable="d">
-
 
     <Grid>
 
@@ -33,7 +32,7 @@
 
 		<Grid Grid.Row="1" IsVisible="{Binding !IsSettingsOpen}">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition MinWidth="230" Width="230" />
+				<ColumnDefinition MinWidth="230" Width="250" />
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition MinWidth="450" />
 			</Grid.ColumnDefinitions>
@@ -63,42 +62,115 @@
                IsHitTestVisible="False"
                Source="/Assets/icon.ico" />
 
+		<!-- MENU -->
+		
 		<Menu Margin="33,0,0,0" HorizontalAlignment="Left">
+
+			<!-- FILE -->
 			<MenuItem Header="_File" Height="30">
-				<MenuItem Header="Open Vanilla Actor"
+
+				<!-- OPEN MOD -->
+				<MenuItem Header="Open Mod"
 						  HotKey="Ctrl+N"
-						  Icon="Save"
-						  Command="{Binding OpenVanillaActor}"
-						  InputGesture="Ctrl + N" />
-				<MenuItem Header="Open Mod Actor"
-						  HotKey="Ctrl+O"
-						  Command="{Binding OpenModActor}"
+						  Command="{Binding OpenMod}"
 						  Icon="/Assets/icon.ico"
-						  InputGesture="Ctrl + O" />
+						  ToolTip.Tip="Sets the current mod context for saving and opening actors from the 'Mod Files' tab."
+						  InputGesture="Ctrl + N">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="FolderOpen"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
+				
+				<!-- VANILLA ACTORS -->
+				<MenuItem Header="Vanilla Actors"
+						  HotKey="Ctrl+Shift+N"
+						  Command="{Binding OpenVanillaActor}"
+						  InputGesture="Ctrl + Shift + N">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="BoxSearchOutline"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
+				
+				<!-- - -->
 				<Separator />
+				
+				<!-- SAVE ACTOR -->
 				<MenuItem Header="Save Actor"
 						  HotKey="Ctrl+S"
 						  Command="{Binding SaveActor}"
 						  Icon="/Assets/icon.ico"
-						  InputGesture="Ctrl + S" />
+						  InputGesture="Ctrl + S">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="ContentSave"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
+				
+				<!-- - -->
 				<Separator />
+				
+				<!-- QUIT -->
 				<MenuItem Header="Quit"
 						  HotKey="Ctrl+Q"
 						  Command="{Binding Quit}"
 						  Icon="/Assets/icon.ico"
-						  InputGesture="Ctrl + Q" />
+						  InputGesture="Ctrl + Q">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="ExitToApp"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
+			
+			<!-- TOOLS -->
 			<MenuItem Header="_Tools" Height="30">
-				<MenuItem Header="Some Tool (?)" Command="{Binding Temp_PlaceHolder}" />
+				
+				<!-- SOME TOOL (TEST) -->
+				<MenuItem Header="Some Tool (?)" Command="{Binding Temp_PlaceHolder}">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="Yoga"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
+				
+				
+				<!-- - -->
 				<Separator />
-				<MenuItem Header="Settings" Command="{Binding Settings}" />
+				
+				<!-- SETTINGS -->
+				<MenuItem Header="Settings" Command="{Binding Settings}">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="CogBox"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
+			
+			<!-- ABOUT -->
 			<MenuItem Header="_About" Height="30">
-				<MenuItem Header="Help" Command="{Binding Help}" />
-				<MenuItem Header="Credits" Command="{Binding Credits}" />
+				
+				<!-- HELP -->
+				<MenuItem Header="Help" Command="{Binding Help}">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="HelpOutline"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
+				
+				<!-- CREDITS -->
+				<MenuItem Header="Credits" Command="{Binding Credits}">
+					<MenuItem.Icon>
+						<mdix:MaterialIcon Kind="PersonCheck"
+										   VerticalAlignment="Center" />
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
 
+		<!-- MIN / MAX / CLOSE -->
+		
 		<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
 			<Button CornerRadius="0"
