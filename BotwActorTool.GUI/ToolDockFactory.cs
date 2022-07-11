@@ -2,6 +2,7 @@
 
 using Avalonia.Data;
 using BotwActorTool.GUI.ViewModels;
+using BotwActorTool.Lib;
 using Dock.Avalonia.Controls;
 using Dock.Model.Controls;
 using Dock.Model.Core;
@@ -30,18 +31,14 @@ namespace BotwActorTool.GUI
                 Proportion = double.NaN,
                 ActiveDockable = null,
                 VisibleDockables = CreateList<IDockable>(
-                    new BrowserViewModel(new List<string>(), (string field) => {
-                        return; 
-                    }) {
-                        Title = "Actor", CanClose = false, CanPin = false
+                    new BrowserViewModel((string field) => context.OpenActorFile(field)) {
+                        Title = "Actor", CanClose = false, CanPin = false, Id = "Actor"
                     },
-                    new BrowserViewModel($"{Config.UpdateDir}\\Actor\\Pack", (string field) => context.OpenActor($"{Config.UpdateDir}\\Actor\\Pack\\{field}.sbactorpack", field)) {
-                        Title = "Vanilla", CanClose = false, CanPin = false
+                    new BrowserViewModel((string field) => context.OpenGameActor(field), Config.GetDir(Dir.Update)) {
+                        Title = "Vanilla Files", CanClose = false, CanPin = false, Id = "VanillaFiles"
                     },
-                    new BrowserViewModel(new List<string>(), (string field) => {
-                        return;
-                    }) {
-                        Title = "Mods", CanClose = false, CanPin = false
+                    new BrowserViewModel((string field) => context.OpenModActor(field)) {
+                        Title = "Mod Files", CanClose = false, CanPin = false, Id = "ModFiles"
                     }
                 )
             };
