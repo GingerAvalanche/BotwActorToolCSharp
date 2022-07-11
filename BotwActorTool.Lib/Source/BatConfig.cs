@@ -10,6 +10,14 @@ using static System.Environment;
 
 namespace BotwActorTool.Lib
 {
+    public enum Dir
+    {
+        Base = 0,
+        Update = 1,
+        Dlc = 2,
+        Root = 3,
+    }
+
     public class BatConfig
     {
         //
@@ -95,5 +103,13 @@ namespace BotwActorTool.Lib
                 _ => false,
             };
         }
+
+        public string GetDir(Dir dir) => dir switch {
+            Dir.Base => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : GameDir,
+            Dir.Update => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : UpdateDir,
+            Dir.Dlc => ValidateDir(DlcDirNx, nameof(DlcDirNx)) ? DlcDirNx : DlcDir,
+            Dir.Root => DataFolder,
+            _ => throw new InvalidDataException($"No handled Dir type was passed.")
+        };
     }
 }

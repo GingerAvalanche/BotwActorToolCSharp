@@ -30,7 +30,7 @@ namespace BotwActorTool.GUI.ViewModels
                 baseRoot["Normal"] = new();
                 baseRoot["Far"] = new();
 
-                BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFileAnywhere(Config.UpdateDir, "/Actor/ActorInfo.product.sbyml")));
+                BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFileAnywhere(Config.GetDir(Dir.Update), "/Actor/ActorInfo.product.sbyml")));
 
                 foreach (var actor in actorInfo.RootNode.Hash["Actors"].Array) {
                     if (actor.Hash["name"].String is string name) {
