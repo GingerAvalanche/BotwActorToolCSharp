@@ -2,7 +2,7 @@
 
 namespace BotwActorTool.Lib
 {
-    internal class Resource
+    public class Resource
     {
         private static Dictionary<string, Dictionary<string, string>>? GenericLinkFiles { get; set; }
         private static Dictionary<string, Dictionary<string, float>>? InstSizeData { get; set; }
@@ -56,7 +56,7 @@ namespace BotwActorTool.Lib
             }
             return VanillaParams;
         }
-        internal static Dictionary<string, string> GetNameList()
+        public static Dictionary<string, string> GetNameList()
         {
             if (NameList == null) {
                 using Stream stream = File.OpenRead("NameList.json");
