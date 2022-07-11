@@ -26,13 +26,15 @@ namespace BotwActorTool.GUI.ViewModels
             StatusIcon = icon;
         }
 
-        public async void OpenActor(string actorpack, string modRoot)
+        public async void OpenModActor(string actorpack) => await OpenActor(actorpack, ModContext);
+        public async void OpenGameActor(string actorpack) => await OpenActor(actorpack, Config.GetDir(Dir.Update));
+        public async Task OpenActor(string actorpack, string modRoot)
         {
             SetStatus("Unpacking Actor", MaterialIconKind.SemanticWeb);
 
             try {
 
-                var actorDoc = new ActorViewModel($"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToAltPathSeparator()) {
+                var actorDoc = new ActorViewModel($"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToSystemPath()) {
                     Title = actorpack.Length >= 20  ? actorpack[0..14] + "..." + actorpack[(actorpack.Length-6)..actorpack.Length] : actorpack,
                     Id = actorpack,
                 };
@@ -59,11 +61,32 @@ namespace BotwActorTool.GUI.ViewModels
 
             SetStatus();
         }
+
+        public async void OpenActorFile(string file)
+        {
+
+        }
+
+        //
+        // Properties
+
+        private BrowserViewModel currentMod;
+        public BrowserViewModel CurrentMod {
+            get => currentMod;
+            set => this.RaiseAndSetIfChanged(ref currentMod, value);
+        }
+
+        private string modContext;
+        public string ModContext {
+            get => modContext;
+            set => this.RaiseAndSetIfChanged(ref modContext, value);
+        }
         
         //
         // Dock References
 
         public IDock layoutRoot;
+        public ToolDock ToolDock => ToolLayout.VisibleDockables[0] as ToolDock;
         public DocumentDock DocumentDock {
             get {
                 if (Layout.VisibleDockables.Count == 0) {
@@ -73,7 +96,9 @@ namespace BotwActorTool.GUI.ViewModels
 
                 return Layout.VisibleDockables[0] as DocumentDock;
             }
+            set => Layout.VisibleDockables[0] = value;
         }
+
         public ActorViewModel CurrentActor => DocumentDock.ActiveDockable as ActorViewModel;
 
         //
