@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:mdix="using:Material.Icons.Avalonia"
+		xmlns:mda="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
         mc:Ignorable="d"
 		d:DesignWidth="400"
 		d:DesignHeight="260"
@@ -31,20 +32,24 @@
 			</ExperimentalAcrylicBorder>
 		</Panel>
 		
-		<Grid HorizontalAlignment="Center"
+		<Grid HorizontalAlignment="Stretch"
 			  Margin="15"
 			  MaxWidth="400"
 			  MaxHeight="300"
 			  RowDefinitions="*,Auto"
 			  Grid.Row="1">
+			
 			<ScrollViewer HorizontalScrollBarVisibility="Disabled"
 						  VerticalScrollBarVisibility="Auto"
 						  Padding="0,0,5,0">
-				<TextBlock HorizontalAlignment="Center"
-						   Name="Text"
-						   TextWrapping="WrapWithOverflow" />
+				<Grid>
+					<TextBlock HorizontalAlignment="Center"
+							   Name="Text"
+							   TextWrapping="WrapWithOverflow" />
+					<mda:MarkdownScrollViewer Name="Markdown" IsVisible="False" />
+				</Grid>
 			</ScrollViewer>
-		
+
 			<StackPanel HorizontalAlignment="Right"
 						VerticalAlignment="Bottom"
 						Grid.Row="1"
@@ -62,51 +67,60 @@
 
 		<!--  CHROME BAR  -->
 
-		<Border IsHitTestVisible="False" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+		<Grid ColumnDefinitions="30,*,Auto">
+			
+			<Border IsHitTestVisible="False"
+					Background="{DynamicResource SystemChromeLowColor}"
+					Grid.ColumnSpan="4" />
 
-		<Image Width="24"
-               Height="24"
-               Margin="3"
-               HorizontalAlignment="Left"
-               VerticalAlignment="Center"
-               IsHitTestVisible="False"
-               Source="/Assets/icon.ico" />
-		
-		<TextBlock Name="TitleBox"
-				   Margin="34,1,0,0"
+			<Image Width="24"
+				   Height="24"
+				   Margin="3"
+				   HorizontalAlignment="Left"
 				   VerticalAlignment="Center"
 				   IsHitTestVisible="False"
-				   FontWeight="Bold" />
+				   Source="/Assets/icon.ico" />
+		
+			<TextBlock Name="TitleBox"
+					   Margin="4,1,15,0"
+					   MinWidth="60"
+					   Grid.Column="1"
+					   VerticalAlignment="Center"
+					   IsHitTestVisible="False"
+					   FontWeight="Bold" />
+		
+			<StackPanel HorizontalAlignment="Right"
+						Orientation="Horizontal"
+						Grid.Column="2">
 
-		<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+				<Button CornerRadius="0"
+						Name="Copy"
+						Height="30"
+						BorderThickness="0"
+						Background="Transparent"
+						Width="40">
+					<mdix:MaterialIcon Kind="ContentCopy" Margin="0,1,0,0">
+						<mdix:MaterialIcon.RenderTransform>
+							<ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+						</mdix:MaterialIcon.RenderTransform>
+					</mdix:MaterialIcon>
+				</Button>
 
-			<Button CornerRadius="0"
-					Name="Copy"
-					Height="30"
-					BorderThickness="0"
-					Background="Transparent"
-					Width="40">
-				<mdix:MaterialIcon Kind="ContentCopy" Margin="0,1,0,0">
-					<mdix:MaterialIcon.RenderTransform>
-						<ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-					</mdix:MaterialIcon.RenderTransform>
-				</mdix:MaterialIcon>
-			</Button>
+				<Button CornerRadius="0"
+						Name="Close"
+						Height="30"
+						BorderThickness="0"
+						Background="Transparent"
+						Width="40">
+					<mdix:MaterialIcon Kind="Close" Margin="0,1,0,0">
+						<mdix:MaterialIcon.RenderTransform>
+							<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+						</mdix:MaterialIcon.RenderTransform>
+					</mdix:MaterialIcon>
+				</Button>
 
-			<Button CornerRadius="0"
-					Name="Close"
-					Height="30"
-					BorderThickness="0"
-					Background="Transparent"
-					Width="40">
-				<mdix:MaterialIcon Kind="Close" Margin="0,1,0,0">
-					<mdix:MaterialIcon.RenderTransform>
-						<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-					</mdix:MaterialIcon.RenderTransform>
-				</mdix:MaterialIcon>
-			</Button>
-
-		</StackPanel>
+			</StackPanel>
+		</Grid>
 	</Grid>
 	
 </Window>
