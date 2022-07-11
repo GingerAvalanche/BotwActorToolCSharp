@@ -7,8 +7,10 @@ namespace BotwActorTool.Lib
         private static Dictionary<string, Dictionary<string, string>>? GenericLinkFiles { get; set; }
         private static Dictionary<string, Dictionary<string, float>>? InstSizeData { get; set; }
         private static Dictionary<string, Dictionary<string, List<string>>>? KeysByProfile { get; set; }
+        private static Dictionary<string, string>? NameList { get; set; }
         private static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>>? Overrides { get; set; }
         private static Dictionary<string, Dictionary<string, string>>? VanillaParams { get; set; }
+
         internal static Dictionary<string, Dictionary<string, string>> GetGenericLinkFiles()
         {
             if (GenericLinkFiles == null)
@@ -53,6 +55,14 @@ namespace BotwActorTool.Lib
                 VanillaParams = (Dictionary<string, Dictionary<string, string>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, string>>))!;
             }
             return VanillaParams;
+        }
+        internal static Dictionary<string, string> GetNameList()
+        {
+            if (NameList == null) {
+                using Stream stream = File.OpenRead("NameList.json");
+                NameList = JsonSerializer.Deserialize<Dictionary<string, string>>(stream)!;
+            }
+            return NameList;
         }
     }
 }

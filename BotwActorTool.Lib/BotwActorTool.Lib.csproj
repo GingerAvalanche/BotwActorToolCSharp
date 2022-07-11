@@ -39,4 +39,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="C:\Users\ArchLeaders\.nuget\packages\yaz0library\1.0.2\contentFiles\any\net6.0\Lib\Yaz0.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
