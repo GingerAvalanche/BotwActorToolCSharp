@@ -21,10 +21,8 @@ namespace BotwActorTool.GUI
             // Load the user config
             LoadConfig();
 
-            Fluent.Mode = Config.IsDarkTheme ? FluentThemeMode.Dark : FluentThemeMode.Dark;
-            if (Current != null) {
-                Current.Styles[0] = Fluent;
-            }
+            Fluent.Mode = Config.IsDarkTheme ? FluentThemeMode.Dark : FluentThemeMode.Light;
+            Current!.Styles[0] = Fluent;
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
