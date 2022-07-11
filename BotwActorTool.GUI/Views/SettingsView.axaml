@@ -92,12 +92,31 @@
 						  HorizontalAlignment="Left"
 						  Content="Theme" />
 
+			<ComboBox HorizontalAlignment="Left"
+					  Items="{Binding Regions}"
+					  SelectedItem="{Binding Region}"
+					  VerticalAlignment="Bottom"
+					  MinWidth="140"
+					  Margin="120,0">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Key}"
+								   Background="Transparent"
+								   VerticalAlignment="Center"
+								   HorizontalAlignment="Stretch"
+								   ToolTip.Tip="{Binding Value}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
 			<StackPanel HorizontalAlignment="Right"
 						Orientation="Horizontal"
 						VerticalAlignment="Bottom">
 				<Button Width="67"
 						Command="{Binding Close}"
 						CommandParameter="true"
+						IsEnabled="{Binding CanClose}"
+						MaxHeight="300"
 						HorizontalContentAlignment="Center"
 						Content="Cancel" />
 				<Button Width="67"

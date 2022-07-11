@@ -7,11 +7,15 @@ using Avalonia.Media;
 using Avalonia.Themes.Fluent;
 using BotwActorTool.GUI.Extensions;
 using BotwActorTool.GUI.Views;
+using BotwActorTool.Lib;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -21,12 +25,43 @@ namespace BotwActorTool.GUI.ViewModels
         //
         // Misc
 
+        public bool CanClose { get; } = true;
+
+        public KeyValuePair<string, string> GetRegionPair(string regionPairKey)
+        {
+            var regionLang = regionPairKey;
+
+            foreach (var tag in Resource.GetRegionList()) {
+                regionLang = regionLang.Replace(tag.Key, tag.Value);
+            }
+
+            return new($"{regionLang} ({regionPairKey[0..2]})", regionPairKey);
+        }
+
         private Brush ValidatePath(string path, string mode)
         {
             if (string.IsNullOrEmpty(path)) {
                 return _default;
             }
             else if (Config.ValidateDir(path, mode)) {
+
+                foreach (var file in Directory.GetFiles($"{path}/Pack", "Bootup_*.pack")) {
+                    var region = Path.GetFileNameWithoutExtension(file).Replace("Bootup_", "");
+                    KeyValuePair<string, string> pair = GetRegionPair(region);
+
+                    bool addPair = true;
+
+                    for (int i = 0; i < Regions.Count; i++) {
+                        if (Regions[i].Value == pair.Value) {
+                            Regions[i] = pair;
+                            addPair = false;
+                        }
+                    }
+
+                    if (addPair && region != "Graphics") Regions.Add(pair);
+                    Region = Regions.First();
+                }
+
                 return _valid;
             }
             else {
@@ -39,7 +74,7 @@ namespace BotwActorTool.GUI.ViewModels
         private static readonly Brush _invalid = "#FF0000".ToBrush();
 
         public SettingsView View { get; set; }
-        public SettingsViewModel(SettingsView view)
+        public SettingsViewModel(SettingsView view, bool canClose = true)
         {
             View = view;
 
@@ -48,6 +83,8 @@ namespace BotwActorTool.GUI.ViewModels
             Dlc = Config.DlcDir;
             BaseGameNx = Config.GameDirNx;
             DlcNx = Config.DlcDirNx;
+            Region = GetRegionPair(Config.Lang);
+            CanClose = canClose;
 
             View.FindControl<ToggleSwitch>("ThemeToggle").IsChecked = Config.IsDarkTheme;
         }
@@ -100,6 +137,18 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
+        private KeyValuePair<string, string> region = new();
+        public KeyValuePair<string, string> Region {
+            get => region;
+            set => this.RaiseAndSetIfChanged(ref region, value);
+        }
+
+        private ObservableCollection<KeyValuePair<string, string>> regions = new();
+        public ObservableCollection<KeyValuePair<string, string>> Regions {
+            get => regions;
+            set => this.RaiseAndSetIfChanged(ref regions, value);
+        }
+
         private Brush baseGameBrush = _default;
         public Brush BaseGameBrush {
             get => baseGameBrush;
@@ -139,7 +188,6 @@ namespace BotwActorTool.GUI.ViewModels
         public async void Close(bool warn = true)
         {
             if (warn) {
-
                 if (Config.GameDir != BaseGame || Config.UpdateDir != Update || Config.DlcDir != Dlc ||
                     Config.GameDirNx != BaseGameNx || Config.DlcDirNx != DlcNx) {
                     var result = await View.Window.ShowMessageBox("Are you sure you want to discard chages?", "Warning", MessageBoxButtons.YesNoCancel);
@@ -196,6 +244,7 @@ namespace BotwActorTool.GUI.ViewModels
             Config.GameDirNx = BaseGameNx;
             Config.DlcDirNx = DlcNx;
             Config.IsDarkTheme = App.Fluent.Mode == FluentThemeMode.Dark;
+            Config.Lang = Region.Value;
 
             Config.Save();
             Close(false);
