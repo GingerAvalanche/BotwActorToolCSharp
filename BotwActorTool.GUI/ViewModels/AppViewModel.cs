@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 using Avalonia.Controls;
 using Avalonia.Themes.Fluent;
@@ -39,8 +37,13 @@ namespace BotwActorTool.GUI.ViewModels
                     Id = actorpack,
                 };
 
-                if (DocumentDock.VisibleDockables == null) {
-                    DocumentDock.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
+                if (DocumentDock == null) {
+                    Factory.CreateLayout();
+                    Factory.InitLayout(Layout);
+                }
+
+                if (DocumentDock!.VisibleDockables == null) {
+                    DocumentDock!.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
                 }
                 else {
                     foreach (var doc in DocumentDock.VisibleDockables) {
@@ -86,20 +89,9 @@ namespace BotwActorTool.GUI.ViewModels
         // Dock References
 
         public IDock layoutRoot;
-        public ToolDock ToolDock => ToolLayout.VisibleDockables[0] as ToolDock;
-        public DocumentDock DocumentDock {
-            get {
-                if (Layout.VisibleDockables.Count == 0) {
-                    Factory.CreateLayout();
-                    Factory.InitLayout(Layout);
-                }
-
-                return Layout.VisibleDockables[0] as DocumentDock;
-            }
-            set => Layout.VisibleDockables[0] = value;
-        }
-
-        public ActorViewModel CurrentActor => DocumentDock.ActiveDockable as ActorViewModel;
+        public ToolDock ToolDock => (ToolLayout.VisibleDockables![0] as ToolDock)!;
+        public DocumentDock? DocumentDock => Layout.VisibleDockables!.Count > 0 ? Layout.VisibleDockables[0] as DocumentDock : null;
+        public ActorViewModel? CurrentActor => DocumentDock != null ? DocumentDock.ActiveDockable as ActorViewModel : null;
 
         //
         // App References
