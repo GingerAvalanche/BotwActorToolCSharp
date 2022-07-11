@@ -51,7 +51,7 @@ namespace BotwActorTool.Lib
         {
             if (VanillaParams == null)
             {
-                using Stream stream = File.OpenRead("VanillaParams.json");
+                using Stream stream = File.OpenRead("Data/VanillaParams.json");
                 VanillaParams = (Dictionary<string, Dictionary<string, string>>)JsonSerializer.Deserialize(stream, typeof(Dictionary<string, Dictionary<string, string>>))!;
             }
             return VanillaParams;
@@ -59,7 +59,7 @@ namespace BotwActorTool.Lib
         public static Dictionary<string, string> GetNameList()
         {
             if (NameList == null) {
-                using Stream stream = File.OpenRead("NameList.json");
+                using Stream stream = File.OpenRead("Data/NameList.json");
                 NameList = JsonSerializer.Deserialize<Dictionary<string, string>>(stream)!;
             }
             return NameList;
