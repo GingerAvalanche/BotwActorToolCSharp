@@ -267,6 +267,7 @@ namespace BotwActorTool.Lib
 
         public static string GetModRoot(string absPath)
         {
+            absPath = absPath.ToSystemPath(forceUnix: true);
             IEnumerable<string> reversed_path = absPath.Split('/').Reverse();
             return string.Join("/", reversed_path.Skip(reversed_path.TakeWhile(s => s != "content" && s != "romfs").Count()).Reverse());
         }
