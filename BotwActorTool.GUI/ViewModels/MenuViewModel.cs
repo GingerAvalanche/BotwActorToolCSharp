@@ -99,10 +99,13 @@ namespace BotwActorTool.GUI.ViewModels
             SetStatus();
         }
 
-        public void Quit()
+        public async void Quit()
         {
             if (IsEdited) {
-                // prompt user
+                var results = await View.ShowMessageBox("You have unsaved changes. Are you sure you wish to exit?", "Warning", MessageBoxButtons.YesNoCancel);
+                if (results != MessageBoxResult.Yes) {
+                    return;
+                }
             }
 
             Environment.Exit(1);
@@ -137,6 +140,21 @@ namespace BotwActorTool.GUI.ViewModels
         {
             ModContext = folder;
             (ToolDock.Get("ModFiles") as BrowserViewModel)!.SetRoot(folder, true);
+        }
+
+        public void SetActorFileContext(Actor actor)
+        {
+            Dictionary<string, string> root = new();
+            Dictionary<string, string> linkInfo = Resource.GetDynamic<Dictionary<string, string>>("LinkInfo")!;
+
+            foreach (var link in Util.LINKS) {
+                var debug = actor.GetLink(link);
+                if (actor.GetLink(link) != "Dummy") {
+                    root.Add(link, linkInfo.ContainsKey(link) ? linkInfo[link] : $"Name of the {link} to use");
+                }
+            }
+
+            (ToolDock.Get("Actor") as BrowserViewModel)!.SetRoot(root, true);
         }
     }
 }

@@ -32,12 +32,13 @@ namespace BotwActorTool.GUI.ViewModels
         public void SetRoot(object? obj = null, bool isMod = false)
         {
             if (obj is string str) {
+
                 BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFileAnywhere(str, "/Actor/ActorInfo.product.sbyml")));
 
                 foreach (var actor in actorInfo.RootNode.Hash["Actors"].Array) {
                     if (actor.Hash["name"].String is string name) {
 
-                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}/Actor/Pack/{name}.sbactorpack".ToSystemPath())) {
+                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}\\Actor\\Pack\\{name}.sbactorpack".ToSystemPath(true))) {
                             continue;
                         }
 
@@ -64,7 +65,7 @@ namespace BotwActorTool.GUI.ViewModels
         public BrowserViewModel(OnSelectionExecute _onSelectionExecuted, object? obj = null, bool isMod = false)
         {
             onSelectionExecuted = _onSelectionExecuted;
-            SetRoot(obj);
+            SetRoot(obj, isMod);
         }
 
         private SortedDictionary<string, string> root = new();
