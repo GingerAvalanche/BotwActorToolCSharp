@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:behaviors="clr-namespace:BotwActorTool.GUI.Behaviors;assembly=BotwActorTool.GUI"
+             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             x:Class="BotwActorTool.GUI.Controls.AvaloniaEditor">
+	<Grid>
+		<ae:TextEditor x:Name="editor"
+                       Margin="0"
+                       Background="White"
+                       Foreground="Black"
+                       SyntaxHighlighting="C#"
+                       HorizontalScrollBarVisibility="Auto"
+                       VerticalScrollBarVisibility="Auto"
+                       FontFamily="{DynamicResource CodeFontFamily}"
+                       FontWeight="Normal"
+                       FontSize="14"
+                       WordWrap="False">
+			<i:Interaction.Behaviors>
+				<behaviors:DocumentTextBindingBehavior Text="{Binding Code, Mode=TwoWay}"/>
+			</i:Interaction.Behaviors>
+		</ae:TextEditor>
+	</Grid>
+</UserControl>
