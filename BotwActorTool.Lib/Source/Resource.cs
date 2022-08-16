@@ -64,5 +64,15 @@ namespace BotwActorTool.Lib
             }
             return RegionList;
         }
+
+        public static T? GetDynamic<T>(string name)
+        {
+            if (File.Exists($"Data/{name}.json")) {
+                using Stream stream = File.OpenRead($"Data/{name}.json");
+                return JsonSerializer.Deserialize<T>(stream)!;
+            }
+
+            return default;
+        }
     }
 }

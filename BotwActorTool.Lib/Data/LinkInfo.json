@@ -1,0 +1,4 @@
+{
+  "ActorNameJpn": "Actor name in Japanese",
+  "AIScheduleUser": "Name of the AISchedule to use (and indirectly, the name of the associated event flow)"
+}
