@@ -1,7 +1,7 @@
 ﻿using Nintendo.Byml;
 using Nintendo.Sarc;
+using Nintendo.Yaz0;
 using System.Text;
-using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {

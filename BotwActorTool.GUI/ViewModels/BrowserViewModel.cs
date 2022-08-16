@@ -5,6 +5,7 @@ using BotwActorTool.GUI.Extensions;
 using BotwActorTool.Lib;
 using Dock.Model.ReactiveUI.Controls;
 using Nintendo.Byml;
+using Nintendo.Yaz0;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Yaz0Library;
 
 namespace BotwActorTool.GUI.ViewModels
 {

@@ -1,6 +1,6 @@
 ﻿using Nintendo.Sarc;
+using Nintendo.Yaz0;
 using System.Runtime.InteropServices;
-using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
