@@ -10,6 +10,7 @@
 		<StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentDark.xaml" />
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
 		<StyleInclude Source="avares://Dock.Avalonia/Themes/DockFluentTheme.axaml"/>
+		<StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml"/>
 		<Style>
 			<Style.Resources>
 				<SolidColorBrush x:Key="DockApplicationAccentBrushLow" Color="{DynamicResource SystemBaseLowColor}" />
