@@ -8,10 +8,10 @@
 using Byml.Security.Cryptography;
 using Nintendo.Aamp;
 using Nintendo.Byml;
+using Nintendo.Yaz0;
 using Syroot.BinaryData.Core;
 using Syroot.Maths;
 using System.Reflection;
-using Yaz0Library;
 
 namespace BotwActorTool.Lib.Info
 {
@@ -99,8 +99,12 @@ namespace BotwActorTool.Lib.Info
         private int? monsterShopSellMamo;
         private Dictionary<string, float>? motorcycleEnergy;
         private string? name;
-        private string[]? normal0ItemNames;
-        private int[]? normal0ItemNums;
+        private string? normal0ItemName01;
+        private string? normal0ItemName02;
+        private string? normal0ItemName03;
+        private int? normal0ItemNum01;
+        private int? normal0ItemNum02;
+        private int? normal0ItemNum03;
         private int? normal0StuffNum;
         private int? pictureBookLiveSpot1;
         private int? pictureBookLiveSpot2;
@@ -275,8 +279,12 @@ namespace BotwActorTool.Lib.Info
         };
         private static readonly Dictionary<string, (string, string)> RECIPE_MAP = new()
         {
-            { "normal0ItemNames", ("Normal0", "ItemName") },
-            { "normal0ItemNums", ("Normal0", "ItemNum") },
+            { "normal0ItemName01", ("Normal0", "ItemName01") },
+            { "normal0ItemName02", ("Normal0", "ItemName02") },
+            { "normal0ItemName03", ("Normal0", "ItemName03") },
+            { "normal0ItemNum01", ("Normal0", "ItemNum01") },
+            { "normal0ItemNum02", ("Normal0", "ItemNum02") },
+            { "normal0ItemNum03", ("Normal0", "ItemNum03") },
             { "normal0StuffNum", ("Normal0", "ColumnNum") },
         };
         #endregion
@@ -674,22 +682,16 @@ namespace BotwActorTool.Lib.Info
                 return;
             }
             AampFile file = GetFile("RecipeUser");
-            normal0ItemNames = file.RootNode
-                .Objects(RECIPE_MAP["normal0ItemNames"].Item1)?
-                .ParamEntries
-                .Where(e => e.HashString.Contains(RECIPE_MAP["normal0ItemNames"].Item2))
-                .Select(e => (string)Retrieve(e))
-                .ToArray();
-            normal0ItemNums = file.RootNode
-                .Objects(RECIPE_MAP["normal0ItemNums"].Item1)?
-                .ParamEntries
-                .Where(e => e.HashString.Contains(RECIPE_MAP["normal0ItemNums"].Item2))
-                .Select(e => (int)Retrieve(e))
-                .ToArray();
-            ParamEntry? col_num = file.RootNode
-                    .Objects(RECIPE_MAP["normal0StuffNum"].Item1)?
-                    .Params(RECIPE_MAP["normal0StuffNum"].Item2);
-            normal0StuffNum = col_num != null ? Retrieve(col_num) : null;
+            ParamObject? obj;
+            foreach ((string prop_name, (string obj_name, string param_name)) in RECIPE_MAP)
+            {
+                obj = file.RootNode.Objects(obj_name);
+                if (obj != null)
+                {
+                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, Retrieve(obj.Params(param_name)!));
+                }
+            }
         }
 
         private string GetLink(string link) => actor.GetLink(link);

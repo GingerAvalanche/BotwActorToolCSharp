@@ -3,8 +3,8 @@ using BotwActorTool.Lib.Pack;
 using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Sarc;
+using Nintendo.Yaz0;
 using Syroot.BinaryData.Core;
-using Yaz0Library;
 
 namespace BotwActorTool.Lib
 {
