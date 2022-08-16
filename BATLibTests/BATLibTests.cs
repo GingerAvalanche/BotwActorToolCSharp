@@ -1,8 +1,8 @@
 using BotwActorTool.Lib;
 using Nintendo.Aamp;
 using Nintendo.Byml;
-using Yaz0Library;
 using System.Diagnostics;
+using Nintendo.Yaz0;
 
 namespace BATLibTests
 {
@@ -24,7 +24,7 @@ namespace BATLibTests
         [TestMethod]
         public void CreateActor()
         {
-            Actor a = new("E:/Users/chodn/Documents/ISOs - WiiU/The Legend of Zelda Breath of the Wild (UPDATE DATA) (v208) (USA)/content/Actor/Pack/Weapon_Lsword_035.sbactorpack");
+            Actor a = new("E:/Users/chodn/Documents/ISOs - WiiU/The Legend of Zelda Breath of the Wild (UPDATE DATA) (v208) (USA)/content/Actor/Pack/Armor_114_Head.sbactorpack");
             a.Update();
             Trace.WriteLine(new BymlFile(a.GetInfo().Hash).ToYaml());
         }
