@@ -12,6 +12,7 @@ using Dock.Model.ReactiveUI.Controls;
 using System.Threading.Tasks;
 using BotwActorTool.GUI.Extensions;
 using System;
+using System.Collections.Generic;
 
 namespace BotwActorTool.GUI.ViewModels
 {
@@ -57,6 +58,8 @@ namespace BotwActorTool.GUI.ViewModels
                 }
 
                 DocumentDock.ActiveDockable = actorDoc;
+                SetActorFileContext(actorDoc.Actor);
+                ToolDock.SetActive("Actor");
             }
             catch (Exception ex) {
                 await View.ShowMessageBox(ex.ToString(), actorpack);
@@ -92,6 +95,7 @@ namespace BotwActorTool.GUI.ViewModels
         public ToolDock ToolDock => (ToolLayout.VisibleDockables![0] as ToolDock)!;
         public DocumentDock? DocumentDock => Layout.VisibleDockables!.Count > 0 ? Layout.VisibleDockables[0] as DocumentDock : null;
         public ActorViewModel? CurrentActor => DocumentDock != null ? DocumentDock.ActiveDockable as ActorViewModel : null;
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> ActorMem { get; set; } = new();
 
         //
         // App References
