@@ -51,14 +51,9 @@ namespace BotwActorTool.Lib
 
     public static class PathExtensions
     {
-        public static string ToSystemPath(this string path, bool forceUnix = false)
+        public static string ToSystemPath(this string path)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !forceUnix) {
-                return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            }
-            else {
-                return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            }
+            return path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
     }
 }
