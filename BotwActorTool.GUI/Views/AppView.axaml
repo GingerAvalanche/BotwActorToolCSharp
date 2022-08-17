@@ -7,13 +7,13 @@
 		xmlns:mdix="using:Material.Icons.Avalonia"
         xmlns:app="BotwActorTool.GUI"
         Title="Botw Actor Tool"
-        Width="700"
-        Height="450"
-        MinWidth="700"
-        MinHeight="400"
+        Width="1200"
+        Height="1200"
+        MinWidth="1000"
+        MinHeight="600"
 		WindowState="Maximized"
-        d:DesignHeight="450"
-        d:DesignWidth="800"
+        d:DesignHeight="650"
+        d:DesignWidth="1000"
         Background="{DynamicResource SystemChromeLowColor}"
         ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
@@ -98,10 +98,10 @@
 				
 				<!-- SAVE ACTOR -->
 				<MenuItem Header="Save Actor"
-						  HotKey="Ctrl+S"
+						  HotKey="Ctrl+Shift+S"
 						  Command="{Binding SaveActor}"
 						  Icon="/Assets/icon.ico"
-						  InputGesture="Ctrl + S">
+						  InputGesture="Ctrl + Shift + S">
 					<MenuItem.Icon>
 						<mdix:MaterialIcon Kind="ContentSave"
 										   VerticalAlignment="Center" />
