@@ -33,7 +33,7 @@ namespace BotwActorTool.GUI.ViewModels
 
             try {
 
-                var actorDoc = new ActorViewModel($"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToSystemPath()) {
+                var actorDoc = new ActorViewModel(View, $"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToSystemPath()) {
                     Title = actorpack.Length >= 20  ? actorpack[0..14] + "..." + actorpack[(actorpack.Length-6)..actorpack.Length] : actorpack,
                     Id = actorpack,
                 };
@@ -58,7 +58,7 @@ namespace BotwActorTool.GUI.ViewModels
                 }
 
                 DocumentDock.ActiveDockable = actorDoc;
-                SetActorFileContext(actorDoc.Actor);
+                SetActorFileContext(actorDoc);
                 ToolDock.SetActive("Actor");
             }
             catch (Exception ex) {
@@ -68,9 +68,11 @@ namespace BotwActorTool.GUI.ViewModels
             SetStatus();
         }
 
-        public async void OpenActorFile(string file)
+        public void OpenActorFile(string file)
         {
-
+            if (CurrentActor != null) {
+                CurrentActor.ActorFile = file;
+            }
         }
 
         //
