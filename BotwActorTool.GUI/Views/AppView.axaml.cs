@@ -14,7 +14,7 @@ namespace BotwActorTool.GUI.Views
 {
     public partial class AppView : Window
     {
-        private DispatcherTimer loader = new();
+        private readonly DispatcherTimer loader = new();
 
         public AppView()
         {
@@ -26,9 +26,9 @@ namespace BotwActorTool.GUI.Views
 
             loader.Interval = new TimeSpan(0, 0, 0, 0, 400);
             loader.Tick += (_, _) => {
-                if (((AppViewModel)DataContext).IsLoading == true) {
-                    ((AppViewModel)DataContext).Status += " .";
-                    ((AppViewModel)DataContext).Status = ((AppViewModel)DataContext).Status.Replace(" . . . .", " .");
+                if (((AppViewModel)DataContext!).IsLoading == true) {
+                    ((AppViewModel)DataContext!).Status += " .";
+                    ((AppViewModel)DataContext!).Status = ((AppViewModel)DataContext).Status.Replace(" . . . .", " .");
                 }
             };
 

@@ -2,6 +2,7 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using BotwActorTool.GUI.Extensions;
+using BotwActorTool.GUI.Views;
 using BotwActorTool.Lib;
 using Dock.Model.ReactiveUI.Controls;
 using Nintendo.Byml;
@@ -38,7 +39,7 @@ namespace BotwActorTool.GUI.ViewModels
                 foreach (var actor in actorInfo.RootNode.Hash["Actors"].Array) {
                     if (actor.Hash["name"].String is string name) {
 
-                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}\\Actor\\Pack\\{name}.sbactorpack".ToSystemPath(true))) {
+                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}\\Actor\\Pack\\{name}.sbactorpack".ToSystemPath())) {
                             continue;
                         }
 
@@ -62,9 +63,9 @@ namespace BotwActorTool.GUI.ViewModels
             BaseRoot = baseRoot;
         }
 
-        public BrowserViewModel(OnSelectionExecute _onSelectionExecuted, object? obj = null, bool isMod = false)
+        public BrowserViewModel(OnSelectionExecute onSelectionExecuted, object? obj = null, bool isMod = false)
         {
-            onSelectionExecuted = _onSelectionExecuted;
+            this.onSelectionExecuted = onSelectionExecuted;
             SetRoot(obj, isMod);
         }
 
