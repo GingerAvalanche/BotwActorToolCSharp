@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using BotwActorTool.GUI.Extensions;
+using BotwActorTool.GUI.Views.Editors;
 using BotwActorTool.Lib;
 using Dock.Model.ReactiveUI.Controls;
 using Material.Icons;
@@ -142,15 +143,19 @@ namespace BotwActorTool.GUI.ViewModels
             (ToolDock.Get("ModFiles") as BrowserViewModel)!.SetRoot(folder, true);
         }
 
-        public void SetActorFileContext(Actor actor)
+        public void SetActorFileContext(ActorViewModel doc)
         {
             Dictionary<string, string> root = new();
             Dictionary<string, string> linkInfo = Resource.GetDynamic<Dictionary<string, string>>("LinkInfo")!;
 
             foreach (var link in Util.LINKS) {
-                var debug = actor.GetLink(link);
-                if (actor.GetLink(link) != "Dummy") {
-                    root.Add(link, linkInfo.ContainsKey(link) ? linkInfo[link] : $"Name of the {link} to use");
+
+                bool isNotDummy = doc.Actor.GetLink(link) != "Dummy";
+
+                root.Add(link + (isNotDummy ? "" : " (Dummy)"), isNotDummy ? linkInfo.ContainsKey(link) ? linkInfo[link] : $"Name of the {link} to use" : "Dummy");
+                if (isNotDummy) {
+                    doc.ActorFiles.Add(link);
+                    doc.AllEditors.Add(link, new() { { "YAML", new YamlEditor() } });
                 }
             }
 
