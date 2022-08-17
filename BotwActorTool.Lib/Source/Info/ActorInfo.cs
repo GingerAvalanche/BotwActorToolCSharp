@@ -753,6 +753,7 @@ namespace BotwActorTool.Lib.Info
                 NodeType.Int => RetrieveIntHash(node),
                 NodeType.Float => RetrieveFloatHash(node),
                 NodeType.UInt => RetrieveUIntHash(node),
+                NodeType.Array => RetrieveArrayStringHash(node),
                 _ => throw new InvalidDataException($"Bad hash child node type {type}"),
             };
         }
@@ -789,6 +790,15 @@ namespace BotwActorTool.Lib.Info
             foreach ((string key, BymlNode child) in node.Hash)
             {
                 hash[key] = child.UInt;
+            }
+            return hash;
+        }
+        private static Dictionary<string, string[]> RetrieveArrayStringHash(BymlNode node)
+        {
+            Dictionary<string, string[]> hash = new();
+            foreach ((string key, BymlNode child) in node.Hash)
+            {
+                hash[key] = child.Array.Select(x => x.String).ToArray();
             }
             return hash;
         }
