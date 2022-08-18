@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using BotwActorTool.GUI.Controls;
 using BotwActorTool.GUI.Extensions;
 using BotwActorTool.GUI.Views.Editors;
 using BotwActorTool.Lib;
@@ -11,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -77,7 +79,7 @@ namespace BotwActorTool.GUI.ViewModels
                     output = ModContext;
                 }
             }
-            
+
             if (output == null) {
                 var result = await new OpenFolderDialog() {
                     Title = $"Select a mod 'content' folder"
@@ -146,16 +148,35 @@ namespace BotwActorTool.GUI.ViewModels
         public void SetActorFileContext(ActorViewModel doc)
         {
             Dictionary<string, string> root = new();
-            Dictionary<string, string> linkInfo = Resource.GetDynamic<Dictionary<string, string>>("LinkInfo")!;
+            var linkInfo = Resource.GetDynamic<Dictionary<string, Dictionary<string, dynamic>>>("LinkInfo")!;
 
-            foreach (var link in Util.LINKS) {
+            foreach ((var link, var data) in linkInfo) {
+                try {
+                    if (data != null) {
 
-                bool isNotDummy = doc.Actor.GetLink(link) != "Dummy";
+                        string linkName = ((JsonElement)data["Name"]).GetString()!;
+                        bool? isNotDummy = null;
+                        try {
+                            isNotDummy = doc.Actor.GetLink(link) != "Dummy";
+                        } catch { }
 
-                root.Add(link + (isNotDummy ? "" : " (Dummy)"), isNotDummy ? linkInfo.ContainsKey(link) ? linkInfo[link] : $"Name of the {link} to use" : "Dummy");
-                if (isNotDummy) {
-                    doc.ActorFiles.Add(link);
-                    doc.AllEditors.Add(link, new() { { "YAML", new YamlEditor() } });
+                        if (isNotDummy == null || isNotDummy == true) {
+                            doc.ActorFiles.Add(linkName);
+                        }
+
+                        root.Add(linkName + (isNotDummy == null || isNotDummy == true ? "" : " (Dummy)"), data["Tip"].ToString()); 
+                        doc.AllEditors.Add(linkName, new());
+
+                        Dictionary<string, string> parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(data["Editors"]);
+                        foreach ((var name, var editor) in parsed) {
+                            doc.AllEditors[linkName].Add(name, (ActorEditor)Type.GetType("BotwActorTool.GUI.Views.Editors." + editor)!.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>()));
+                        }
+
+                        doc.LinkKeys.Add(linkName, link);
+                    }
+                }
+                catch (Exception ex) {
+                    Debug.WriteLine($"Failed to add editor to {link} - {ex}");
                 }
             }
 

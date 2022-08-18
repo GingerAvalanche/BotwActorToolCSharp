@@ -1,4 +1,170 @@
 {
-  "ActorNameJpn": "Actor name in Japanese",
-  "AIScheduleUser": "Name of the AISchedule to use (and indirectly, the name of the associated event flow)"
+  "ActorLink": {
+    "Name": "Actor Link",
+    "Tip": "",
+    "Editors": {
+      "Actor Link": "ActorLink",
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ActorNameJpn": null,
+  "AIProgramUser": {
+    "Name": "AI Program",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "AIScheduleUser": {
+    "Name": "Ai Scedule",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ASUser": {
+    "Name": "AS (Animation Sequence?)",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "AttentionUser": {
+    "Name": "Attention",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "AwarenessUser": {
+    "Name": "Awareness",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "BoneControlUser": {
+    "Name": "Bone Control",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ActorCaptureUser": null,
+  "ChemicalUser": {
+    "Name": "Chemical",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "DamageParamUser": {
+    "Name": "Damage Param",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "DropTableUser": {
+    "Name": "Drop Table",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ElinkUser": null,
+  "GParamUser": {
+    "Name": "Genral Param",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "LifeConditionUser": {
+    "Name": "Life Condition",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "LODUser": {
+    "Name": "LOD",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ModelUser": {
+    "Name": "Model List",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "PhysicsUser": {
+    "Name": "Physics",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ProfileUser": null,
+  "RgBlendWeightUser": {
+    "Name": "Ragdoll Blend",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "RgConfigListUser": {
+    "Name": "Ragdoll Config",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "RecipeUser": {
+    "Name": "Recipe",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "ShopDataUser": {
+    "Name": "Shop Data",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "SlinkUser": null,
+  "UMiiUser": {
+    "Name": "UMii",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "XlinkUser": null,
+  "AnimationInfo": {
+    "Name": "Animation Info",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "Texts": {
+    "Name": "Texts",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  },
+  "Flags": {
+    "Name": "Flags",
+    "Tip": "",
+    "Editors": {
+      "Yaml": "YamlEditor"
+    }
+  }
 }
