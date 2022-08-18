@@ -49,12 +49,13 @@ namespace BotwActorTool.GUI.ViewModels
         }
         public Dictionary<string, Dictionary<string, ActorEditor>> AllEditors { get; set; } = new();
 
+        public Dictionary<string, string> LinkKeys { get; set; } = new();
         public AppView View { get; }
         public AppViewModel App { get; }
         public Actor Actor { get; set; }
-        public ActorViewModel(AppView view, string actorpack)
+        public ActorViewModel(AppView view, Actor actorpack)
         {
-            Actor = new(actorpack);
+            Actor = actorpack;
             App = (view.DataContext as AppViewModel)!;
             View = view;
         }
