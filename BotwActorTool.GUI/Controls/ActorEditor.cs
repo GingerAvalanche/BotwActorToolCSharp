@@ -26,7 +26,7 @@ namespace BotwActorTool.GUI.Controls
 
             if (editor is TextEditor) {
                 try {
-                    editor!.Document = new TextDocument(doc.Actor.GetLinkData(doc.ActorFile));
+                    editor!.Document = new TextDocument(doc.Actor.GetLinkData(doc.LinkKeys[doc.ActorFile]));
                 }
                 catch (Exception ex) {
                     editor!.Document = new TextDocument(ex.ToString());
@@ -38,7 +38,7 @@ namespace BotwActorTool.GUI.Controls
         {
             if (editor is TextEditor) {
                 try {
-                    doc.Actor.SetLinkData(doc.ActorFile, (editor as TextEditor)!.Text);
+                    doc.Actor.SetLinkData(doc.LinkKeys[doc.ActorFile], (editor as TextEditor)!.Text);
                 }
                 catch (Exception ex) {
                     await MessageBox.Show(ex.ToString(), "Error Saving Editor");
