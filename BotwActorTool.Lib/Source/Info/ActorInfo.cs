@@ -324,6 +324,11 @@ namespace BotwActorTool.Lib.Info
                         {
                             tags = RetrieveIntHash(node);
                         }
+                        else if (key.Contains("invalid"))
+                        {
+                            typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
+                                .SetValue(this, node.Array.Select(x => x.String).ToArray());
+                        }
                         else
                         {
                             typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
