@@ -33,9 +33,10 @@ namespace BotwActorTool.GUI.ViewModels
 
             try {
 
-                var actorDoc = new ActorViewModel(View, $"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToSystemPath()) {
-                    Title = actorpack.Length >= 20  ? actorpack[0..14] + "..." + actorpack[(actorpack.Length-6)..actorpack.Length] : actorpack,
-                    Id = actorpack,
+                Actor actor = await Task.Run(() => new Actor($"{modRoot}/{Util.GetActorRelPath(actorpack)}".ToSystemPath()));
+                var actorDoc = new ActorViewModel(View, actor) {
+                    Title = actorpack.Length >= 20 ? actorpack[0..14] + "..." + actorpack[(actorpack.Length - 6)..actorpack.Length] : actorpack,
+                    Id = actorpack
                 };
 
                 if (DocumentDock == null) {
@@ -47,14 +48,16 @@ namespace BotwActorTool.GUI.ViewModels
                     DocumentDock!.VisibleDockables = Factory.CreateList<IDockable>(actorDoc);
                 }
                 else {
+                    bool add = true;
                     foreach (var doc in DocumentDock.VisibleDockables) {
-                        if (doc.Id != actorpack || await View.ShowMessageBox(
-                                $"An actor with the name '{actorpack}' is already open. Are you sure you want to open it again?", "Warning", MessageBoxButtons.YesNo
-                            ) == MessageBoxResult.Yes) {
-                            DocumentDock.VisibleDockables.Add(actorDoc);
+                        if (doc.Id == actorpack && await View.ShowMessageBox(
+                                $"An actor with the name '{actorpack}' is already open. Are you sure you want to open anotehr instance?", "Warning", MessageBoxButtons.YesNo
+                            ) != MessageBoxResult.Yes) {
+                            add = false;
                             break;
                         }
                     }
+                    if (add) DocumentDock.VisibleDockables.Add(actorDoc);
                 }
 
                 DocumentDock.ActiveDockable = actorDoc;
