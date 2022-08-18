@@ -10,7 +10,7 @@
 			 xmlns:sys="using:System"
              x:Class="BotwActorTool.GUI.Views.BrowserView">
 
-	<Grid RowDefinitions="37,*,Auto" Margin="0,0,0,7">
+	<Grid RowDefinitions="37,*,Auto" Margin="0,0,0,7" Name="ROOT">
 
 		<TextBox Name="SearchField"
 				 AcceptsReturn="False"
