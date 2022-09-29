@@ -85,7 +85,9 @@ namespace BotwActorTool.GUI.Helpers
                         })
                     };
 
-                    HotKeyManager.SetHotKey(child, shortcut);
+                    if (shortcut != null) {
+                        HotKeyManager.SetHotKey(child, shortcut);
+                    }
                 }
                 else if (childData is Dictionary<string, dynamic> dict) {
                     child = new() {

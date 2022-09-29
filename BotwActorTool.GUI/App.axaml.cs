@@ -16,11 +16,12 @@ namespace BotwActorTool.GUI
 {
     public partial class App : Application
     {
-        public static AppView View { get; set; } = new();
-        public static AppViewModel ViewModel { get; set; } = new();
+        public static AppView View { get; set; } = null!;
+        public static AppViewModel ViewModel { get; set; } = null!;
+        public static FluentTheme Fluent { get; set; } = new(new Uri("avares://BotwActorTool.GUI/Styles"));
 
-        public static FluentTheme Fluent = new(new Uri("avares://BotwActorTool.GUI/Styles"));
         public override void Initialize() => AvaloniaXamlLoader.Load(this);
+
         public override async void OnFrameworkInitializationCompleted()
         {
             // Load the user config
@@ -32,11 +33,15 @@ namespace BotwActorTool.GUI
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
                 // Create desktop instance
+                View = new();
                 desktop.MainWindow = View;
+
+                // Create data context
+                ViewModel = new();
                 View.DataContext = ViewModel;
 
                 // Build the menu
-                View.FindControl<Menu>("MainMenu").Items = MenuFactory.Generate(ViewModel);
+                View.FindControl<Menu>("MainMenu")!.Items = MenuFactory.Generate(ViewModel);
 
                 // Make sure settings are always set
                 if (Config.Lang == "NULL") {
