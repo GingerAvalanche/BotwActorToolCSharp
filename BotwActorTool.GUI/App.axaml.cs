@@ -14,6 +14,9 @@ namespace BotwActorTool.GUI
 {
     public partial class App : Application
     {
+        public static AppView View { get; set; } = new();
+        public static AppViewModel ViewModel { get; set; } = new();
+
         public static FluentTheme Fluent = new(new Uri("avares://BotwActorTool.GUI/Styles"));
         public override void Initialize() => AvaloniaXamlLoader.Load(this);
         public override async void OnFrameworkInitializationCompleted()
@@ -27,33 +30,29 @@ namespace BotwActorTool.GUI
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
                 // Create desktop instance
-                AppView appView = new();
-                desktop.MainWindow = appView;
-
-                // Create data context
-                AppViewModel dataContext = new(appView);
-                appView.DataContext = dataContext;
+                desktop.MainWindow = View;
+                View.DataContext = ViewModel;
 
                 // Make sure settings are always set
                 if (Config.Lang == "NULL") {
-                    ((AppViewModel)appView.DataContext).SettingsView = new(appView, canClose: false);
-                    ((AppViewModel)appView.DataContext).SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
+                    ViewModel.SettingsView = new(View, canClose: false);
+                    ViewModel.SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
 
                     await Task.Run(() => {
                         while (Config.Lang == "NULL")
                             Task.Delay(100);
                     });
 
-                    ((AppViewModel)appView.DataContext).SetStatus();
+                    ViewModel.SetStatus();
                 }
 
                 // Create actor dock
-                var factory = new AppDockFactory(dataContext);
+                var factory = new AppDockFactory(ViewModel);
                 var layout = factory.CreateLayout();
                 layout.VisibleDockables!.Clear();
 
                 // Create tools dock
-                var toolFactory = new ToolDockFactory(dataContext);
+                var toolFactory = new ToolDockFactory(ViewModel);
                 var toolLayout = toolFactory.CreateLayout();
                 toolFactory.InitLayout(toolLayout);
             }

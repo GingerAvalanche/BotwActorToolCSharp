@@ -1,5 +1,5 @@
+global using static BotwActorTool.GUI.App;
 global using static BotwActorTool.Lib.BatConfig;
-
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
