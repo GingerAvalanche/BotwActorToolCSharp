@@ -3,6 +3,7 @@ using Avalonia.Media;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
+using BotwActorTool.GUI.Dialogs;
 using BotwActorTool.GUI.ViewModels;
 using BotwActorTool.GUI.Views;
 using ReactiveUI;

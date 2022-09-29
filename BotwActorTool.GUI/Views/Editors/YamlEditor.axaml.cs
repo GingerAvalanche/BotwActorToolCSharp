@@ -6,6 +6,7 @@ using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
 using BotwActorTool.GUI.Controls;
+using BotwActorTool.GUI.Dialogs;
 using BotwActorTool.GUI.ViewModels;
 using System;
 using System.Text;
