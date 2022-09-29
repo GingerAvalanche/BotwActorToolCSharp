@@ -69,9 +69,9 @@ namespace BotwActorTool.GUI.ViewModels
             }
         }
 
-        private static readonly Brush _default = "#00000000".ToBrush();
-        private static readonly Brush _valid = "#00CC1C".ToBrush();
-        private static readonly Brush _invalid = "#FF0000".ToBrush();
+        internal static readonly Brush _default = "#00000000".ToBrush();
+        internal static readonly Brush _valid = "#00CC1C".ToBrush();
+        internal static readonly Brush _invalid = "#FF0000".ToBrush();
 
         public SettingsView View { get; set; }
         public SettingsViewModel(SettingsView view, bool canClose = true)
