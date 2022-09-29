@@ -7,7 +7,7 @@
         mc:Ignorable="d"
 		d:DesignWidth="400"
 		d:DesignHeight="260"
-        x:Class="BotwActorTool.GUI.Views.MessageBox"
+        x:Class="BotwActorTool.GUI.Dialogs.MessageBox"
 		CanResize="False"
 		WindowStartupLocation="CenterOwner"
 		Background="Transparent"
