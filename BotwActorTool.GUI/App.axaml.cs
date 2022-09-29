@@ -1,8 +1,10 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Themes.Fluent;
+using BotwActorTool.GUI.Helpers;
 using BotwActorTool.GUI.ViewModels;
 using BotwActorTool.GUI.Views;
 using Dock.Model.Core;
@@ -32,6 +34,9 @@ namespace BotwActorTool.GUI
                 // Create desktop instance
                 desktop.MainWindow = View;
                 View.DataContext = ViewModel;
+
+                // Build the menu
+                View.FindControl<Menu>("MainMenu").Items = MenuFactory.Generate(ViewModel);
 
                 // Make sure settings are always set
                 if (Config.Lang == "NULL") {

@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using BotwActorTool.GUI.Controls;
 using BotwActorTool.GUI.Extensions;
+using BotwActorTool.GUI.Helpers;
 using BotwActorTool.GUI.Views.Editors;
 using BotwActorTool.Lib;
 using Dock.Model.ReactiveUI.Controls;
@@ -9,6 +10,8 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,9 +25,7 @@ namespace BotwActorTool.GUI.ViewModels
         //
         // File
 
-
-        public void OpenVanillaActor() => ToolDock.SetActive("VanillaFiles");
-
+        [Menu("Open Mod", "_File", Icon = MaterialIconKind.FolderOpen, HotKey = "Ctrl + N")]
         public async void OpenMod()
         {
             var result = await new OpenFolderDialog() {
@@ -58,10 +59,13 @@ namespace BotwActorTool.GUI.ViewModels
 
             await Task.Run(() => SetModContext(result));
             ToolDock.SetActive("ModFiles");
-
             SetStatus();
         }
 
+        [Menu("Open Vanilla Actor", "_File", Icon = MaterialIconKind.BoxSearchOutline, HotKey = "Ctrl + Shift + N")]
+        public void OpenVanillaActor() => ToolDock.SetActive("VanillaFiles");
+
+        [Menu("Save Actor", "_File", Icon = MaterialIconKind.ContentSave, HotKey = "Ctrl + S", IsSeparator = true)]
         public async void SaveActor()
         {
             if (CurrentActor == null) {
@@ -97,12 +101,11 @@ namespace BotwActorTool.GUI.ViewModels
             }
 
             SetStatus("Saving actor", MaterialIconKind.ContentSaveMoveOutline);
-
             await Task.Run(() => CurrentActor.Actor.Write(output!));
-
             SetStatus();
         }
 
+        [Menu("Quit", "_File", Icon = MaterialIconKind.ExitToApp, HotKey = "Ctrl + Q", IsSeparator = true)]
         public async void Quit()
         {
             if (IsEdited) {
@@ -119,18 +122,22 @@ namespace BotwActorTool.GUI.ViewModels
         // 
         // Tools
 
+        [Menu("Some Tool (?)", "_Tools", Icon = MaterialIconKind.Yoga)]
         public void Temp_PlaceHolder() => View.ShowMessageBox("A placeholder action was executed!", "Notice");
-        public void Settings() => SettingsView = new(View);
 
+        [Menu("Settings", "_Tools", Icon = MaterialIconKind.CogBox, IsSeparator = true)]
+        public void Settings() => SettingsView = new(View);
 
         // 
         // About
 
+        [Menu("Help", "_About", Icon = MaterialIconKind.HelpOutline)]
         public void Help()
         {
             // open help wiki / help messgae (?)
         }
 
+        [Menu("Credits", "_About", Icon = MaterialIconKind.PersonCheck)]
         public async void Credits()
         {
             await View.ShowMessageBox(File.ReadAllText("./Assets/Credits.md"), "Credits", formatting: Formatting.Markdown);
@@ -138,7 +145,7 @@ namespace BotwActorTool.GUI.ViewModels
 
 
         //
-        // Helpers
+        // Helpers (Shouldn't really be in this file...)
 
         public void SetModContext(string folder)
         {
