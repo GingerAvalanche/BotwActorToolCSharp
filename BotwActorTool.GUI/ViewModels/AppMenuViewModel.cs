@@ -22,6 +22,7 @@ namespace BotwActorTool.GUI.ViewModels
         //
         // File
 
+
         public void OpenVanillaActor() => ToolDock.SetActive("VanillaFiles");
 
         public async void OpenMod()
