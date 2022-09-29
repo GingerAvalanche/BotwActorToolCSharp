@@ -7,7 +7,11 @@
       "Yaml": "YamlEditor"
     }
   },
-  "ActorNameJpn": null,
+  "ActorNameJpn": {
+    "Name": "Japanese Actor Name",
+    "Tip": "Name of the actor in Japanese",
+    "Editors": null
+  },
   "AIProgramUser": {
     "Name": "AI Program",
     "Tip": "",
@@ -23,7 +27,7 @@
     }
   },
   "ASUser": {
-    "Name": "AS (Animation Sequence?)",
+    "Name": "AS List",
     "Tip": "",
     "Editors": {
       "Yaml": "YamlEditor"
@@ -50,7 +54,11 @@
       "Yaml": "YamlEditor"
     }
   },
-  "ActorCaptureUser": null,
+  "ActorCaptureUser": {
+    "Name": "Actor Capture",
+    "Tip": "",
+    "Editors": null
+  },
   "ChemicalUser": {
     "Name": "Chemical",
     "Tip": "",
@@ -72,9 +80,13 @@
       "Yaml": "YamlEditor"
     }
   },
-  "ElinkUser": null,
+  "ElinkUser": {
+		"Name": "Effect Link",
+		"Tip": "",
+		"Editors": null
+	},
   "GParamUser": {
-    "Name": "Genral Param",
+    "Name": "General Param",
     "Tip": "",
     "Editors": {
       "Yaml": "YamlEditor"
@@ -108,7 +120,11 @@
       "Yaml": "YamlEditor"
     }
   },
-  "ProfileUser": null,
+  "ProfileUser": {
+		"Name": "Profile",
+		"Tip": "",
+		"Editors": null
+	},
   "RgBlendWeightUser": {
     "Name": "Ragdoll Blend",
     "Tip": "",
@@ -137,7 +153,11 @@
       "Yaml": "YamlEditor"
     }
   },
-  "SlinkUser": null,
+  "SlinkUser": {
+		"Name": "Sound Link",
+		"Tip": "",
+		"Editors": null
+	},
   "UMiiUser": {
     "Name": "UMii",
     "Tip": "",
@@ -145,7 +165,11 @@
       "Yaml": "YamlEditor"
     }
   },
-  "XlinkUser": null,
+  "XlinkUser": {
+		"Name": "XLink",
+		"Tip": "",
+		"Editors": null
+	},
   "AnimationInfo": {
     "Name": "Animation Info",
     "Tip": "",
