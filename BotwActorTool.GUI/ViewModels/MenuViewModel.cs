@@ -152,9 +152,12 @@ namespace BotwActorTool.GUI.ViewModels
 
             foreach ((var link, var data) in linkInfo) {
                 try {
-                    if (data != null) {
+                    Dictionary<string, string>? editors = JsonSerializer.Deserialize<Dictionary<string, string>?>(data["Editors"]);
+                    if (editors != null) {
 
                         string linkName = ((JsonElement)data["Name"]).GetString()!;
+                        string tip = data["Tip"].ToString();
+
                         bool? isNotDummy = null;
                         try {
                             isNotDummy = doc.Actor.GetLink(link) != "Dummy";
@@ -164,11 +167,10 @@ namespace BotwActorTool.GUI.ViewModels
                             doc.ActorFiles.Add(linkName);
                         }
 
-                        root.Add(linkName + (isNotDummy == null || isNotDummy == true ? "" : " (Dummy)"), data["Tip"].ToString()); 
+                        root.Add(linkName + (isNotDummy == null || isNotDummy == true ? "" : " (Dummy)"), string.IsNullOrEmpty(tip) ? link : tip); 
                         doc.AllEditors.Add(linkName, new());
 
-                        Dictionary<string, string> parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(data["Editors"]);
-                        foreach ((var name, var editor) in parsed) {
+                        foreach ((var name, var editor) in editors) {
                             doc.AllEditors[linkName].Add(name, (ActorEditor)Type.GetType("BotwActorTool.GUI.Views.Editors." + editor)!.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>()));
                         }
 
