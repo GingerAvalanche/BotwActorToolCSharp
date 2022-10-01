@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace BotwActorTool.GUI.ViewModels
             return new($"{regionLang} ({regionPairKey[0..2]})", regionPairKey);
         }
 
-        private Brush ValidatePath(string path, string mode)
+        private Brush ValidatePath(string path, [CallerMemberName] string mode = "")
         {
             if (string.IsNullOrEmpty(path)) {
                 return _default;
@@ -78,11 +79,11 @@ namespace BotwActorTool.GUI.ViewModels
         {
             View = view;
 
-            BaseGame = Config.GameDir;
-            Update = Config.UpdateDir;
-            Dlc = Config.DlcDir;
-            BaseGameNx = Config.GameDirNx;
-            DlcNx = Config.DlcDirNx;
+            GameDir = Config.GameDir;
+            UpdateDir = Config.UpdateDir;
+            DlcDir = Config.DlcDir;
+            GameDirNx = Config.GameDirNx;
+            DlcDirNx = Config.DlcDirNx;
             Region = GetRegionPair(Config.Lang);
             CanClose = canClose;
 
@@ -92,48 +93,48 @@ namespace BotwActorTool.GUI.ViewModels
         //
         // Properties
 
-        private string baseGame = "";
-        public string BaseGame {
-            get => baseGame;
+        private string gameDir = "";
+        public string GameDir {
+            get => gameDir;
             set {
-                this.RaiseAndSetIfChanged(ref baseGame, value);
-                BaseGameBrush = ValidatePath(value, "BaseGame");
+                this.RaiseAndSetIfChanged(ref gameDir, value);
+                BaseGameBrush = ValidatePath(value);
             }
         }
 
-        private string update = "";
-        public string Update {
-            get => update;
+        private string updateDir = "";
+        public string UpdateDir {
+            get => updateDir;
             set {
-                this.RaiseAndSetIfChanged(ref update, value);
-                UpdateBrush = ValidatePath(value, "Update");
+                this.RaiseAndSetIfChanged(ref updateDir, value);
+                UpdateBrush = ValidatePath(value);
             }
         }
 
-        private string dlc = "";
-        public string Dlc {
-            get => dlc;
+        private string dlcDir = "";
+        public string DlcDir {
+            get => dlcDir;
             set {
-                this.RaiseAndSetIfChanged(ref dlc, value);
-                DlcBrush = ValidatePath(value, "Dlc");
+                this.RaiseAndSetIfChanged(ref dlcDir, value);
+                DlcBrush = ValidatePath(value);
             }
         }
 
-        private string baseGameNx = "";
-        public string BaseGameNx {
-            get => baseGameNx;
+        private string gameDirNx = "";
+        public string GameDirNx {
+            get => gameDirNx;
             set {
-                this.RaiseAndSetIfChanged(ref baseGameNx, value);
-                BaseGameNxBrush = ValidatePath(value, "BaseGameNx");
+                this.RaiseAndSetIfChanged(ref gameDirNx, value);
+                BaseGameNxBrush = ValidatePath(value);
             }
         }
 
-        private string dlcNx = "";
-        public string DlcNx {
-            get => dlcNx;
+        private string dlcDirNx = "";
+        public string DlcDirNx {
+            get => dlcDirNx;
             set {
-                this.RaiseAndSetIfChanged(ref dlcNx, value);
-                DlcNxBrush = ValidatePath(value, "DlcNx");
+                this.RaiseAndSetIfChanged(ref dlcDirNx, value);
+                DlcNxBrush = ValidatePath(value);
             }
         }
 
@@ -188,8 +189,8 @@ namespace BotwActorTool.GUI.ViewModels
         public async void Close(bool warn = true)
         {
             if (warn) {
-                if (Config.GameDir != BaseGame || Config.UpdateDir != Update || Config.DlcDir != Dlc ||
-                    Config.GameDirNx != BaseGameNx || Config.DlcDirNx != DlcNx) {
+                if (Config.GameDir != GameDir || Config.UpdateDir != UpdateDir || Config.DlcDir != DlcDir ||
+                    Config.GameDirNx != GameDirNx || Config.DlcDirNx != DlcDirNx) {
                     var result = await View.Window.ShowMessageBox("Are you sure you want to discard chages?", "Warning", MessageBoxButtons.YesNoCancel);
                     if (result == MessageBoxResult.No || result == MessageBoxResult.Cancel) {
                         return;
@@ -238,11 +239,11 @@ namespace BotwActorTool.GUI.ViewModels
                 return;
             }
 
-            Config.GameDir = BaseGame;
-            Config.UpdateDir = Update;
-            Config.DlcDir = Dlc;
-            Config.GameDirNx = BaseGameNx;
-            Config.DlcDirNx = DlcNx;
+            Config.GameDir = GameDir;
+            Config.UpdateDir = UpdateDir;
+            Config.DlcDir = DlcDir;
+            Config.GameDirNx = GameDirNx;
+            Config.DlcDirNx = DlcDirNx;
             Config.IsDarkTheme = App.Fluent.Mode == FluentThemeMode.Dark;
             Config.Lang = Region.Value;
 
@@ -258,19 +259,19 @@ namespace BotwActorTool.GUI.ViewModels
 
             if (!string.IsNullOrEmpty(result)) {
                 if (mode == "Base Game") {
-                    BaseGame = result;
+                    GameDir = result;
                 }
                 else if (mode == "Update") {
-                    Update = result;
+                    UpdateDir = result;
                 }
                 else if (mode == "DLC") {
-                    Dlc = result;
+                    DlcDir = result;
                 }
                 else if (mode == "Base Game (Switch)") {
-                    BaseGameNx = result;
+                    GameDirNx = result;
                 }
                 else if (mode == "DLC (Switch)") {
-                    DlcNx = result;
+                    DlcDirNx = result;
                 }
             }
         }

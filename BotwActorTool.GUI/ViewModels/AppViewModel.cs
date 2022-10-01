@@ -26,7 +26,7 @@ namespace BotwActorTool.GUI.ViewModels
         }
 
         public async void OpenModActor(string actorpack) => await OpenActor(actorpack, ModContext);
-        public async void OpenGameActor(string actorpack) => await OpenActor(actorpack, Config.GetDir(Dir.Update));
+        public async void OpenGameActor(string actorpack) => await OpenActor(actorpack, Config.GetDir(BotwDir.Update));
         public async Task OpenActor(string actorpack, string modRoot)
         {
             SetStatus("Unpacking Actor", MaterialIconKind.SemanticWeb);

@@ -9,7 +9,7 @@
 		  Background="Transparent">
 		<StackPanel>
 			<Grid ColumnDefinitions="*,10,67">
-				<TextBox Text="{Binding BaseGame}"
+				<TextBox Text="{Binding GameDir}"
 						 Watermark="Base Game" />
 				<Border Height="2"
 						Background="{Binding BaseGameBrush}"
@@ -24,7 +24,7 @@
 			</Grid>
 		
 			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding Update}"
+				<TextBox Text="{Binding UpdateDir}"
 						 Watermark="Update" />
 				<Border Height="2"
 						Background="{Binding UpdateBrush}"
@@ -39,7 +39,7 @@
 			</Grid>
 		
 			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding Dlc}"
+				<TextBox Text="{Binding DlcDir}"
 						 Watermark="DLC" />
 				<Border Height="2"
 						Background="{Binding DlcBrush}"
@@ -54,7 +54,7 @@
 			</Grid>
 		
 			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding BaseGameNx}"
+				<TextBox Text="{Binding GameDirNx}"
 						 Watermark="Base Game (Switch)" />
 				<Border Height="2"
 						Background="{Binding BaseGameNxBrush}"
@@ -69,7 +69,7 @@
 			</Grid>
 		
 			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding DlcNx}"
+				<TextBox Text="{Binding DlcDirNx}"
 						 Watermark="DLC (Switch)" />
 				<Border Height="2"
 						Background="{Binding DlcNxBrush}"

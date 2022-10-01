@@ -11,16 +11,16 @@ namespace BotwActorTool.GUI.Views
     {
         public Window Window { get; set; }
         public SettingsView() => AvaloniaXamlLoader.Load(this);
-        public SettingsView(Window view, bool canClose = true)
+        public SettingsView(bool canClose = true)
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = new SettingsViewModel(this, canClose);
-            Window = view;
+            Window = View;
 
-            Grid root = this.FindControl<Grid>("Root");
+            Grid root = this.FindControl<Grid>("Root")!;
             root.PointerPressed += (_, _) => root.Focus();
 
-            (view.DataContext as AppViewModel).IsSettingsOpen = true;
+            ViewModel.IsSettingsOpen = true;
         }
     }
 }

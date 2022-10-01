@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CA1822 // Mark members as static
 
 global using static BotwActorTool.Lib.BatConfig;
-
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,7 +10,7 @@ using static System.Environment;
 
 namespace BotwActorTool.Lib
 {
-    public enum Dir
+    public enum BotwDir
     {
         Base = 0,
         Update = 1,
@@ -59,8 +59,9 @@ namespace BotwActorTool.Lib
 
         public static void LoadConfig()
         {
-            if (File.Exists($"{Config.DataFolder}\\Config.json"))
+            if (File.Exists($"{Config.DataFolder}\\Config.json")) {
                 Config = JsonSerializer.Deserialize<BatConfig>(File.ReadAllText($"{Config.DataFolder}\\Config.json")) ?? new();
+            }
             else if (File.Exists($"{Config.DataFolder}\\..\\bcml\\settings.json")) {
 
                 Config = new();
@@ -91,25 +92,41 @@ namespace BotwActorTool.Lib
 
         public bool ValidateDir(string path, string mode)
         {
-            if (File.Exists(path))
+            if (path == "NULL") {
                 return false;
+            }
+
+            if (File.Exists(path)) {
+                return false;
+            }
 
             return mode switch {
-                "BaseGame" => File.Exists($"{path}\\Pack\\Dungeon000.pack") && path.EndsWith("content"),
-                "Update" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && path.EndsWith("content"),
-                "Dlc" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("content\\0010"),
-                "BaseGameNx" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && File.Exists($"{path}\\Pack\\Dungeon000.pack")  && path.EndsWith("romfs"),
-                "DlcNx" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("romfs"),
+                "GameDir" => File.Exists($"{path}\\Pack\\Dungeon000.pack") && path.EndsWith("content"),
+                "UpdateDir" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && path.EndsWith("content"),
+                "DlcDir" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("content\\0010"),
+                "GameDirNx" => File.Exists($"{path}\\Actor\\Pack\\ActorObserverByActorTagTag.sbactorpack") && File.Exists($"{path}\\Pack\\Dungeon000.pack")  && path.EndsWith("romfs"),
+                "DlcDirNx" => File.Exists($"{path}\\Pack\\AocMainField.pack") && path.EndsWith("romfs"),
                 _ => false,
             };
         }
 
-        public string GetDir(Dir dir) => dir switch {
-            Dir.Base => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : GameDir,
-            Dir.Update => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : UpdateDir,
-            Dir.Dlc => ValidateDir(DlcDirNx, nameof(DlcDirNx)) ? DlcDirNx : DlcDir,
-            Dir.Root => DataFolder,
-            _ => throw new InvalidDataException($"No handled Dir type was passed.")
+        public bool Validate()
+        {
+            foreach (var prop in GetType().GetProperties(BindingFlags.Instance)) {
+                if (!ValidateDir((string)prop.GetValue(this)!, prop.Name)) {
+                    return false;
+                }
+            }
+
+            return true ;
+        }
+
+        public string GetDir(BotwDir dir) => dir switch {
+            BotwDir.Base => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : GameDir,
+            BotwDir.Update => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : UpdateDir,
+            BotwDir.Dlc => ValidateDir(DlcDirNx, nameof(DlcDirNx)) ? DlcDirNx : DlcDir,
+            BotwDir.Root => DataFolder,
+            _ => throw new InvalidDataException($"No handled BotwDir type was passed.")
         };
     }
 }
