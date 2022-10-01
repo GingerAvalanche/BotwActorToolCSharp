@@ -32,13 +32,25 @@ namespace BotwActorTool.GUI
                 ActiveDockable = null,
                 VisibleDockables = CreateList<IDockable>(
                     new BrowserViewModel((string field) => context.OpenActorFile(field)) {
-                        Title = "Actor", CanClose = false, CanPin = false, Id = "Actor"
+                        Title = "Actor",
+                        CanClose = false,
+                        CanPin = false,
+                        CanFloat = false,
+                        Id = "Actor"
                     },
-                    new BrowserViewModel((string field) => context.OpenGameActor(field), Config.GetDir(Dir.Update)) {
-                        Title = "Vanilla Files", CanClose = false, CanPin = false, Id = "VanillaFiles"
+                    new BrowserViewModel((string field) => context.OpenGameActor(field), Config.GetDir(BotwDir.Update)) {
+                        Title = "Vanilla Files",
+                        CanClose = false,
+                        CanPin = false,
+                        CanFloat = false,
+                        Id = "VanillaFiles"
                     },
                     new BrowserViewModel((string field) => context.OpenModActor(field)) {
-                        Title = "Mod Files", CanClose = false, CanPin = false, Id = "ModFiles"
+                        Title = "Mod Files",
+                        CanClose = false,
+                        CanPin = false,
+                        CanFloat = false,
+                        Id = "ModFiles"
                     }
                 )
             };
