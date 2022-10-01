@@ -126,7 +126,7 @@ namespace BotwActorTool.GUI.ViewModels
         public void Temp_PlaceHolder() => View.ShowMessageBox("A placeholder action was executed!", "Notice");
 
         [Menu("Settings", "_Tools", Icon = MaterialIconKind.CogBox, IsSeparator = true)]
-        public void Settings() => SettingsView = new(View);
+        public void Settings() => SettingsView = new(canClose: true);
 
         // 
         // About

@@ -43,11 +43,11 @@ namespace BotwActorTool.GUI.ViewModels
         }
 
         private Dictionary<string, ActorEditor> editors = new();
+        public Dictionary<string, Dictionary<string, ActorEditor>> AllEditors { get; set; } = new();
         public Dictionary<string, ActorEditor> Editors {
             get => editors;
             set => this.RaiseAndSetIfChanged(ref editors, value);
         }
-        public Dictionary<string, Dictionary<string, ActorEditor>> AllEditors { get; set; } = new();
 
         public Dictionary<string, string> LinkKeys { get; set; } = new();
         public AppView View { get; }

@@ -5,6 +5,8 @@ using Avalonia.Layout;
 using System.Threading.Tasks;
 using BotwActorTool.GUI.Extensions;
 using Markdown.Avalonia;
+using Microsoft.VisualBasic;
+using BotwActorTool.GUI.Views;
 
 namespace BotwActorTool.GUI.Dialogs
 {
@@ -15,11 +17,11 @@ namespace BotwActorTool.GUI.Dialogs
         {
             AvaloniaXamlLoader.Load(this);
 
-            var tb = this.FindControl<TextBlock>("Text");
+            var tb = this.FindControl<TextBlock>("Text")!;
             if (formatting == Formatting.Markdown) {
                 tb.IsVisible = false;
 
-                var mdViewer = this.FindControl<MarkdownScrollViewer>("Markdown");
+                var mdViewer = this.FindControl<MarkdownScrollViewer>("Markdown")!;
                 mdViewer.IsVisible = true;
                 mdViewer.Markdown = text;
             }
@@ -27,8 +29,8 @@ namespace BotwActorTool.GUI.Dialogs
                 tb.Text = text;
             }
 
-            this.FindControl<TextBlock>("TitleBox").Text = title;
-            this.FindControl<Button>("Copy").Click += async (_, _) => {
+            this.FindControl<TextBlock>("TitleBox")!.Text = title;
+            this.FindControl<Button>("Copy")!.Click += async (_, _) => {
                 if (formatting == Formatting.Markdown) {
                     await Application.Current!.Clipboard!.SetTextAsync($"**{title}**\n\n{text}");
                     return;
@@ -43,9 +45,9 @@ namespace BotwActorTool.GUI.Dialogs
             MessageBox msgbox = new(title, text, formatting);
             var res = MessageBoxResult.Ok;
 
-            var buttonPanel = msgbox.FindControl<StackPanel>("Buttons");
+            var buttonPanel = msgbox.FindControl<StackPanel>("Buttons")!;
+            var close = msgbox.FindControl<Button>("Close")!;
 
-            var close = msgbox.FindControl<Button>("Close");
             close.Click += (_, __) => {
                 res = MessageBoxResult.Cancel;
                 msgbox.Close();
@@ -85,7 +87,13 @@ namespace BotwActorTool.GUI.Dialogs
 
             var tcs = new TaskCompletionSource<MessageBoxResult>();
             msgbox.Closed += delegate { tcs.TrySetResult(res); };
-            msgbox.ShowDialog(View);
+
+            if (View != null) {
+                msgbox.ShowDialog(View);
+            }
+            else {
+                msgbox.Show();
+            }
 
             return tcs.Task;
         }
