@@ -20,7 +20,7 @@
     }
   },
   "AIScheduleUser": {
-    "Name": "Ai Scedule",
+    "Name": "Ai Schedule",
     "Tip": "",
     "Editors": {
       "Yaml": "YamlEditor"
