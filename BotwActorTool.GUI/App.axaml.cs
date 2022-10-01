@@ -44,8 +44,8 @@ namespace BotwActorTool.GUI
                 View.FindControl<Menu>("MainMenu")!.Items = MenuFactory.Generate(ViewModel);
 
                 // Make sure settings are always set
-                if (Config.Lang == "NULL") {
-                    ViewModel.SettingsView = new(View, canClose: false);
+                if (Config.Lang == "NULL" || !Config.Validate()) {
+                    ViewModel.SettingsView = new(canClose: false);
                     ViewModel.SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
 
                     await Task.Run(() => {
