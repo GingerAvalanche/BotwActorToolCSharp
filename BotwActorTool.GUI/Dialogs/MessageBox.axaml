@@ -75,14 +75,14 @@
 
 			<Image Width="24"
 				   Height="24"
-				   Margin="3"
+				   Margin="5,3,3,3"
 				   HorizontalAlignment="Left"
 				   VerticalAlignment="Center"
 				   IsHitTestVisible="False"
 				   Source="/Assets/icon.ico" />
 		
 			<TextBlock Name="TitleBox"
-					   Margin="4,1,15,0"
+					   Margin="10,1,15,0"
 					   MinWidth="60"
 					   Grid.Column="1"
 					   VerticalAlignment="Center"

@@ -6,11 +6,10 @@
 		xmlns:idc="clr-namespace:Dock.Avalonia.Controls;assembly=Dock.Avalonia"
 		xmlns:mdix="using:Material.Icons.Avalonia"
         xmlns:app="BotwActorTool.GUI"
-        Title="Botw Actor Tool"
-        Width="1200" Height="1200"
+        d:DesignWidth="1000" d:DesignHeight="600"
         MinWidth="1000" MinHeight="600"
-        d:DesignHeight="650"
-        d:DesignWidth="1000"
+        Width="1000" Height="600"
+        Title="Botw Actor Tool"
         Background="{DynamicResource SystemChromeLowColor}"
         ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
@@ -53,7 +52,7 @@
 
 		<Image Width="24"
                Height="24"
-               Margin="3"
+               Margin="7,3,3,3"
                HorizontalAlignment="Left"
                VerticalAlignment="Center"
                IsHitTestVisible="False"
@@ -61,7 +60,7 @@
 
 		<!-- MENU -->
 		
-		<Menu Margin="33,0,0,0" HorizontalAlignment="Left" Name="MainMenu" Height="30" />
+		<Menu Margin="38,0,0,0" HorizontalAlignment="Left" Name="MainMenu" Height="30" />
 
 		<!-- MIN / MAX / CLOSE -->
 		
