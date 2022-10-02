@@ -59,8 +59,9 @@ namespace BotwActorTool.GUI.Views.Editors
             TextBox textBox = new() {
                 Text = defaultValue.ToString(),
                 Watermark = string.IsNullOrEmpty(name) ? "???" : name,
-                UseFloatingWatermark = true
+                UseFloatingWatermark = true,
             };
+            textBox.Classes.Add("inline");
 
             // Apply/Update
             Button btnApply = new() {
