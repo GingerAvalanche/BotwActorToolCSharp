@@ -14,42 +14,42 @@ namespace BotwActorTool.GUI.ViewModels
     {
         public void Undo()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.Undo();
             }
         }
 
         public void Redo()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.Redo();
             }
         }
 
         public void Copy()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.Copy();
             }
         }
 
         public void Cut()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.Cut();
             }
         }
 
         public void Paste()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.Paste();
             }
         }
 
         public void SelectAll()
         {
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 (Editor.Value.editor as TextEditor)!.SelectAll();
             }
         }
@@ -64,7 +64,7 @@ namespace BotwActorTool.GUI.ViewModels
             IsFastMode = isFastMode == _isFastMode ? !isFastMode : isFastMode;
             _isFastMode = isFastMode;
 
-            if (Editor.Value != null) {
+            if (Editor.Value?.editor != null) {
                 ((YamlEditor)Editor.Value).SetEditorMode(IsFastMode);
                 var editor = Editor.Value.editor as TextEditor;
                 editor!.ScrollToLine(editor.Document.GetLocation(0).Line);
