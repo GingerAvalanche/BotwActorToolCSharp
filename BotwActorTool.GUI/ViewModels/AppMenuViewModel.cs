@@ -28,9 +28,7 @@ namespace BotwActorTool.GUI.ViewModels
         [Menu("Open Mod", "_File", Icon = MaterialIconKind.FolderOpen, HotKey = "Ctrl + N")]
         public async void OpenMod()
         {
-            var result = await new OpenFolderDialog() {
-                Title = $"Select a mod 'content' folder"
-            }.ShowAsync(View);
+            var result = await BrowserDialog.Folder.BrowseDialog("Select a mod 'content' folder");
 
             if (result == null)
                 return;
@@ -86,9 +84,7 @@ namespace BotwActorTool.GUI.ViewModels
             }
 
             if (output == null) {
-                var result = await new OpenFolderDialog() {
-                    Title = $"Select a mod 'content' folder"
-                }.ShowAsync(View);
+                var result = await BrowserDialog.Folder.BrowseDialog("Select a mod 'content' folder");
 
                 if (result == null)
                     return;
