@@ -11,6 +11,15 @@ namespace BotwActorTool.GUI.Extensions
     {
         public static Brush ToBrush(this string color) => new SolidColorBrush(Convert.ToUInt32(color.Replace("#", "").PadLeft(8, 'F'), 16));
         public static Brush ToBrush(this uint color) => new SolidColorBrush(color);
+        public static Brush? ToBrush(this bool? value)
+        {
+            return value switch {
+                true => "#00CC1C".ToBrush(),
+                false => "#FF0000".ToBrush(),
+                _ => "#00000000".ToBrush(),
+            };
+        }
+
         public static Brush? GetBrush(this string brush)
         {
             if (Avalonia.Application.Current != null) {
