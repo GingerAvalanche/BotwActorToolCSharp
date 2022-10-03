@@ -29,7 +29,7 @@ namespace BotwActorTool.GUI.Views.Editors
             base.editor.Encoding = Encoding.UTF8;
             base.editor.Document = new TextDocument("404 not found");
 
-            RegistryOptions registryOptions = Config.IsDarkTheme ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
+            RegistryOptions registryOptions = Config.Theme == "Dark" ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
             TextMate.Installation textMateInstallation = ((TextEditor)base.editor).InstallTextMate(registryOptions);
             Language csharpLanguage = registryOptions.GetLanguageByExtension(".yml");
             textMateInstallation.SetGrammar(registryOptions.GetScopeByLanguageId(csharpLanguage.Id));
@@ -39,12 +39,12 @@ namespace BotwActorTool.GUI.Views.Editors
         {
             try {
                 if (fast) {
-                    RegistryOptions registryOptions = Config.IsDarkTheme ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
+                    RegistryOptions registryOptions = Config.Theme == "Dark" ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
                     TextMate.Installation textMateInstallation = ((TextEditor)base.editor!).InstallTextMate(registryOptions);
                     textMateInstallation.SetGrammar(null);
                 }
                 else {
-                    RegistryOptions registryOptions = Config.IsDarkTheme ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
+                    RegistryOptions registryOptions = Config.Theme == "Dark" ? new(ThemeName.DarkPlus) : new(ThemeName.LightPlus);
                     TextMate.Installation textMateInstallation = ((TextEditor)base.editor!).InstallTextMate(registryOptions);
                     Language csharpLanguage = registryOptions.GetLanguageByExtension(".yml");
                     textMateInstallation.SetGrammar(registryOptions.GetScopeByLanguageId(csharpLanguage.Id));

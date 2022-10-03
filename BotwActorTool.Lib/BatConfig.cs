@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CA1822 // Mark members as static
 
 global using static BotwActorTool.Lib.BatConfig;
+using BotwActorTool.Lib.Attributes;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -32,27 +33,37 @@ namespace BotwActorTool.Lib
         // Properties
         #region Expand
 
+        public bool RequiresInput { get; set; } = true;
+
         [JsonIgnore]
         public string UpdateDirNx { get => GameDirNx; }
 
         [JsonIgnore]
-        public string DataFolder {
-            get {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                    return $"{GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
-                }
-                else {
-                    return $"{GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.Create)}/BotwActorTool";
-                }
-            }
-        }
+        public Dictionary<string, string> Regions { get; } = Resource.GetRegionList();
 
+        [JsonIgnore]
+        public string DataFolder
+            => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{GetFolderPath(SpecialFolder.LocalApplicationData)}/{nameof(BotwActorTool)}" : $"{GetFolderPath(SpecialFolder.ApplicationData)}/{nameof(BotwActorTool)}";
+
+        [Setting("Base Game Directory", "The folder containing the base game files for BOTW, without the update ir DLC files. The last folder should be \"content\", e.g. \"C:\\Games\\Botw\\BaseGame\\content\"")]
         public string GameDir { get; set; } = "";
+
+        [Setting("Update Directory", "The folder containing the update files for BOTW, version 1.5.0. The last folder should be \"content\", e.g. \"C:\\Games\\Botw\\Update\\content\"")]
         public string UpdateDir { get; set; } = "";
+
+        [Setting("DLC Directory", "The folder containing the DLC files for BOTW, version 3.0. The last folder should be \"0010\", e.g. \"C:\\Games\\Botw\\DLC\\content\\0010\"")]
         public string DlcDir { get; set; } = "";
+
+        [Setting("Switch Base Game Directory", "Path should end in '01007EF00011E000\\romfs'")]
         public string GameDirNx { get; set; } = "";
+
+        [Setting("Switch DLC Directory", "Path should end in '01007EF00011F001\\romfs'")]
         public string DlcDirNx { get; set; } = "";
-        public bool IsDarkTheme { get; set; } = true;
+
+        [Setting(UiType.Dropdown, "Dark", "Light", Category = "Appearance")]
+        public string Theme { get; set; } = "Dark";
+
+        [Setting(UiType.Dropdown, "Resource:RegionList", Name = "Game Region/Language")]
         public string Lang { get; set; } = "NULL";
 
         #endregion
@@ -92,7 +103,7 @@ namespace BotwActorTool.Lib
 
         public bool ValidateDir(string path, string mode)
         {
-            if (path == "NULL") {
+            if (path == null) {
                 return false;
             }
 
@@ -112,13 +123,14 @@ namespace BotwActorTool.Lib
 
         public bool Validate()
         {
-            foreach (var prop in GetType().GetProperties(BindingFlags.Instance)) {
+            foreach (var prop in GetType().GetProperties().Where(x => x.GetCustomAttributes<SettingAttribute>(false).Any())) {
+                var debug1 = (string)prop.GetValue(this)!;
                 if (!ValidateDir((string)prop.GetValue(this)!, prop.Name)) {
                     return false;
                 }
             }
 
-            return true ;
+            return true;
         }
 
         public string GetDir(BotwDir dir) => dir switch {

@@ -3,24 +3,27 @@
 
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using BotwActorTool.GUI.Helpers;
 using BotwActorTool.GUI.ViewModels;
 
 namespace BotwActorTool.GUI.Views
 {
     public partial class SettingsView : UserControl
     {
-        public Window Window { get; set; }
         public SettingsView() => AvaloniaXamlLoader.Load(this);
         public SettingsView(bool canClose = true)
         {
             AvaloniaXamlLoader.Load(this);
-            DataContext = new SettingsViewModel(this, canClose);
-            Window = View;
+            DataContext = new SettingsViewModel(canClose);
 
-            Grid root = this.FindControl<Grid>("Root")!;
-            root.PointerPressed += (_, _) => root.Focus();
+            // Very much unnecessary, but not having this bothers me.
+            // Allows you to focus seemingly nothing.
+            Grid focusDelegate = this.FindControl<Grid>("FocusDelegate")!;
+            focusDelegate.PointerPressed += (_, _) => focusDelegate.Focus();
+            Grid focusDelegate2 = this.FindControl<Grid>("FocusDelegate2")!;
+            focusDelegate2.PointerPressed += (_, _) => focusDelegate.Focus();
 
-            ViewModel.IsSettingsOpen = true;
+            SettingsFactory.Generate(this);
         }
     }
 }

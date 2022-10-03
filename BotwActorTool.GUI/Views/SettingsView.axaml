@@ -4,127 +4,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BotwActorTool.GUI.Views.SettingsView">
-	<Grid Margin="15"
-		  Name="Root"
-		  Background="Transparent">
-		<StackPanel>
-			<Grid ColumnDefinitions="*,10,67">
-				<TextBox Text="{Binding GameDir}"
-						 Watermark="Base Game" />
-				<Border Height="2"
-						Background="{Binding BaseGameBrush}"
-						Margin="10,4"
-						Opacity="0.4"
-						VerticalAlignment="Bottom" />
-				<Button Command="{Binding Browse}"
-						CommandParameter="Base Game"
-						Content="Browse"
-						IsTabStop="False"
-						Grid.Column="2" />
-			</Grid>
-		
-			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding UpdateDir}"
-						 Watermark="Update" />
-				<Border Height="2"
-						Background="{Binding UpdateBrush}"
-						Margin="10,4"
-						Opacity="0.4"
-						VerticalAlignment="Bottom" />
-				<Button Command="{Binding Browse}"
-						CommandParameter="Update"
-						Content="Browse"
-						IsTabStop="False"
-						Grid.Column="2" />
-			</Grid>
-		
-			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding DlcDir}"
-						 Watermark="DLC" />
-				<Border Height="2"
-						Background="{Binding DlcBrush}"
-						Margin="10,4"
-						Opacity="0.4"
-						VerticalAlignment="Bottom" />
-				<Button Command="{Binding Browse}"
-						CommandParameter="DLC"
-						Content="Browse"
-						IsTabStop="False"
-						Grid.Column="2" />
-			</Grid>
-		
-			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding GameDirNx}"
-						 Watermark="Base Game (Switch)" />
-				<Border Height="2"
-						Background="{Binding BaseGameNxBrush}"
-						Margin="10,4"
-						Opacity="0.4"
-						VerticalAlignment="Bottom" />
-				<Button Command="{Binding Browse}"
-						CommandParameter="Base Game (Switch)"
-						Content="Browse"
-						IsTabStop="False"
-						Grid.Column="2" />
-			</Grid>
-		
-			<Grid ColumnDefinitions="*,10,67" Margin="0,10,0,0">
-				<TextBox Text="{Binding DlcDirNx}"
-						 Watermark="DLC (Switch)" />
-				<Border Height="2"
-						Background="{Binding DlcNxBrush}"
-						Margin="10,4"
-						Opacity="0.4"
-						VerticalAlignment="Bottom" />
-				<Button Command="{Binding Browse}"
-						CommandParameter="DLC (Switch)"
-						Content="Browse"
-						IsTabStop="False"
-						Grid.Column="2" />
-			</Grid>
-		</StackPanel>
-
-		<Grid VerticalAlignment="Bottom">
-			<ToggleSwitch Name="ThemeToggle"
-						  OnContent="Dark"
-						  OffContent="Light"
-						  Command="{Binding ChangeTheme}"
-						  HorizontalAlignment="Left"
-						  Content="Theme" />
-
-			<ComboBox HorizontalAlignment="Left"
-					  Items="{Binding Regions}"
-					  SelectedItem="{Binding Region}"
-					  VerticalAlignment="Bottom"
-					  MinWidth="140"
-					  Margin="120,0">
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding Key}"
-								   Background="Transparent"
-								   VerticalAlignment="Center"
-								   HorizontalAlignment="Stretch"
-								   ToolTip.Tip="{Binding Value}" />
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
-
-			<StackPanel HorizontalAlignment="Right"
-						Orientation="Horizontal"
-						VerticalAlignment="Bottom">
-				<Button Width="67"
-						Command="{Binding Close}"
-						CommandParameter="true"
+    <Grid ColumnDefinitions="240,*" Background="{DynamicResource SystemChromeMediumColor}">
+        <Grid Name="FocusDelegate">
+            <Border BoxShadow="0 0 10 0 #30000000" />
+            <ScrollViewer>
+                <StackPanel Name="Root"
+							Width="200"
+							Margin="0,0,15,40"
+							HorizontalAlignment="Right">
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Margin="15" VerticalAlignment="Bottom"
+				  ColumnDefinitions="*,*,*">
+                <Button Name="Cancel"
+						Content="Cancel"
+						Margin="2.5,0"
 						IsEnabled="{Binding CanClose}"
-						MaxHeight="300"
-						HorizontalContentAlignment="Center"
-						Content="Cancel" />
-				<Button Width="67"
-						Margin="10,0,0,0"
-						Command="{Binding Save}"
-						HorizontalContentAlignment="Center"
-						Content="Save" />
-			</StackPanel>
-		</Grid>
-	</Grid>
+						Grid.Column="1" HorizontalContentAlignment="Center"
+						HorizontalAlignment="Stretch" />
+                <Button Name="Save"
+						Content="Save"
+						Margin="2.5,0,0,0"
+						Grid.Column="2" HorizontalContentAlignment="Center"
+						HorizontalAlignment="Stretch" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="1"
+			  Name="FocusDelegate2">
+            <ScrollViewer>
+                <Grid>
+                    <ContentControl Content="{Binding ActiveElement}"
+									MinWidth="400"
+									Width="{Binding $parent.Bounds.Width}"
+									HorizontalAlignment="Left"
+									MaxWidth="1200"/>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

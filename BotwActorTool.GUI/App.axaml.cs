@@ -18,7 +18,7 @@ namespace BotwActorTool.GUI
     {
         public static AppView View { get; set; } = null!;
         public static AppViewModel ViewModel { get; set; } = null!;
-        public static FluentTheme Fluent { get; set; } = new(new Uri("avares://BotwActorTool.GUI/Styles"));
+        public static FluentTheme Theme { get; set; } = new(new Uri("avares://BotwActorTool.GUI/Styles"));
 
         public override void Initialize() => AvaloniaXamlLoader.Load(this);
 
@@ -27,8 +27,8 @@ namespace BotwActorTool.GUI
             // Load the user config
             LoadConfig();
 
-            Fluent.Mode = Config.IsDarkTheme ? FluentThemeMode.Dark : FluentThemeMode.Light;
-            Current!.Styles[0] = Fluent;
+            Theme.Mode = Config.Theme == "Dark" ? FluentThemeMode.Dark : FluentThemeMode.Light;
+            Current!.Styles[0] = Theme;
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
@@ -44,7 +44,7 @@ namespace BotwActorTool.GUI
                 View.FindControl<Menu>("MainMenu")!.Items = MenuFactory.Generate(ViewModel);
 
                 // Make sure settings are always set
-                if (Config.Lang == "NULL" || !Config.Validate()) {
+                if (Config.RequiresInput || !SettingsValidator.ValidateSave().Key) {
                     ViewModel.SettingsView = new(canClose: false);
                     ViewModel.SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
 
