@@ -15,12 +15,12 @@ namespace BotwActorTool.GUI.Views.Editors
 {
     public partial class ActorLink : ActorEditor
     {
-        private StackPanel root;
+        private readonly StackPanel root;
         private ActorViewModel? doc;
         public ActorLink()
         {
             AvaloniaXamlLoader.Load(this);
-            root = this.FindControl<StackPanel>("ROOT");
+            root = this.FindControl<StackPanel>("ROOT")!;
         }
 
         public override void Init(ActorViewModel doc)

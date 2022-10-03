@@ -106,8 +106,8 @@ namespace BotwActorTool.GUI.ViewModels
         // App References
 
         public bool IsWindows { get; set; } = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        public void ChangeState(string parameter) => View.WindowState = View.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        public void Minimize(string parameter) => View.WindowState = WindowState.Minimized;
+        public void ChangeState(string _) => View.WindowState = View.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        public void Minimize(string _) => View.WindowState = WindowState.Minimized;
 
         private IFactory factory;
         public IFactory Factory {

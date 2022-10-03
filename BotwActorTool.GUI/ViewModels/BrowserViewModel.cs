@@ -39,7 +39,7 @@ namespace BotwActorTool.GUI.ViewModels
                 foreach (var actor in actorInfo.RootNode.Hash["Actors"].Array) {
                     if (actor.Hash["name"].String is string name) {
 
-                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}\\Actor\\Pack\\{name}.sbactorpack".ToSystemPath())) {
+                        if (isMod && !File.Exists($"{Util.GetModRoot(str)}/Actor/Pack/{name}.sbactorpack")) {
                             continue;
                         }
 
