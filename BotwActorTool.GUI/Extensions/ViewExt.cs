@@ -71,7 +71,7 @@ namespace BotwActorTool.GUI.Extensions
                 LastSaveDirectory = result != null ? await result.GetParentAsync() : null;
             }
 
-            return path;
+            return path?.Remove(0, 8);
         }
 
         public static void SetActive(this DockBase dock, string id)

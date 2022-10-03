@@ -25,7 +25,7 @@ namespace BotwActorTool.GUI.Helpers
             return name switch {
                 "GameDir" => File.Exists($"{path}/Pack/Dungeon000.pack") && path.EndsWith("content"),
                 "UpdateDir" => File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack") && path.EndsWith("content"),
-                "DlcDir" => File.Exists($"{path}/Pack/AocMainField.pack") && path.EndsWith("content\\0010"),
+                "DlcDir" => File.Exists($"{path}/Pack/AocMainField.pack") && path.ToSystemPath().EndsWith("content/0010"),
                 "GameDirNx" => File.Exists($"{path}/Actor/Pack/ActorObserverByActorTagTag.sbactorpack") && File.Exists($"{path}/Pack/Dungeon000.pack") && path.EndsWith("romfs"),
                 "DlcDirNx" => File.Exists($"{path}/Pack/AocMainField.pack") && path.EndsWith("romfs"),
                 "Lang" => File.Exists($"{Config.GetDir(BotwDir.Base)}/Pack/Bootup_{path}.pack"),
