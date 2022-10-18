@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CA1822 // Mark members as static
 
 global using static BotwActorTool.Lib.BatConfig;
-using BotwActorTool.Lib.Attributes;
+using Avalonia.SettingsFactory.Core;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,15 +10,9 @@ using static System.Environment;
 
 namespace BotwActorTool.Lib
 {
-    public enum BotwDir
-    {
-        Base = 0,
-        Update = 1,
-        Dlc = 2,
-        Root = 3,
-    }
+    public enum BotwDir { Game = 0, Update = 1, Dlc = 2 }
 
-    public class BatConfig
+    public class BatConfig : ISettingsBase
     {
         //
         // Static defenitions
@@ -59,11 +53,14 @@ namespace BotwActorTool.Lib
         [Setting("Switch DLC Directory", "Path should end in '01007EF00011F001/romfs'")]
         public string DlcDirNx { get; set; } = "";
 
-        [Setting(UiType.Dropdown, "Dark", "Light", Category = "Appearance")]
-        public string Theme { get; set; } = "Dark";
-
         [Setting(UiType.Dropdown, "Resource:RegionList", Name = "Game Region/Language")]
         public string Lang { get; set; } = "NULL";
+
+        [Setting(UiType.Dropdown, "Switch", "WiiU")]
+        public string Mode { get; set; } = "WiiU";
+
+        [Setting(UiType.Dropdown, "Dark", "Light", Category = "Appearance")]
+        public string Theme { get; set; } = "Dark";
 
         #endregion
 
@@ -89,11 +86,11 @@ namespace BotwActorTool.Lib
                 Config.Save();
             }
             else {
-                Config = new BatConfig().Save();
+                Config = (BatConfig)new BatConfig().Save();
             }
         }
 
-        public BatConfig Save()
+        public ISettingsBase Save()
         {
             Directory.CreateDirectory(Config.DataFolder);
             File.WriteAllText($"{Config.DataFolder}/Config.json", JsonSerializer.Serialize(this));
@@ -121,11 +118,10 @@ namespace BotwActorTool.Lib
         }
 
         public string GetDir(BotwDir dir) => dir switch {
-            BotwDir.Base => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : GameDir,
-            BotwDir.Update => ValidateDir(GameDirNx, nameof(GameDirNx)) ? GameDirNx : UpdateDir,
-            BotwDir.Dlc => ValidateDir(DlcDirNx, nameof(DlcDirNx)) ? DlcDirNx : DlcDir,
-            BotwDir.Root => DataFolder,
-            _ => throw new InvalidDataException($"No handled BotwDir type was passed.")
+            BotwDir.Game => Mode == "Switch" ? GameDirNx : GameDir,
+            BotwDir.Update => Mode == "Switch" ? GameDirNx : UpdateDir,
+            BotwDir.Dlc => Mode == "Switch" ? DlcDirNx : DlcDir,
+            _ => throw new InvalidDataException($"The BotwDir type '{dir}' is not implemented yet.")
         };
     }
 }
