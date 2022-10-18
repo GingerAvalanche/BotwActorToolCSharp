@@ -18,7 +18,7 @@ namespace BotwActorTool.GUI.Dialogs
         {
             AvaloniaXamlLoader.Load(this);
             DataRoot = root;
-            Root = this.FindControl<StackPanel>("Root");
+            Root = this.FindControl<StackPanel>("Root")!;
             this.FindControl<TextBlock>("TitleBox")!.Text = title;
 
             foreach ((var key, var value) in DataRoot) {
@@ -27,10 +27,10 @@ namespace BotwActorTool.GUI.Dialogs
                     Watermark = key,
                     Text = value,
                     Margin = new Thickness(0,0,0,15),
+                    UseFloatingWatermark = true
                 };
 
-                tb.GetObservable(TextBlock.TextProperty).Subscribe(ivalue => DataRoot[key] = ivalue);
-
+                tb.GetObservable(TextBlock.TextProperty).Subscribe(x => DataRoot[key] = x!);
                 Root.Children.Add(tb);
             }
         }
@@ -73,7 +73,7 @@ namespace BotwActorTool.GUI.Dialogs
 
             var tcs = new TaskCompletionSource<MessageBoxResult>();
             dialog.Closed += delegate { tcs.TrySetResult(res); };
-            await dialog.ShowDialog(View);
+            await dialog.ShowDialog(Shell);
 
             if ((await tcs.Task) == MessageBoxResult.Ok) {
                 return dialog.DataRoot;

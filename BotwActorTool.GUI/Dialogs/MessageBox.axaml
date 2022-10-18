@@ -1,126 +1,150 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window x:Class="BotwActorTool.GUI.Dialogs.MessageBox"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctxt="clr-namespace:ColorTextBlock.Avalonia;assembly=ColorTextBlock.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:mdix="using:Material.Icons.Avalonia"
-		xmlns:mda="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
-        mc:Ignorable="d"
-		d:DesignWidth="400"
-		d:DesignHeight="260"
-        x:Class="BotwActorTool.GUI.Dialogs.MessageBox"
-		CanResize="False"
-		WindowStartupLocation="CenterOwner"
-		Background="Transparent"
+        xmlns:mda="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+        xmlns:mdix="using:Material.Icons.Avalonia"
+        MaxWidth="500"
+        MaxHeight="400"
+        d:DesignHeight="260"
+        d:DesignWidth="400"
+        Background="Transparent"
+        CanResize="False"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="30"
         ExtendClientAreaToDecorationsHint="True"
-		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaTitleBarHeightHint="30"
-		TransparencyLevelHint="AcrylicBlur"
-		ShowInTaskbar="False"
-		SizeToContent="WidthAndHeight">
+        ShowInTaskbar="False"
+        SizeToContent="WidthAndHeight"
+        TransparencyLevelHint="AcrylicBlur"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
 
-	<Grid RowDefinitions="30,*">
+    <Grid RowDefinitions="30,*">
 
-		<Panel Grid.Row="1">
-			<ExperimentalAcrylicBorder IsHitTestVisible="False">
-				<ExperimentalAcrylicBorder.Material>
-					<ExperimentalAcrylicMaterial
-						BackgroundSource="Digger"
-						TintColor="{DynamicResource SystemAltHighColor}"
-						TintOpacity="0.9"
-						MaterialOpacity="0.65" />
-				</ExperimentalAcrylicBorder.Material>
-			</ExperimentalAcrylicBorder>
-		</Panel>
-		
-		<Grid HorizontalAlignment="Stretch"
-			  Margin="15"
-			  MaxWidth="400"
-			  MaxHeight="300"
-			  RowDefinitions="*,Auto"
-			  Grid.Row="1">
-			
-			<ScrollViewer HorizontalScrollBarVisibility="Disabled"
-						  VerticalScrollBarVisibility="Auto"
-						  Padding="0,0,5,0">
-				<Grid>
-					<TextBlock HorizontalAlignment="Center"
-							   Name="Text"
-							   TextWrapping="WrapWithOverflow" />
-					<mda:MarkdownScrollViewer Name="Markdown" IsVisible="False" />
-				</Grid>
-			</ScrollViewer>
+        <Panel Grid.Row="1">
+            <ExperimentalAcrylicBorder IsHitTestVisible="False">
+                <ExperimentalAcrylicBorder.Material>
+                    <ExperimentalAcrylicMaterial BackgroundSource="Digger"
+                                                 MaterialOpacity="0.85"
+                                                 TintColor="{DynamicResource SystemChromeLowColor}"
+                                                 TintOpacity="1" />
+                </ExperimentalAcrylicBorder.Material>
+            </ExperimentalAcrylicBorder>
+        </Panel>
 
-			<StackPanel HorizontalAlignment="Right"
-						VerticalAlignment="Bottom"
-						Grid.Row="1"
-						Margin="5,45,5,5"
-						Focusable="False"
-						Orientation="Horizontal"
-						Name="Buttons">
-				<StackPanel.Styles>
-					<Style Selector="Button">
-						<Setter Property="Margin" Value="5"/>
-					</Style>
-				</StackPanel.Styles>
-			</StackPanel>
-		</Grid>
+        <Grid Grid.Row="1"
+              Margin="15"
+              RowDefinitions="*,Auto">
 
-		<!--  CHROME BAR  -->
+            <TextBox Name="Text"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     IsReadOnly="True"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     TextWrapping="WrapWithOverflow">
+                <TextBox.Styles>
+                    <Style Selector="TextBox:focus /template/ Border">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                    <Style Selector="TextBox:pointerover /template/ Border">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </TextBox.Styles>
+            </TextBox>
 
-		<Grid ColumnDefinitions="30,*,Auto">
-			
-			<Border IsHitTestVisible="False"
-					Background="{DynamicResource SystemChromeLowColor}"
-					Grid.ColumnSpan="4" />
+            <mda:MarkdownScrollViewer Name="Markdown"
+                                      IsVisible="False"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <mda:MarkdownScrollViewer.Styles>
+                    <Style Selector="ctxt|CHyperlink">
+                        <Setter Property="IsUnderline" Value="False" />
+                        <Setter Property="Transitions">
+                            <Transitions>
+                                <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+                            </Transitions>
+                        </Setter>
+                    </Style>
+                </mda:MarkdownScrollViewer.Styles>
+            </mda:MarkdownScrollViewer>
 
-			<Image Width="24"
-				   Height="24"
-				   Margin="5,3,3,3"
-				   HorizontalAlignment="Left"
-				   VerticalAlignment="Center"
-				   IsHitTestVisible="False"
-				   Source="/Assets/icon.ico" />
-		
-			<TextBlock Name="TitleBox"
-					   Margin="10,1,15,0"
-					   MinWidth="60"
-					   Grid.Column="1"
-					   VerticalAlignment="Center"
-					   IsHitTestVisible="False"
-					   FontWeight="Bold" />
-		
-			<StackPanel HorizontalAlignment="Right"
-						Orientation="Horizontal"
-						Grid.Column="2">
+            <StackPanel Name="Buttons"
+                        Grid.Row="1"
+                        Margin="5,15,5,5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Focusable="False"
+                        Orientation="Horizontal">
+                <StackPanel.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                </StackPanel.Styles>
+            </StackPanel>
+        </Grid>
 
-				<Button CornerRadius="0"
-						Name="Copy"
-						Height="30"
-						BorderThickness="0"
-						Background="Transparent"
-						Width="40">
-					<mdix:MaterialIcon Kind="ContentCopy" Margin="0,1,0,0">
-						<mdix:MaterialIcon.RenderTransform>
-							<ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-						</mdix:MaterialIcon.RenderTransform>
-					</mdix:MaterialIcon>
-				</Button>
+        <!--  CHROME BAR  -->
 
-				<Button CornerRadius="0"
-						Name="Close"
-						Height="30"
-						BorderThickness="0"
-						Background="Transparent"
-						Width="40">
-					<mdix:MaterialIcon Kind="Close" Margin="0,1,0,0">
-						<mdix:MaterialIcon.RenderTransform>
-							<ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-						</mdix:MaterialIcon.RenderTransform>
-					</mdix:MaterialIcon>
-				</Button>
+        <Grid ColumnDefinitions="30,*,Auto">
 
-			</StackPanel>
-		</Grid>
-	</Grid>
-	
+            <Border Grid.ColumnSpan="4"
+                    Background="{DynamicResource SystemChromeLowColor}"
+                    IsHitTestVisible="False" />
+
+            <Image Width="24"
+                   Height="24"
+                   Margin="5,3,3,3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   IsHitTestVisible="False"
+                   Source="/Assets/icon.ico" />
+
+            <TextBlock Name="TitleBox"
+                       Grid.Column="1"
+                       MinWidth="60"
+                       Margin="10,1,15,0"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       IsHitTestVisible="False" />
+
+            <StackPanel Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+                <Button Name="Copy"
+                        Width="40"
+                        Height="30"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="0">
+                    <mdix:MaterialIcon Margin="0,1,0,0" Kind="ContentCopy">
+                        <mdix:MaterialIcon.RenderTransform>
+                            <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                        </mdix:MaterialIcon.RenderTransform>
+                    </mdix:MaterialIcon>
+                </Button>
+
+                <Button Name="Close"
+                        Width="40"
+                        Height="30"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="0">
+                    <mdix:MaterialIcon Margin="0,1,0,0" Kind="Close">
+                        <mdix:MaterialIcon.RenderTransform>
+                            <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+                        </mdix:MaterialIcon.RenderTransform>
+                    </mdix:MaterialIcon>
+                </Button>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+
 </Window>

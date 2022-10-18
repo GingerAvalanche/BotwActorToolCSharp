@@ -7,6 +7,8 @@ using BotwActorTool.GUI.Extensions;
 using Markdown.Avalonia;
 using Microsoft.VisualBasic;
 using BotwActorTool.GUI.Views;
+using Avalonia.Threading;
+using System.Threading;
 
 namespace BotwActorTool.GUI.Dialogs
 {
@@ -17,7 +19,7 @@ namespace BotwActorTool.GUI.Dialogs
         {
             AvaloniaXamlLoader.Load(this);
 
-            var tb = this.FindControl<TextBlock>("Text")!;
+            var tb = this.FindControl<TextBox>("Text")!;
             if (formatting == Formatting.Markdown) {
                 tb.IsVisible = false;
 
@@ -40,7 +42,14 @@ namespace BotwActorTool.GUI.Dialogs
             };
         }
 
-        public static Task<MessageBoxResult> Show(string text, string title = "Notice", MessageBoxButtons buttons = MessageBoxButtons.Ok, Formatting formatting = Formatting.None)
+        public static void ShowSync(string text, string title = "Notice", MessageBoxButtons buttons = MessageBoxButtons.Ok, Formatting formatting = Formatting.None)
+        {
+            using var source = new CancellationTokenSource();
+            Show(text, title, buttons, formatting).ContinueWith(t => source.Cancel(), TaskScheduler.FromCurrentSynchronizationContext());
+            Dispatcher.UIThread.MainLoop(source.Token);
+        }
+
+        public static async Task<MessageBoxResult> Show(string text, string title = "Notice", MessageBoxButtons buttons = MessageBoxButtons.Ok, Formatting formatting = Formatting.None)
         {
             MessageBox msgbox = new(title, text, formatting);
             var res = MessageBoxResult.Ok;
@@ -88,14 +97,14 @@ namespace BotwActorTool.GUI.Dialogs
             var tcs = new TaskCompletionSource<MessageBoxResult>();
             msgbox.Closed += delegate { tcs.TrySetResult(res); };
 
-            if (View != null) {
-                msgbox.ShowDialog(View);
+            if (Shell != null) {
+                await msgbox.ShowDialog(Shell);
             }
             else {
                 msgbox.Show();
             }
 
-            return tcs.Task;
+            return await tcs.Task;
         }
     }
 }

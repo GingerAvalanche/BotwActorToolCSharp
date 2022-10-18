@@ -3,9 +3,12 @@
 using Avalonia.Controls;
 using Avalonia.Dialogs;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
+using BotwActorTool.GUI.Builders;
 using BotwActorTool.GUI.Dialogs;
 using BotwActorTool.GUI.ViewModels;
+using BotwActorTool.GUI.ViewModels.Tools;
 using BotwActorTool.GUI.Views;
 using Dock.Model.Core;
 using Dock.Model.ReactiveUI.Controls;
@@ -15,7 +18,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.Extensions
@@ -34,12 +39,12 @@ namespace BotwActorTool.GUI.Extensions
         public static Task<MessageBoxResult> ShowMessageBox(this Window _, string text, string title = "Warning", MessageBoxButtons buttons = MessageBoxButtons.Ok,
             Formatting formatting = Formatting.None) => MessageBox.Show(text, title, buttons, formatting);
 
-        public static async Task<string?> BrowseDialog(this BrowserDialog browser, string title = "")
+        public static async Task<string?> ShowDialog(this BrowserDialog browser, string title = "")
         {
             string? path = null;
 
             if (browser == BrowserDialog.Folder) {
-                var result = await (View.GetVisualRoot() as TopLevel)!.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions() {
+                var result = await (Shell.GetVisualRoot() as TopLevel)!.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions() {
                     Title = title,
                     SuggestedStartLocation = LastSelectedDirectory
                 });
@@ -51,7 +56,7 @@ namespace BotwActorTool.GUI.Extensions
                 }
             }
             else if (browser == BrowserDialog.File) {
-                var result = await (View.GetVisualRoot() as TopLevel)!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions() {
+                var result = await (Shell.GetVisualRoot() as TopLevel)!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions() {
                     Title = title,
                     SuggestedStartLocation = LastSelectedDirectory
                 });
@@ -63,7 +68,7 @@ namespace BotwActorTool.GUI.Extensions
                 }
             }
             else {
-                var result = await (View.GetVisualRoot() as TopLevel)!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions() {
+                var result = await (Shell.GetVisualRoot() as TopLevel)!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions() {
                     Title = title,
                     SuggestedStartLocation = LastSaveDirectory
                 });
@@ -72,17 +77,6 @@ namespace BotwActorTool.GUI.Extensions
             }
 
             return path?.Remove(0, 8);
-        }
-
-        public static void SetActive(this DockBase dock, string id)
-        {
-            var doc = dock.VisibleDockables?.Where(x => x.Id == id).FirstOrDefault();
-            dock.ActiveDockable = doc;
-        }
-
-        public static IDockable? Get(this DockBase dock, string id)
-        {
-            return dock.VisibleDockables?.Where(x => x.Id == id).FirstOrDefault();
         }
     }
 }

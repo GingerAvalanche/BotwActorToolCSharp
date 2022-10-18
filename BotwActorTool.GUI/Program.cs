@@ -25,10 +25,7 @@ namespace BotwActorTool.GUI
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             }
             catch (Exception ex) {
-                using (var source = new CancellationTokenSource()) {
-                    MessageBox.Show($"{ex.Message}\n\n(Writting stack to 'error.log')", "Unhandled Exception").ContinueWith(t => source.Cancel(), TaskScheduler.FromCurrentSynchronizationContext());
-                    Dispatcher.UIThread.MainLoop(source.Token);
-                }
+                MessageBox.ShowSync($"{ex.Message}\n\n(Writting stack trace to '{Path.GetFullPath("./error.log")}')", "Unhandled Exception");
                 File.WriteAllText("./error.log", ex.ToString());
             }
         }
@@ -39,7 +36,5 @@ namespace BotwActorTool.GUI
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();
-
-        public static async void Throw(Exception ex) => await MessageBox.Show($"{ex.Message}", "Unhandled Exception");
     }
 }

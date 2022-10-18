@@ -6,10 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BotwActorTool.GUI.Attributes;
 
-namespace BotwActorTool.GUI.Helpers
+namespace BotwActorTool.GUI.Builders
 {
     public class MenuFactory
     {
