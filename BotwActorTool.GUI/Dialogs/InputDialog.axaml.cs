@@ -16,10 +16,9 @@ namespace BotwActorTool.GUI.Dialogs
         public InputDialog() => AvaloniaXamlLoader.Load(this);
         public InputDialog(Dictionary<string, string> root, string title)
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();
             DataRoot = root;
-            Root = this.FindControl<StackPanel>("Root")!;
-            this.FindControl<TextBlock>("TitleBox")!.Text = title;
+            TitleBox.Text = title;
 
             foreach ((var key, var value) in DataRoot) {
 

@@ -15,13 +15,7 @@ namespace BotwActorTool.GUI.Views
 
         public ShellView()
         {
-            AvaloniaXamlLoader.Load(this);
-#if DEBUG
-            this.AttachDevTools();
-#endif
-
-            Chrome_Fullscreen = this.FindControl<MaterialIcon>("Chrome_Fullscreen")!;
-            Chrome_Restore = this.FindControl<MaterialIcon>("Chrome_Restore")!;
+            InitializeComponent();
 
             Chrome_Fullscreen.IsVisible = WindowState != WindowState.Maximized;
             Chrome_Restore.IsVisible = WindowState == WindowState.Maximized;
