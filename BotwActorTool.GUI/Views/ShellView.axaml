@@ -12,90 +12,13 @@
         MinHeight="600"
         d:DesignHeight="600"
         d:DesignWidth="1000"
-        Background="{DynamicResource SystemChromeLowColor}"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaToDecorationsHint="True"
         Icon="/Assets/icon.ico"
         mc:Ignorable="d">
 
-    <Grid RowDefinitions="30,*,25">
-        <ContentControl Grid.Row="1" Content="{Binding Content}" />
+    <Grid Name="DataRoot" RowDefinitions="*,25">
+        <ContentControl Content="{Binding Content}" />
 
-        <!--  CHROME BAR  -->
-
-        <Border Background="{DynamicResource SystemChromeLowColor}" IsHitTestVisible="False" />
-        <Image Width="24"
-               Height="24"
-               Margin="7,3,3,3"
-               HorizontalAlignment="Left"
-               VerticalAlignment="Center"
-               IsHitTestVisible="False"
-               Source="/Assets/icon.ico" />
-
-        <!--  MENU  -->
-
-        <Menu Name="MenuRoot"
-              Height="30"
-              Margin="38,0,0,0"
-              HorizontalAlignment="Left" />
-
-        <!--  MIN / MAX / CLOSE  -->
-
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-            <StackPanel.Styles>
-                <Style Selector="Button">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="CornerRadius" Value="0" />
-                </Style>
-            </StackPanel.Styles>
-            <Button Width="40"
-                    Height="30"
-                    Command="{Binding Minimize}"
-                    IsVisible="{x:Static app:Meta.IsWindows}">
-                <mdix:MaterialIcon Margin="0,2,0,0" Kind="Minus">
-                    <mdix:MaterialIcon.RenderTransform>
-                        <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-                    </mdix:MaterialIcon.RenderTransform>
-                </mdix:MaterialIcon>
-            </Button>
-            <Button Width="40"
-                    Height="30"
-                    Command="{Binding ChangeState}"
-                    IsVisible="{x:Static app:Meta.IsWindows}">
-                <Grid>
-                    <mdix:MaterialIcon Name="Chrome_Fullscreen"
-                                       Margin="0,1,0,0"
-                                       IsVisible="{Binding !IsMaximized}"
-                                       Kind="Fullscreen">
-                        <mdix:MaterialIcon.RenderTransform>
-                            <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-                        </mdix:MaterialIcon.RenderTransform>
-                    </mdix:MaterialIcon>
-                    <mdix:MaterialIcon Name="Chrome_Restore"
-                                       Margin="0,1,0,0"
-                                       IsVisible="{Binding IsMaximized}"
-                                       Kind="WindowRestore">
-                        <mdix:MaterialIcon.RenderTransform>
-                            <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-                        </mdix:MaterialIcon.RenderTransform>
-                    </mdix:MaterialIcon>
-                </Grid>
-            </Button>
-            <Button Width="40"
-                    Height="30"
-                    Command="{Binding Quit}"
-                    IsVisible="{x:Static app:Meta.IsWindows}">
-                <mdix:MaterialIcon Margin="0,1,0,0" Kind="Close">
-                    <mdix:MaterialIcon.RenderTransform>
-                        <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-                    </mdix:MaterialIcon.RenderTransform>
-                </mdix:MaterialIcon>
-            </Button>
-        </StackPanel>
-
-        <!--  FOOTER  -->
-
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Border Margin="0,2,0,0" Background="{DynamicResource SystemChromeMediumColor}" />
             <ProgressBar Height="2"
                          MinHeight="2"

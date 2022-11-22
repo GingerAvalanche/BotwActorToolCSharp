@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
-using BotwActorTool.GUI.Models;
+using Avalonia.Threading;
 using Material.Icons;
+using System;
 using System.Diagnostics;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -10,8 +11,23 @@ namespace BotwActorTool.GUI.ViewModels
     /// </summary>
     public class ShellViewModel : ReactiveObject
     {
+        public ShellViewModel()
+        {
+            Updater.Interval = new TimeSpan(0, 0, 0, 0, 400);
+            Updater.Tick += (_, _) => {
+                if (IsLoading == true) {
+                    Status += " .";
+                    Status = Status.Replace(" . . . . .", " .");
+                }
+            };
+
+            Updater.Start();
+        }
+
+        private readonly DispatcherTimer Updater = new();
         private UserControl? defaultContent;
         private UserControl? content;
+
         public UserControl? Content
         {
             get => content;
@@ -50,17 +66,6 @@ namespace BotwActorTool.GUI.ViewModels
         public void OpenModFolder()
         {
             Process.Start("explorer.exe", Meta.IsWindows ? ModContext.Replace("/", "\\") : ModContext);
-        }
-
-        public void ChangeState() => Shell.WindowState = Shell.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        public void Minimize() => Shell.WindowState = WindowState.Minimized;
-        public void Quit() => AppMenuModel.Quit();
-
-        private bool isMaximized = false;
-        public bool IsMaximized
-        {
-            get => isMaximized;
-            set => this.RaiseAndSetIfChanged(ref isMaximized, value);
         }
 
         private bool isEdited = false;
