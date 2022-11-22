@@ -28,18 +28,14 @@ namespace BotwActorTool.GUI.ViewModels
         private UserControl? defaultContent;
         private UserControl? content;
 
-        public UserControl? Content
-        {
+        public UserControl? Content {
             get => content;
-            set
-            {
+            set {
                 defaultContent ??= value;
-                if (value != null)
-                {
+                if (value != null) {
                     this.RaiseAndSetIfChanged(ref content, value);
                 }
-                else
-                {
+                else {
                     this.RaiseAndSetIfChanged(ref content, defaultContent);
                 }
             }
@@ -55,7 +51,7 @@ namespace BotwActorTool.GUI.ViewModels
             get {
                 if (!string.IsNullOrEmpty(modContext) && modContext.Length > 3) {
                     var truncated = modContext[3..][(modContext.Length > 100 ? modContext.Length - 100 : 0)..];
-                    return $"{modContext[0..3]}{(truncated.Length < modContext.Length - 3 ? " ... " : "")}{truncated}";    
+                    return $"{modContext[0..3]}{(truncated.Length < modContext.Length - 3 ? " ... " : "")}{truncated}";
                 }
 
                 return modContext;
@@ -69,29 +65,25 @@ namespace BotwActorTool.GUI.ViewModels
         }
 
         private bool isEdited = false;
-        public bool IsEdited
-        {
+        public bool IsEdited {
             get => isEdited;
             set => this.RaiseAndSetIfChanged(ref isEdited, value);
         }
 
         private bool isLoading = false;
-        public bool IsLoading
-        {
+        public bool IsLoading {
             get => isLoading;
             set => this.RaiseAndSetIfChanged(ref isLoading, value);
         }
 
         private MaterialIconKind statusIcon = MaterialIconKind.CardsOutline;
-        public MaterialIconKind StatusIcon
-        {
+        public MaterialIconKind StatusIcon {
             get => statusIcon;
             set => this.RaiseAndSetIfChanged(ref statusIcon, value);
         }
 
         private string status = "Ready";
-        public string Status
-        {
+        public string Status {
             get => status;
             set => this.RaiseAndSetIfChanged(ref status, value);
         }
