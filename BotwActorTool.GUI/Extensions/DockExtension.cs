@@ -1,20 +1,15 @@
 ﻿using BotwActorTool.GUI.Builders;
-using BotwActorTool.GUI.Models;
 using Dock.Model.Controls;
 using Dock.Model.Core;
-using Dock.Model.ReactiveUI.Controls;
 using Dock.Serializer;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.Extensions
 {
-    public static class DockExt
+    public static class DockExtension
     {
         public static IRootDock Load(this IRootDock layout, string path)
         {
