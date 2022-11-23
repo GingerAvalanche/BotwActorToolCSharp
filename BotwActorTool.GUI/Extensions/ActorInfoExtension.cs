@@ -51,15 +51,15 @@ namespace BotwActorTool.GUI.Extensions
 
         public static string GetActorDescription(this BymlNode actor)
         {
-            Dictionary<string, string> schema = new() {
-                { "Name", "name" }, // WIP implementation, in future this will be loaded from the MSBT files for the in-game name
-                { "Bfres", "bfres" },
-                { "Model", "mainModel" },
-                { "Profile", "profile" },
+            Tuple<string, string>[] schema = new Tuple<string, string>[] {
+                new("Name", "name"), // WIP implementation, in future this will be loaded from the MSBT files for the in-game name
+                new("Bfres", "bfres"),
+                new("Model", "mainModel"),
+                new("Profile", "profile")
             };
 
             return string.Join("\n", schema.Select(x => {
-                return $"{x.Key}: {(actor.Hash.TryGetValue(x.Value, out BymlNode? node) ? node : "(-)")}";
+                return $"{x.Item1}: {(actor.Hash.TryGetValue(x.Item2, out BymlNode? node) ? node : "(-)")}";
             }));
         }
     }
