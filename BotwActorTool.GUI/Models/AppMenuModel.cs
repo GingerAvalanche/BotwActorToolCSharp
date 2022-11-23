@@ -112,7 +112,7 @@ namespace BotwActorTool.GUI.Models
         public static async void Quit()
         {
             if (ShellViewModel.IsEdited) {
-                if (await MessageBox.ShowDialog("You may have unsaved changes. Are you sure you wish to exit?", "Warning", DialogButtons.YesNoCancel) != DialogResult.Yes) {
+                if (await MessageBox.ShowDialog("You may have unsaved changes. Are you sure you wish to exit?", "Warning", DialogButtons.YesNo) != DialogResult.Yes) {
                     return;
                 }
             }
