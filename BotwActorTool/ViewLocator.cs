@@ -1,7 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using BotwActorTool.ViewModels;
-using ReactiveUI;
 using System;
 
 namespace BotwActorTool

@@ -1,7 +1,5 @@
 ﻿using BotwActorTool.Attributes;
 using BotwActorTool.Extensions;
-using BotwActorTool.ViewModels.Tools;
-using Dock.Model.Controls;
 using Dock.Model.Core;
 using System;
 using System.Collections.Generic;

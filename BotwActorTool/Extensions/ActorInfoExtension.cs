@@ -1,15 +1,11 @@
-﻿using BotwActorTool.Models;
-using BotwActorTool.Lib;
+﻿using BotwActorTool.Lib;
+using BotwActorTool.Models;
 using Byml.Security.Cryptography;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
-using SharpYaml.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 
 namespace BotwActorTool.Extensions
 {

@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using BotwActorTool.ViewModels.Tools;
-using System.Collections.Generic;
 
 namespace BotwActorTool.Views.Tools
 {

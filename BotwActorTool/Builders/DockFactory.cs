@@ -3,21 +3,14 @@ using Avalonia.Data;
 using BotwActorTool.Extensions;
 using BotwActorTool.Models;
 using BotwActorTool.ViewModels;
-using BotwActorTool.Lib;
 using Dock.Avalonia.Controls;
-using Dock.Model;
 using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Model.ReactiveUI;
 using Dock.Model.ReactiveUI.Controls;
-using Dock.Serializer;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotwActorTool.Builders
 {
