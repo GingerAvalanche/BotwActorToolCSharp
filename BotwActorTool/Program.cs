@@ -5,6 +5,9 @@ using Avalonia;
 using Avalonia.Generics.Dialogs;
 using Avalonia.Generics.Extensions;
 using Avalonia.ReactiveUI;
+using Projektanker.Icons.Avalonia;
+using Projektanker.Icons.Avalonia.FontAwesome;
+using Projektanker.Icons.Avalonia.MaterialDesign;
 using System;
 using System.IO;
 
@@ -32,6 +35,9 @@ namespace BotwActorTool
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()
+                .WithIcons(container => container
+                    .Register<FontAwesomeIconProvider>()
+                    .Register<MaterialDesignIconProvider>())
                 .UseReactiveUI();
     }
 }
