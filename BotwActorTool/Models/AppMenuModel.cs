@@ -65,9 +65,9 @@ namespace BotwActorTool.Models
         }
 
         [Menu("Open Actor", "_File", Icon = MaterialIconKind.BoxOutline, HotKey = "Ctrl + O")]
-        public static void OpenVanillaActor()
+        public static void OpenActor()
         {
-            SetStatus("Loading");
+            // SetStatus("Loading");
             // ToolDock.SetActive("VanillaFiles");
         }
 
