@@ -45,6 +45,7 @@ namespace BotwActorTool.Builders
                     IDockable dock = (IDockable)func.Invoke(obj, Array.Empty<object>())!;
                     dock.Title = func.GetCustomAttribute<ToolDockAttribute>()?.Title ?? func.Name;
                     dock.Id = AddDock(func.Name);
+                    dock.CanClose = false;
                     docks.Add(dock);
                 }
             }
