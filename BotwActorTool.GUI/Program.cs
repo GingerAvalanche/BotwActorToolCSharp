@@ -1,15 +1,12 @@
+global using ReactiveUI;
 global using static BotwActorTool.GUI.App;
 global using static BotwActorTool.Lib.BatConfig;
-global using ReactiveUI;
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Generics.Dialogs;
+using Avalonia.Generics.Extensions;
 using Avalonia.ReactiveUI;
 using System;
 using System.IO;
-using BotwActorTool.GUI.Dialogs;
-using System.Threading.Tasks;
-using System.Threading;
-using Avalonia.Threading;
 
 namespace BotwActorTool.GUI
 {
@@ -25,7 +22,7 @@ namespace BotwActorTool.GUI
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             }
             catch (Exception ex) {
-                MessageBox.ShowSync($"{ex.Message}\n\n(Writting stack trace to '{Path.GetFullPath("./error.log")}')", "Unhandled Exception");
+                MessageBox.ShowDialog($"{ex.Message}\n\n(Writting stack trace to '{Path.GetFullPath("./error.log")}')", "Unhandled Exception").Await();
                 File.WriteAllText("./error.log", ex.ToString());
             }
         }
