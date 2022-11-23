@@ -3,11 +3,13 @@ using BotwActorTool.Lib;
 using Byml.Security.Cryptography;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
+using SharpYaml.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace BotwActorTool.GUI.Extensions
 {
@@ -50,25 +52,15 @@ namespace BotwActorTool.GUI.Extensions
         public static string GetActorDescription(this BymlNode actor)
         {
             Dictionary<string, string> schema = new() {
-                { "Name", "WIP" },
-                { "Bfres", "#bfres" },
-                { "Model", "#mainModel" },
-                { "Profile", "#profile" },
+                { "Name", "name" }, // WIP implementation, in future this will be loaded from the MSBT files for the in-game name
+                { "Bfres", "bfres" },
+                { "Model", "mainModel" },
+                { "Profile", "profile" },
             };
 
-            StringBuilder str = new();
-            foreach ((var name, var value) in schema) {
-                string nl = name == schema.LastOrDefault().Key ? "" : "\n";
-                if (value.StartsWith('#')) {
-                    var key = value.Remove(0, 1);
-                    str.Append($"{name}: {(actor.Hash.TryGetValue(key, out BymlNode? node) ? node : "(-)")}{nl}");
-                }
-                else {
-                    str.Append($"{name}: {value}{nl}");
-                }
-            }
-
-            return str.ToString();
+            return string.Join("\n", schema.Select(x => {
+                return $"{x.Key}: {(actor.Hash.TryGetValue(x.Value, out BymlNode? node) ? node : "(-)")}";
+            }));
         }
     }
 }
