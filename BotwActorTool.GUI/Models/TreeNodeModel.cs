@@ -11,7 +11,7 @@ namespace BotwActorTool.GUI.Models
         public ObservableCollection<TreeNodeModel>? Nodes { get; set; }
         // public Dictionary<string, string> Meta { get; set; } = new();
 
-        public string Meta { get; set; } = "";
+        public object Meta { get; set; } = "";
 
         public TreeNodeModel(string key, string tooltip = "")
         {
