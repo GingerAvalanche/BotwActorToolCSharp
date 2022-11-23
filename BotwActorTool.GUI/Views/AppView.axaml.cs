@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
 namespace BotwActorTool.GUI.Views
 {
@@ -7,7 +6,7 @@ namespace BotwActorTool.GUI.Views
     {
         public AppView()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();
         }
     }
 }
