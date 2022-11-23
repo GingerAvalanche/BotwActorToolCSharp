@@ -3,12 +3,6 @@ using BotwActorTool.GUI.Builders;
 using BotwActorTool.GUI.Extensions;
 using BotwActorTool.GUI.ViewModels.Tools;
 using BotwActorTool.Lib;
-using Dock.Model.Core;
-using Nintendo.Byml;
-using Nintendo.Yaz0;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace BotwActorTool.GUI.Models
 {
@@ -28,7 +22,7 @@ namespace BotwActorTool.GUI.Models
             if (ToolDockFactory.QueryTool(out FileBrowserViewModel? obj) != null) return obj!;
 
             FileBrowserViewModel browser = new() {
-                ItemsBase = ActorInfoExt.LoadActorInfoNodes(Config.GetDir(BotwDir.Update))
+                ItemsBase = ActorInfoExtension.LoadActorInfoNodes(Config.GetDir(BotwDir.Update))
             };
 
             return browser;

@@ -1,8 +1,10 @@
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Generics;
+using Avalonia.Generics.Builders;
+using Avalonia.Generics.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Themes.Fluent;
 using BotwActorTool.GUI.Builders;
@@ -17,7 +19,6 @@ namespace BotwActorTool.GUI
 {
     public partial class App : Application
     {
-        public static ShellView Shell { get; set; }
         public static ShellViewModel ShellViewModel { get; set; }
         public static AppView View { get; set; }
         public static AppViewModel ViewModel { get; set; }
@@ -34,13 +35,15 @@ namespace BotwActorTool.GUI
             Current!.Styles[0] = Theme;
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+                GenericWindow mainWindow = WindowBuilder.Initialize(new ShellView())
+                    .WithMenu(new AppMenuModel())
+                    .WithWindowColors("SystemChromeLowColor", "SystemChromeLowColor")
+                    .Build();
 
-                // Create desktop shell
-                Shell = new();
-                desktop.MainWindow = Shell;
-
-                ShellViewModel = new();
-                Shell.DataContext = ShellViewModel;
+#if DEBUG
+                mainWindow.AttachDevTools();
+#endif
+                desktop.MainWindow = mainWindow;
 
                 // Create default view
                 View = new();
@@ -54,13 +57,12 @@ namespace BotwActorTool.GUI
                 var layout = factory.CreateLayout();
                 factory.InitLayout(layout);
 
-                // Build the menu
-                Shell.FindControl<Menu>("MenuRoot")!.Items = MenuFactory.Generate(new AppMenuModel());
+                ApplicationLoader.Attach(this);
 
                 // Make sure settings are always set
-                SettingsView view = new(false);
-                if (Config.RequiresInput || view.ValidateSave() != null) {
-                    ShellViewModel.Content = view;
+                SettingsView settingsView = new(false);
+                if (Config.RequiresInput || settingsView.ValidateSave() != null) {
+                    ShellViewModel.Content = settingsView;
                     SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
 
                     await Task.Run(() => {

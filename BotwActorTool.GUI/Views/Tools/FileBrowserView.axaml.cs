@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using BotwActorTool.GUI.Dialogs;
 using BotwActorTool.GUI.ViewModels.Tools;
 using System.Collections.Generic;
 
@@ -11,9 +10,6 @@ namespace BotwActorTool.GUI.Views.Tools
         public FileBrowserView()
         {
             InitializeComponent();
-
-            SearchField = this.FindControl<TextBox>("SearchField")!;
-            ItemsListRoot = this.FindControl<ListBox>("ItemsListRoot")!;
 
             SearchField.AttachedToVisualTree += (s, e) => SearchField.Focus();
             SearchField.KeyDown += (s, e) => {

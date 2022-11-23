@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
-using BotwActorTool.GUI.Models;
+using Avalonia.Threading;
 using Material.Icons;
+using System;
 using System.Diagnostics;
 
 namespace BotwActorTool.GUI.ViewModels
@@ -10,20 +11,31 @@ namespace BotwActorTool.GUI.ViewModels
     /// </summary>
     public class ShellViewModel : ReactiveObject
     {
+        public ShellViewModel()
+        {
+            Updater.Interval = new TimeSpan(0, 0, 0, 0, 400);
+            Updater.Tick += (_, _) => {
+                if (IsLoading == true) {
+                    Status += " .";
+                    Status = Status.Replace(" . . . . .", " .");
+                }
+            };
+
+            Updater.Start();
+        }
+
+        private readonly DispatcherTimer Updater = new();
         private UserControl? defaultContent;
         private UserControl? content;
-        public UserControl? Content
-        {
+
+        public UserControl? Content {
             get => content;
-            set
-            {
+            set {
                 defaultContent ??= value;
-                if (value != null)
-                {
+                if (value != null) {
                     this.RaiseAndSetIfChanged(ref content, value);
                 }
-                else
-                {
+                else {
                     this.RaiseAndSetIfChanged(ref content, defaultContent);
                 }
             }
@@ -39,7 +51,7 @@ namespace BotwActorTool.GUI.ViewModels
             get {
                 if (!string.IsNullOrEmpty(modContext) && modContext.Length > 3) {
                     var truncated = modContext[3..][(modContext.Length > 100 ? modContext.Length - 100 : 0)..];
-                    return $"{modContext[0..3]}{(truncated.Length < modContext.Length - 3 ? " ... " : "")}{truncated}";    
+                    return $"{modContext[0..3]}{(truncated.Length < modContext.Length - 3 ? " ... " : "")}{truncated}";
                 }
 
                 return modContext;
@@ -52,41 +64,26 @@ namespace BotwActorTool.GUI.ViewModels
             Process.Start("explorer.exe", Meta.IsWindows ? ModContext.Replace("/", "\\") : ModContext);
         }
 
-        public void ChangeState() => Shell.WindowState = Shell.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        public void Minimize() => Shell.WindowState = WindowState.Minimized;
-        public void Quit() => AppMenuModel.Quit();
-
-        private bool isMaximized = false;
-        public bool IsMaximized
-        {
-            get => isMaximized;
-            set => this.RaiseAndSetIfChanged(ref isMaximized, value);
-        }
-
         private bool isEdited = false;
-        public bool IsEdited
-        {
+        public bool IsEdited {
             get => isEdited;
             set => this.RaiseAndSetIfChanged(ref isEdited, value);
         }
 
         private bool isLoading = false;
-        public bool IsLoading
-        {
+        public bool IsLoading {
             get => isLoading;
             set => this.RaiseAndSetIfChanged(ref isLoading, value);
         }
 
         private MaterialIconKind statusIcon = MaterialIconKind.CardsOutline;
-        public MaterialIconKind StatusIcon
-        {
+        public MaterialIconKind StatusIcon {
             get => statusIcon;
             set => this.RaiseAndSetIfChanged(ref statusIcon, value);
         }
 
         private string status = "Ready";
-        public string Status
-        {
+        public string Status {
             get => status;
             set => this.RaiseAndSetIfChanged(ref status, value);
         }

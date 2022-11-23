@@ -1,13 +1,10 @@
 using Avalonia;
-using Avalonia.Controls;
+using Avalonia.Generics.Dialogs;
 using Avalonia.SettingsFactory;
 using Avalonia.SettingsFactory.Core;
 using Avalonia.SettingsFactory.ViewModels;
 using Avalonia.Themes.Fluent;
-using BotwActorTool.GUI.Dialogs;
-using BotwActorTool.GUI.Extensions;
 using BotwActorTool.Lib;
-using DynamicData;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,8 +23,8 @@ namespace BotwActorTool.GUI.Views
             AfterCancelEvent += () => ShellViewModel.Content = null;
 
             SettingsFactoryOptions options = new() {
-                AlertAction = (msg) => MessageBox.Show(msg),
-                BrowseAction = async (title) => await BrowserDialog.Folder.ShowDialog(title),
+                AlertAction = (msg) => MessageBox.ShowDialog(msg),
+                BrowseAction = async (title) => await new BrowserDialog(BrowserMode.OpenFolder).ShowDialog(),
                 FetchResource = (res) => Resource.GetDynamic<Dictionary<string, string>>(res),
             };
 

@@ -1,26 +1,17 @@
 ﻿using Avalonia.Controls;
-using BotwActorTool.GUI.Attributes;
+using Avalonia.Generics.Dialogs;
+using Avalonia.MenuFactory.Attributes;
 using BotwActorTool.GUI.Builders;
-using BotwActorTool.GUI.Dialogs;
 using BotwActorTool.GUI.Extensions;
 using BotwActorTool.GUI.ViewModels.Tools;
 using BotwActorTool.GUI.Views;
 using BotwActorTool.Lib;
-using Dock.Model.Controls;
-using Dock.Model.Core;
-using Dock.Model.ReactiveUI.Controls;
 using Dock.Serializer;
 using Material.Icons;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BotwActorTool.GUI.Models
@@ -33,7 +24,7 @@ namespace BotwActorTool.GUI.Models
         [Menu("Open Mod", "_File", Icon = MaterialIconKind.FolderOpen, HotKey = "Ctrl + N")]
         public static async void OpenMod()
         {
-            var result = await BrowserDialog.Folder.ShowDialog("Select a mod 'content' folder");
+            string? result = await new BrowserDialog(BrowserMode.OpenFolder, "Select a mod 'content' folder", instanceBrowserKey: "OpenMod").ShowDialog();
 
             if (result != null) {
                 bool found = true;
@@ -48,7 +39,7 @@ namespace BotwActorTool.GUI.Models
                 }
 
                 if (!found) {
-                    await MessageBox.Show("The selected folder is not a valid mod folder.", "Error");
+                    await MessageBox.ShowDialog("The selected folder is not a valid mod folder.", "Error");
                     OpenMod();
                     return;
                 }
@@ -58,14 +49,14 @@ namespace BotwActorTool.GUI.Models
                 try {
                     FileBrowserViewModel browser = null!;
                     await Task.Run(() => browser = new FileBrowserViewModel() {
-                        ItemsBase = ActorInfoExt.LoadActorInfoNodes(result, Config.GetDir(BotwDir.Update))
+                        ItemsBase = ActorInfoExtension.LoadActorInfoNodes(result, Config.GetDir(BotwDir.Update))
                     });
                     ToolDockFactory.SetDock("ModActors", browser);
                     ToolDockFactory.SetActive("ModActors");
                     ShellViewModel.ModContext = result;
                 }
                 catch (Exception ex) {
-                    await MessageBox.Show($"An error occured while opening the mod '{result}':\n\n{ex}", "Error");
+                    await MessageBox.ShowDialog($"An error occured while opening the mod '{result}':\n\n{ex}", "Error");
                 }
                 finally {
                     SetStatus("Ready");
@@ -86,12 +77,12 @@ namespace BotwActorTool.GUI.Models
             // if (CurrentActor == null) {
             //     return;
             // }
-               
+
             // string? output = null;
-               
+
             // if (ModContext != null) {
             //     var result = await View.ShowMessageBox($"A mod is open in the current session. Would you like to save to '{ModContext}'?", "Notice", MessageBoxButtons.YesNoCancel);
-               
+
             //     if (result == MessageBoxResult.Cancel) {
             //         return;
             //     }
@@ -99,19 +90,19 @@ namespace BotwActorTool.GUI.Models
             //         output = ModContext;
             //     }
             // }
-               
+
             // if (output == null) {
             //     var result = await BrowserDialog.Folder.BrowseDialog("Select a mod 'content' folder");
-               
+
             //     if (result == null)
             //         return;
-               
+
             //     if ((await View.ShowMessageBox($"Open this mod for future saving?", "Notice", MessageBoxButtons.YesNo)) == MessageBoxResult.Yes) {
             //         SetModContext(result);
             //     }
             //     output = result;
             // }
-               
+
             // SetStatus("Saving actor", MaterialIconKind.ContentSaveMoveOutline);
             // await Task.Run(() => CurrentActor.Actor.Write(output!));
             // SetStatus();
@@ -121,7 +112,7 @@ namespace BotwActorTool.GUI.Models
         public static async void Quit()
         {
             if (ShellViewModel.IsEdited) {
-                if (await MessageBox.Show("You may have unsaved changes. Are you sure you wish to exit?", "Warning", MessageBoxButtons.YesNoCancel) != MessageBoxResult.Yes) {
+                if (await MessageBox.ShowDialog("You may have unsaved changes. Are you sure you wish to exit?", "Warning", DialogButtons.YesNo) != DialogResult.Yes) {
                     return;
                 }
             }
@@ -161,7 +152,7 @@ namespace BotwActorTool.GUI.Models
         [Menu("Credits", "_About", Icon = MaterialIconKind.PersonCheck)]
         public static async void Credits()
         {
-            await MessageBox.Show(File.ReadAllText("./Assets/Credits.md"), "Credits", formatting: Formatting.Markdown);
+            await MessageBox.ShowDialog(File.ReadAllText("./Assets/Credits.md"), "Credits", formatting: Formatting.Markdown);
         }
 
         //

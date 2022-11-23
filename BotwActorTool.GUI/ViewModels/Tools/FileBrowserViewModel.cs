@@ -1,8 +1,7 @@
-﻿using Avalonia.Input;
-using BotwActorTool.GUI.Dialogs;
+﻿using Avalonia.Generics.Dialogs;
 using BotwActorTool.GUI.Models;
 using Dock.Model.ReactiveUI.Controls;
-using System;
+using Nintendo.Byml;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -47,13 +46,13 @@ namespace BotwActorTool.GUI.ViewModels.Tools
             // - Build View (async)
             // - Inject into DocumentDock
             // - End working
-            await MessageBox.Show("INVOKE OPEN");
+            await MessageBox.ShowDialog("INVOKE OPEN");
         }
 
         public async void CreateCopy()
         {
             // INPUT DIALOG
-            var name = (await InputDialog.Show(new Dictionary<string, string>() {
+            var name = (await InputDialog.ShowDialog(new Dictionary<string, string>() {
                 { "Name", SelectedItem!.Key }
             }, $"Copy {SelectedItem!.Key}"))?["Name"];
 
@@ -65,7 +64,7 @@ namespace BotwActorTool.GUI.ViewModels.Tools
 
         public async void ActorInfo()
         {
-            await MessageBox.Show(SelectedItem!.Meta, $"{SelectedItem!.Key} - Actor Info");
+            await MessageBox.ShowDialog($"**{SelectedItem!.Key}**\n```yml{((BymlNode)SelectedItem!.Meta).SerializeNode()}```", $"Actor Info", formatting: Formatting.Markdown);
         }
     }
 }
