@@ -1,4 +1,5 @@
 ﻿using Dock.Model.ReactiveUI.Controls;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -24,6 +25,7 @@ namespace BotwActorTool.ViewModels.Documents
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                 info.FileName = "cmd";
                 info.Arguments = $"/c start https://github.com/GingerAvalanche/BotwActorToolCSharp/releases/{Meta.Version}";
+                Process.Start(info);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                 info.FileName = "xdg-open";
