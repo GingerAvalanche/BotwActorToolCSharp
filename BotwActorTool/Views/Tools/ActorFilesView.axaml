@@ -1,0 +1,69 @@
+<UserControl x:Class="BotwActorTool.Views.Tools.ActorFilesView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="800"
+             d:DesignWidth="300"
+             mc:Ignorable="d">
+    <Grid Name="ROOT"
+          Margin="0,0,0,7"
+          RowDefinitions="37,*,Auto">
+        <TextBox Name="SearchField"
+                 Margin="5,7"
+                 AcceptsReturn="False"
+                 AcceptsTab="False"
+                 Classes="clearButton"
+                 Text="{Binding SearchField}"
+                 Watermark="Search" />
+        <Border Margin="5,7"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource SystemChromeMediumColor}"
+                CornerRadius="2"
+                IsVisible="{Binding $parent[UserControl].DataContext.Unloaded}">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       FontWeight="Light"
+                       Text="{Binding Title, StringFormat=Nothing loaded in {0}}" />
+        </Border>
+        <ListBox Name="ItemsListRoot"
+                 Grid.Row="1"
+                 Background="Transparent"
+                 Items="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Padding="8,5"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch"
+                               Background="Transparent"
+                               FontSize="12"
+                               Text="{Binding Key}"
+                               ToolTip.Tip="{Binding Tooltip}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.Open}"
+                                          Header="Open"
+                                          InputGesture="Enter" />
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.CreateCopy}"
+                                          Header="Create Copy"
+                                          InputGesture="Ctrl + Enter" />
+                                <Separator />
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.ActorInfo}"
+                                          Header="ActorInfo"
+                                          InputGesture="Alt + Enter" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Height" Value="24" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </ListBox.Styles>
+        </ListBox>
+    </Grid>
+</UserControl>

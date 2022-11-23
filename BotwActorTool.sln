@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.Lib", "BotwActorTool.Lib\BotwActorTool.Lib.csproj", "{676537ED-112E-47BC-B6D7-B30AA8987838}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BATLibTests", "BATLibTests\BATLibTests.csproj", "{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool.UnitTests", "BotwActorTool.UnitTests\BotwActorTool.UnitTests.csproj", "{F7A9707E-02FF-411C-BB0E-0EA3A702D35F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwActorTool.GUI", "BotwActorTool.GUI\BotwActorTool.GUI.csproj", "{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwActorTool", "BotwActorTool\BotwActorTool.csproj", "{1E4C52F2-981A-4F44-9EF2-BBC1B2028292}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
