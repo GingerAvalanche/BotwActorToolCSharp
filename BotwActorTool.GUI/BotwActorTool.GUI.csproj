@@ -38,8 +38,8 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-preview2" />
     <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.0.0-preview2" />
     <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.0-preview1" />
-    <PackageReference Include="AvaloniaSettingsFactory" Version="1.2.2" />
-    <PackageReference Include="AvaloniaSettingsFactory.Core" Version="1.2.2" />
+    <PackageReference Include="AvaloniaGenerics" Version="1.0.4" />
+    <PackageReference Include="AvaloniaSettingsFactory" Version="1.2.3" />
     <PackageReference Include="Dock.Avalonia" Version="11.0.0-preview2" />
     <PackageReference Include="Dock.Model.ReactiveUI" Version="11.0.0-preview2" />
     <PackageReference Include="Dock.Serializer" Version="11.0.0-preview2" />
