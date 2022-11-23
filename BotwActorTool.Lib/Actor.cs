@@ -134,11 +134,11 @@ namespace BotwActorTool.Lib
         }
         public override void SetLinkData(string link, string data)
         {
-            pack.SetLinkData(link, data);
+            pack.SetLinkDataYaml(link, data);
             needs_info_update = true;
         }
 
-        public string GetAnimSeqList() => pack.GetLinkData("ASUser");
+        public string GetAnimSeqList() => pack.GetLinkDataYaml("ASUser");
         public void SetAnimSeqList(string data)
         {
             List<string> as_names = new();
@@ -162,7 +162,7 @@ namespace BotwActorTool.Lib
                     pack.RemoveAnimSeq(name);
                 }
             }
-            pack.SetLinkData("ASUser", data);
+            pack.SetLinkDataYaml("ASUser", data);
         }
         public string GetAnimSeq(string name) => pack.GetAnimSeq(name);
         public void SetAnimSeq(string name, string data) => pack.SetAnimSeq(name, data);
@@ -175,7 +175,7 @@ namespace BotwActorTool.Lib
             }
             else if (enabled)
             {
-                far_actor = new FarActor(Name, pack.GetAampFile("PhysicsUser").ToBinary());
+                far_actor = new FarActor(Name, pack.GetLinkDataBytes("PhysicsUser"));
                 needs_info_update = true;
                 return true;
             }
@@ -271,6 +271,110 @@ namespace BotwActorTool.Lib
                 ("GameData/gamedata.ssarc", gamedata_sarc.ToBinary()),
                 ("GameData/savedataformat.ssarc", savedata_sarc.ToBinary()),
             });
+        }
+
+        public ArmorUpgradable CanMakeArmorUpgradable()
+        {
+            if (resident)
+            {
+                return ArmorUpgradable.IsResident;
+            }
+            else if (!Name.Contains("Armor_"))
+            {
+                return ArmorUpgradable.NotAnArmor;
+            }
+            ParamObject obj = GetPackAampFile("GParamUser").RootNode.Objects("Armor")!;
+            if ((int)obj.Params("StarNum")!.Value != 1)
+            {
+                return ArmorUpgradable.IsUpgrade;
+            }
+            else if (((StringEntry)obj.Params("NextRankName")!.Value).ToString() != "''")
+            {
+                return ArmorUpgradable.AlreadyUpgradable;
+            }
+            return ArmorUpgradable.CanUpgrade;
+        }
+
+        public void MakeArmorUpgradable(string modRoot, string firstUpgradeName)
+        {
+            if (CanMakeArmorUpgradable() != ArmorUpgradable.CanUpgrade)
+            {
+                return;
+            }
+
+            AampFile gparam = new(pack.GetLinkDataBytes("GParamUser"));
+            ParamEntry starNum = gparam.RootNode.Objects("Armor")!.Params("StarNum")!;
+            ParamEntry enableCompBonus = gparam.RootNode.Objects("SeriesArmor")!.Params("EnableCompBonus")!;
+            StringEntry nextRank = (StringEntry)gparam.RootNode.Objects("Armor")!.Params("NextRankName")!.Value;
+            nextRank.Data = nextRank.EncodeType.GetBytes(firstUpgradeName);
+            pack.SetLinkDataBytes("GParamUser", gparam.ToBinary());
+
+            needs_info_update = true;
+            Write(modRoot);
+
+            // Set UseIconActorName if need be, to be left for every upgrade actor
+            StringEntry armorIconName = (StringEntry)gparam.RootNode.Objects("Item")!.Params("UseIconActorName")!.Value;
+            if (armorIconName.ToString() == "''")
+            {
+                armorIconName.Data = armorIconName.EncodeType.GetBytes(Name);
+            }
+
+            // Create recipe for first upgrade, using this actor as ingredient
+            AampFile recipe = new(new byte[] {
+                0x41, 0x41, 0x4D, 0x50, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00,
+                0x00, 0x2C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,
+                0x00, 0x00, 0x78, 0x6D, 0x6C, 0x00, 0x10, 0x00, 0x00, 0x00, 0x6C,
+                0xCB, 0xF6, 0xA4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            });
+
+            ParamObject[] objects = new ParamObject[2];
+            ParamEntry[] entries = new ParamEntry[2];
+            entries[0] = new() { HashString = "TableNum", Value = 1 };
+            entries[1] = new() { HashString = "Table01", Value = new StringEntry("Normal0") };
+            objects[0] = new() { HashString = "Header", ParamEntries = entries };
+            entries = new ParamEntry[7];
+            entries[0] = new() { HashString = "ColumnNum", Value = 3 };
+            StringEntry prevIngredient = new(Name);
+            entries[1] = new() { HashString = "ItemName01", Value = prevIngredient };
+            entries[2] = new() { HashString = "ItemNum01", Value = 1 };
+            entries[3] = new() { HashString = "ItemName02", Value = new StringEntry("Item_Enemy_00") };
+            entries[4] = new() { HashString = "ItemNum02", Value = 1 };
+            entries[5] = new() { HashString = "ItemName03", Value = new StringEntry("Item_Enemy_01") };
+            entries[6] = new() { HashString = "ItemNum03", Value = 1 };
+            objects[1] = new() { HashString = "Normal0", ParamEntries = new ParamEntry[7] };
+            recipe.RootNode.ParamObjects = objects;
+
+            string[] upgradeNameParts = firstUpgradeName.Split('_');
+            int firstUpgradeNum = int.Parse(upgradeNameParts[1]);
+            for (int currUpgradeNum = 0; currUpgradeNum < 4; currUpgradeNum++)
+            {
+                // Name stuff
+                upgradeNameParts[1] = $"{firstUpgradeNum + currUpgradeNum:D3}";
+                string currActorName = string.Join("_", upgradeNameParts);
+                texts.ActorName = currActorName;
+                SetFlags(currActorName);
+                pack.SetName(currActorName, false);
+
+                // GParam stuff
+                pack.SetLink("GParamUser", currActorName);
+                starNum.Value = currUpgradeNum + 2; // StarNum 2 = currUpgradeNum 0 = 1 star in inventory UI
+                if (currUpgradeNum == 1)
+                {
+                    enableCompBonus.Value = true;
+                }
+                upgradeNameParts[1] = currUpgradeNum == 3 ? "''" : $"{firstUpgradeNum + currUpgradeNum + 1:D3}";
+                nextRank.Data = nextRank.EncodeType.GetBytes(string.Join("_", upgradeNameParts));
+                pack.SetLinkDataBytes("GParamUser", gparam.ToBinary());
+
+                // Recipe stuff
+                pack.SetLink("RecipeUser", currActorName);
+                pack.SetLinkDataBytes("RecipeUser", recipe.ToBinary());
+                // Recipe has been written to actor, so set current actor as ingredient for next upgrade
+                prevIngredient.Data = prevIngredient.EncodeType.GetBytes(currActorName);
+
+                needs_info_update = true;
+                Write(modRoot);
+            }
         }
     }
 }

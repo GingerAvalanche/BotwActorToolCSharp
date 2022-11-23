@@ -6,6 +6,20 @@ namespace BotwActorTool.Lib.Gamedata
 {
     public class FlagStore
     {
+        private static readonly string[] FLAG_KEYS = new string[]
+        {
+            "DataName",
+            "DeleteRev",
+            "InitValue",
+            "IsEventAssociated",
+            "IsOneTrigger",
+            "IsProgramReadable",
+            "IsProgramWritable",
+            "IsSave",
+            "MaxValue",
+            "MinValue",
+            "ResetType"
+        };
         private static readonly ReadOnlyCollection<string> IGNORED_SAVE_FLAGS = new(new List<string>
         {
             "AlbumPictureIndex",
@@ -106,13 +120,40 @@ namespace BotwActorTool.Lib.Gamedata
 
         public FlagStore() { }
 
+        public void Clear()
+        {
+            foreach (string key in CurrFlagStore.Keys)
+            {
+                CurrFlagStore[key].Clear();
+            }
+            foreach (string key in OrigFlagStore.Keys)
+            {
+                OrigFlagStore[key].Clear();
+            }
+        }
+
         public void AddFlagsFromByml(string filename, BymlFile byml)
         {
             bool IsRevival = filename.Contains("revival");
 
-            foreach ((string type, BymlNode hash) in byml.RootNode.Hash) {
+            foreach ((string type, BymlNode hash) in byml.RootNode.Hash)
+            {
+                bool error = false;
                 foreach (BymlNode flag in hash.Array)
                 {
+                    foreach (string key in FLAG_KEYS)
+                    {
+                        if (!flag.Hash.ContainsKey(key))
+                        {
+                            System.Console.Error.WriteLine($"Malformed flag: {flag.Hash["HashValue"].Int} missing {key}");
+                            error = true;
+                        }
+                    }
+                    if (error)
+                    {
+                        continue;
+                    }
+
                     BaseFlag f = type switch
                     {
                         "bool_data" => new BoolFlag(flag, IsRevival),
@@ -140,6 +181,10 @@ namespace BotwActorTool.Lib.Gamedata
                     CurrFlagStore[type].Add(f.HashValue, f);
                     OrigFlagStore[type].Add(f.HashValue, f);
                 }
+                if (error)
+                {
+                    throw new KeyNotFoundException($"Malformed flags found in {type} in {filename}. See error log for details.");
+                }
             }
         }
 
@@ -149,8 +194,22 @@ namespace BotwActorTool.Lib.Gamedata
 
             foreach ((string type, BymlNode hash) in byml.RootNode.Hash)
             {
+                bool error = false;
                 foreach (BymlNode flag in hash.Array)
                 {
+                    foreach (string key in FLAG_KEYS)
+                    {
+                        if (!flag.Hash.ContainsKey(key))
+                        {
+                            System.Console.Error.WriteLine($"Malformed flag: {flag.Hash["HashValue"].Int} missing {key}");
+                            error = true;
+                        }
+                    }
+                    if (error)
+                    {
+                        continue;
+                    }
+
                     BaseFlag f = type switch
                     {
                         "bool_data" => new BoolFlag(flag, IsRevival),
@@ -177,6 +236,10 @@ namespace BotwActorTool.Lib.Gamedata
                     }
                     CurrFlagStore[type].Add(f.HashValue, f);
                     OrigFlagStore[type].Add(f.HashValue, f);
+                }
+                if (error)
+                {
+                    throw new KeyNotFoundException($"Malformed flags found in {type} in {filename}. See error log for details.");
                 }
             }
         }

@@ -576,7 +576,7 @@ namespace BotwActorTool.Lib
             }
         }
 
-        public string GetLinkData(string link) => pack.GetLinkData(link);
+        public string GetLinkData(string link) => pack.GetLinkDataYaml(link);
         public virtual void SetLinkData(string link, string data)
         {
             if (link == "LifeConditionUser" && GetLink(link) == "Dummy")
@@ -585,12 +585,12 @@ namespace BotwActorTool.Lib
             }
             else if (FAR_LINKS.Contains(link))
             {
-                pack.SetLinkData(link, data);
+                pack.SetLinkDataYaml(link, data);
                 needs_info_update = true;
             }
         }
 
-        public AampFile GetPackAampFile(string link) => pack.GetAampFile(link);
+        public AampFile GetPackAampFile(string link) => new(pack.GetLinkDataBytes(link));
 
         public void Update()
         {

@@ -10,6 +10,14 @@ namespace BotwActorTool.Lib
         WiiU,
         Switch,
     }
+    public enum ArmorUpgradable
+    {
+        IsResident,
+        CanUpgrade,
+        NotAnArmor,
+        IsUpgrade,
+        AlreadyUpgradable
+    }
     public class Util
     {
         public static readonly List<string> LINKS = new()

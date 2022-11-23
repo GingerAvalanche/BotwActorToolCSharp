@@ -83,53 +83,56 @@ namespace BotwActorTool.Lib.Pack
             }
         }
 
-        public void SetName(string name)
+        public void SetName(string name, bool setMeta = true)
         {
-            foreach ((string link, string linkref) in _links)
+            if (setMeta)
             {
-                if (linkref == _actorname)
+                foreach ((string link, string linkref) in _links)
                 {
-                    _links[link] = name;
+                    if (linkref == _actorname)
+                    {
+                        _links[link] = name;
+                    }
                 }
-            }
 
-            foreach ((string link, AampFile aamp) in _aampfiles)
-            {
-                string yaml = aamp.ToYml();
-                string new_yaml = yaml.Replace(_actorname, name);
-                if (!ReferenceEquals(yaml, new_yaml))
+                foreach ((string link, AampFile aamp) in _aampfiles)
                 {
-                    _aampfiles[link] = AampFile.FromYml(new_yaml);
+                    string yaml = aamp.ToYml();
+                    string new_yaml = yaml.Replace(_actorname, name);
+                    if (!ReferenceEquals(yaml, new_yaml))
+                    {
+                        _aampfiles[link] = AampFile.FromYml(new_yaml);
+                    }
                 }
-            }
 
-            foreach ((string link, BymlFile byml) in _bymlfiles)
-            {
-                string yaml = byml.ToYaml();
-                string new_yaml = yaml.Replace(_actorname, name);
-                if (!ReferenceEquals(yaml, new_yaml))
+                foreach ((string link, BymlFile byml) in _bymlfiles)
                 {
-                    _bymlfiles[link] = BymlFile.FromYaml(new_yaml);
+                    string yaml = byml.ToYaml();
+                    string new_yaml = yaml.Replace(_actorname, name);
+                    if (!ReferenceEquals(yaml, new_yaml))
+                    {
+                        _bymlfiles[link] = BymlFile.FromYaml(new_yaml);
+                    }
                 }
-            }
 
-            foreach (string filename in _miscfiles.Keys)
-            {
-                if (filename.Contains(_actorname))
+                foreach (string filename in _miscfiles.Keys)
                 {
-                    string new_filename = filename.Replace(_actorname, name);
-                    _miscfiles[new_filename] = _miscfiles[filename];
-                    _miscfiles.Remove(filename);
+                    if (filename.Contains(_actorname))
+                    {
+                        string new_filename = filename.Replace(_actorname, name);
+                        _miscfiles[new_filename] = _miscfiles[filename];
+                        _miscfiles.Remove(filename);
+                    }
+                }
+
+                if (name.Contains("Armor_") && _links["ModelUser"] == name)
+                {
+                    _aampfiles["ModelUser"].RootNode.Lists("ModelData")!.Lists("ModelData_0")!
+                        .Objects("Base")!.Params("Folder")!.Value = string.Join("_", name.Split("_")[..^1]);
                 }
             }
 
             _actorname = name;
-
-            if (_actorname.Contains("Armor_") && _links["ModelUser"] == _actorname)
-            {
-                _aampfiles["ModelUser"].RootNode.Lists("ModelData")!.Lists("ModelData_0")!
-                    .Objects("Base")!.Params("Folder")!.Value = string.Join("_", _actorname.Split("_")[..^1]);
-            }
         }
 
         public string GetLink(string link) => _links[link];
@@ -162,12 +165,36 @@ namespace BotwActorTool.Lib.Pack
             }
         }
 
-        public AampFile GetAampFile(string link) => _aampfiles[link];
-
-        public string GetLinkData(string link)
+        public byte[] GetLinkDataBytes(string link)
         {
-            string linkref = _links[link];
-            if (linkref != "Dummy")
+            if (_links[link] != "Dummy")
+            {
+                if (Util.AAMP_LINK_REFS.ContainsKey(link))
+                {
+                    return _aampfiles[link].ToBinary();
+                }
+                if (Util.BYML_LINK_REFS.ContainsKey(link))
+                {
+                    return _bymlfiles[link].ToBinary();
+                }
+            }
+            return Array.Empty<byte>();
+        }
+        public void SetLinkDataBytes(string link, byte[] bytes)
+        {
+            if (Util.AAMP_LINK_REFS.ContainsKey(link))
+            {
+                _aampfiles[link] = new(bytes);
+            }
+            else if (Util.BYML_LINK_REFS.ContainsKey(link))
+            {
+                _bymlfiles[link] = new(bytes);
+            }
+        }
+
+        public string GetLinkDataYaml(string link)
+        {
+            if (_links[link] != "Dummy")
             {
                 if (Util.AAMP_LINK_REFS.ContainsKey(link))
                 {
@@ -180,7 +207,7 @@ namespace BotwActorTool.Lib.Pack
             }
             return "";
         }
-        public void SetLinkData(string link, string data)
+        public void SetLinkDataYaml(string link, string data)
         {
             if (Util.AAMP_LINK_REFS.ContainsKey(link))
             {
