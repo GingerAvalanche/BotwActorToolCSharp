@@ -19,8 +19,8 @@ namespace BotwActorTool.Views.Documents
             string? file = e.Data.GetFileNames()?.FirstOrDefault();
 
             if (file != null && file.EndsWith(".sbactorpack")) {
-                if (File.Exists($"{file}/../../ActorInfo.product.sbyml")) {
-                    await MessageBox.ShowDialog($"Could not find ActorInfo relative to Actor {Path.GetFileNameWithoutExtension(file)}!", "Error");
+                if (!File.Exists($"{file}/../../ActorInfo.product.sbyml")) {
+                    await MessageBox.ShowDialog($"Could not find an ActorInfo file relative to the imported Actor ({Path.GetFileNameWithoutExtension(file)})", "Error");
                     return;
                 }
 
