@@ -8,11 +8,8 @@ using BotwActorTool.ViewModels.Tools;
 using BotwActorTool.Views;
 using Dock.Serializer;
 using Material.Icons;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace BotwActorTool.Models
 {
@@ -22,7 +19,7 @@ namespace BotwActorTool.Models
         // File
 
         [Menu("Open Mod", "_File", Icon = MaterialIconKind.FolderOpen, HotKey = "Ctrl + N")]
-        public static async void OpenMod()
+        public static async Task OpenMod()
         {
             string? result = await new BrowserDialog(BrowserMode.OpenFolder, "Select a mod 'content' folder", instanceBrowserKey: "OpenMod").ShowDialog();
 
@@ -40,7 +37,7 @@ namespace BotwActorTool.Models
 
                 if (!found) {
                     await MessageBox.ShowDialog("The selected folder is not a valid mod folder.", "Error");
-                    OpenMod();
+                    await OpenMod();
                     return;
                 }
 
@@ -72,7 +69,7 @@ namespace BotwActorTool.Models
         }
 
         [Menu("Save Actor", "_File", Icon = MaterialIconKind.ContentSave, HotKey = "Ctrl + S", IsSeparator = true)]
-        public static async void SaveActor()
+        public static void SaveActor()
         {
             // if (CurrentActor == null) {
             //     return;
@@ -109,7 +106,7 @@ namespace BotwActorTool.Models
         }
 
         [Menu("Quit", "_File", Icon = MaterialIconKind.ExitToApp, HotKey = "Ctrl + Q", IsSeparator = true)]
-        public static async void Quit()
+        public static async Task Quit()
         {
             if (ShellViewModel.IsEdited) {
                 if (await MessageBox.ShowDialog("You may have unsaved changes. Are you sure you wish to exit?", "Warning", DialogButtons.YesNo) != DialogResult.Yes) {
@@ -150,7 +147,7 @@ namespace BotwActorTool.Models
         }
 
         [Menu("Credits", "_About", Icon = MaterialIconKind.PersonCheck)]
-        public static async void Credits()
+        public static async Task Credits()
         {
             await MessageBox.ShowDialog(File.ReadAllText("./Assets/Credits.md"), "Credits", formatting: Formatting.Markdown);
         }

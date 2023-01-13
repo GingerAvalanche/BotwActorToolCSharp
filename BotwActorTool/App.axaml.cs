@@ -12,8 +12,6 @@ using BotwActorTool.Models;
 using BotwActorTool.ViewModels;
 using BotwActorTool.Views;
 using Material.Icons;
-using System;
-using System.Threading.Tasks;
 
 namespace BotwActorTool
 {
@@ -52,11 +50,6 @@ namespace BotwActorTool
                 ViewModel = new();
                 View.DataContext = ViewModel;
 
-                // Create dock layout
-                var factory = new DockFactory(ViewModel);
-                var layout = factory.CreateLayout();
-                factory.InitLayout(layout);
-
                 ApplicationLoader.Attach(this);
 
                 // Make sure settings are always set
@@ -66,12 +59,16 @@ namespace BotwActorTool
                     SetStatus("Waiting for settings input", MaterialIconKind.BoxVariant);
 
                     await Task.Run(() => {
-                        while (Config.RequiresInput)
-                            Task.Delay(100);
+                        while (Config.RequiresInput) { }
                     });
 
                     SetStatus("Ready");
                 }
+
+                // Create dock layout
+                var factory = new DockFactory(ViewModel);
+                var layout = factory.CreateLayout();
+                factory.InitLayout(layout);
             }
 
             base.OnFrameworkInitializationCompleted();

@@ -2,9 +2,7 @@
 using BotwActorTool.Models;
 using Dock.Model.ReactiveUI.Controls;
 using Nintendo.Byml;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace BotwActorTool.ViewModels.Tools
 {
@@ -39,7 +37,7 @@ namespace BotwActorTool.ViewModels.Tools
             }
         }
 
-        public async void Open()
+        public async Task Open()
         {
             // INVOKE OPEN
             // - Report UI as working
@@ -49,7 +47,7 @@ namespace BotwActorTool.ViewModels.Tools
             await MessageBox.ShowDialog("INVOKE OPEN");
         }
 
-        public async void CreateCopy()
+        public async Task CreateCopy()
         {
             // INPUT DIALOG
             var name = (await InputDialog.ShowDialog(new Dictionary<string, string>() {
@@ -62,9 +60,9 @@ namespace BotwActorTool.ViewModels.Tools
             }
         }
 
-        public async void ActorInfo()
+        public async Task ActorInfo()
         {
-            await MessageBox.ShowDialog($"**{SelectedItem!.Key}**\n```yml{((BymlNode)SelectedItem!.Meta).SerializeNode()}```", $"Actor Info", formatting: Formatting.Markdown);
+            await MessageBox.ShowDialog(((BymlNode)SelectedItem!.Meta).SerializeNode(), $"Actor Info");
         }
     }
 }

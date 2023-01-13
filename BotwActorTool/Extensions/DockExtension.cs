@@ -2,10 +2,8 @@
 using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Serializer;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 
 namespace BotwActorTool.Extensions
 {

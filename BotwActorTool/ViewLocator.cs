@@ -1,14 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using System;
 
 namespace BotwActorTool
 {
     public class ViewLocator : IDataTemplate
     {
-        public IControl Build(object data)
+        public IControl Build(object? data)
         {
-            var name = data.GetType().FullName!.Replace("ViewModel", "View");
+            var name = data!.GetType().FullName!.Replace("ViewModel", "View");
             var type = Type.GetType(name);
 
             if (type != null) {
@@ -19,6 +18,6 @@ namespace BotwActorTool
             }
         }
 
-        public bool Match(object data) => data is ReactiveObject;
+        public bool Match(object? data) => data is ReactiveObject;
     }
 }

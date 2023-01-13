@@ -5,9 +5,6 @@ using Avalonia.SettingsFactory.Core;
 using Avalonia.SettingsFactory.ViewModels;
 using Avalonia.Themes.Fluent;
 using BotwActorTool.Lib;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace BotwActorTool.Views

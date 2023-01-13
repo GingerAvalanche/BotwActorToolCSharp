@@ -3,9 +3,7 @@ using BotwActorTool.Models;
 using Byml.Security.Cryptography;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace BotwActorTool.Extensions
 {

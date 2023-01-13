@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Material.Icons;
-using System;
 using System.Diagnostics;
 
 namespace BotwActorTool.ViewModels

@@ -1,9 +1,6 @@
 ﻿using BotwActorTool.Attributes;
 using BotwActorTool.Extensions;
 using Dock.Model.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
