@@ -1,8 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Generics.Dialogs;
 using Avalonia.Input;
-using System.IO;
-using System.Linq;
 
 namespace BotwActorTool.Views.Documents
 {
