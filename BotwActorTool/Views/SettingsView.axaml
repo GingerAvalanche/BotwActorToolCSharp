@@ -32,7 +32,7 @@
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Center"
                         Content="Cancel"
-                        IsEnabled="{Binding CanClose}" />
+                        IsEnabled="{Binding CanCancel}" />
 
                 <!--  Requires Button 'Save' to attach the save operation  -->
                 <Button Name="Save"
