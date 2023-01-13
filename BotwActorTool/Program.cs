@@ -8,8 +8,6 @@ using Avalonia.ReactiveUI;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Projektanker.Icons.Avalonia.MaterialDesign;
-using System;
-using System.IO;
 
 namespace BotwActorTool
 {
