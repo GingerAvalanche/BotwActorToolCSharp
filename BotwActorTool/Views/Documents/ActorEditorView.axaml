@@ -1,0 +1,41 @@
+<UserControl x:Class="BotwActorTool.Views.Documents.ActorEditorView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <Grid Margin="25" RowDefinitions="auto,*">
+        <Grid ColumnDefinitions="auto,*,auto">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Name="IsCustom"
+                              Command="{Binding ToCustomMode}"
+                              CornerRadius="3,0,0,3"
+                              IsChecked="{Binding !#IsEditor.IsChecked}"
+                              ToolTip.Tip="Properties View">
+                    <i:Icon Value="fa-solid fa-sliders" />
+                </ToggleButton>
+                <ToggleButton Name="IsEditor"
+                              Command="{Binding ToEditorMode}"
+                              CornerRadius="0,3,3,0"
+                              IsChecked="{Binding !#IsCustom.IsChecked}"
+                              ToolTip.Tip="YAML View">
+                    <i:Icon Value="fa-solid fa-code" />
+                </ToggleButton>
+            </StackPanel>
+            <TextBox Grid.Column="1"
+                     Margin="15,0"
+                     VerticalAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     BorderBrush="Transparent"
+                     BorderThickness="0"
+                     Text="DocumentName.bgparamlist" />
+            <StackPanel Name="Toolbar"
+                        Grid.Column="2"
+                        Orientation="Horizontal"
+                        Spacing="10" />
+        </Grid>
+    </Grid>
+</UserControl>
