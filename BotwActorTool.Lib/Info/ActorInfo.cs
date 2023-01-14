@@ -294,19 +294,9 @@ namespace BotwActorTool.Lib.Info
             this.actor = actor;
         }
 
-        public static void LoadActorInfoFile(string modRoot)
+        public void LoadFromActorInfoByml(BymlFile ActorInfo)
         {
-            if (actor_info_file == null)
-                actor_info_file = new(Yaz0.Decompress(Util.GetFileAnywhere(modRoot, "Actor/ActorInfo.product.sbyml")));
-        }
-        public static void ReleaseActorInfoFile() => actor_info_file = null;
-        public ActorInfo LoadFromActorInfoByml()
-        {
-            if (actor_info_file == null)
-            {
-                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
-            }
-            foreach (BymlNode actor in actor_info_file.RootNode.Hash["Actors"].Array)
+            foreach (BymlNode actor in ActorInfo.RootNode.Hash["Actors"].Array)
             {
                 if (actor.Hash["name"].String == this.actor.Name)
                 {
@@ -338,8 +328,6 @@ namespace BotwActorTool.Lib.Info
                     break;
                 }
             }
-
-            return this;
         }
 
         public void Update()
@@ -384,7 +372,7 @@ namespace BotwActorTool.Lib.Info
             foreach (string tag in actor.Tags.Split(", "))
             {
                 int v = (int)Crc32.Compute(tag);
-                tags.Add($"tag{Crc32.Compute(tag):x8}", v);
+                tags.Add($"tag{v:x8}", v);
             }
         }
         private void UpdateFromChemical()
@@ -831,38 +819,30 @@ namespace BotwActorTool.Lib.Info
             };
         }
 
+        public static void SetActorInfoFile(BymlFile file) => actor_info_file = file;
+        public static void ClearActorInfoFile() => actor_info_file = null;
         public void Apply()
         {
-            if (actor_info_file == null)
-            {
-                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
-            }
+            SortedDictionary<string, BymlNode> ActorInfo = actor_info_file!.RootNode.Hash;
             uint hash = Crc32.Compute(name);
 
-            for (int i = 0; i < actor_info_file.RootNode.Hash["Hashes"].Array.Count; i++)
+            int index = ActorInfo["Hashes"].Array.FindIndex(h => h.UInt == hash);
+            if (index < 0)
             {
-                if (hash > actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
-                {
-                    BymlNode hash_node = hash < 0x80000000 ? new BymlNode((int)hash) : new BymlNode(hash);
-                    actor_info_file.RootNode.Hash["Hashes"].Array.Insert(i, hash_node);
-                    actor_info_file.RootNode.Hash["Actors"].Array.Insert(i, GetInfoByml());
-                    break;
-                }
-                else if (hash == actor_info_file.RootNode.Hash["Hashes"].Array[i].UInt)
-                {
-                    actor_info_file.RootNode.Hash["Actors"].Array[i] = GetInfoByml();
-                    break;
-                }
+                BymlNode node = hash < 0x80000000 ? new BymlNode((int)hash) : new BymlNode(hash);
+                ActorInfo["Hashes"].Array.Add(node);
+                ActorInfo["Hashes"].Array.Sort((a, b) => (int)unchecked(a.UInt - b.UInt));
+                ActorInfo["Actors"].Array.Insert(ActorInfo["Hashes"].Array.IndexOf(node), GetInfoByml());
+            }
+            else
+            {
+                ActorInfo["Actors"].Array[index] = GetInfoByml();
             }
         }
         public static void Write(string modRoot)
         {
-            if (actor_info_file == null)
-            {
-                throw new NullReferenceException($"Actor Info file is null, has not been loaded yet. Use ActorInfo.LoadActorInfoFile()");
-            }
             string actor_info_path = $"{modRoot}/Actor/ActorInfo.product.sbyml";
-            File.WriteAllBytes(actor_info_path, Yaz0.Compress(actor_info_file.ToBinary()));
+            File.WriteAllBytes(actor_info_path, Yaz0.Compress(actor_info_file!.ToBinary()));
         }
         public BymlNode GetInfoByml() => new(new Dictionary<string, BymlNode>(typeof(ActorInfo)
                 .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)

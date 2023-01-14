@@ -54,9 +54,9 @@ namespace BotwActorTool.Lib.Texts
             { "PictureBook", new("", "") }
         };
 
-        public ActorTexts(string pack, string profile)
+        public ActorTexts(string name, string profile, string modRoot)
         {
-            ActorName = Path.GetFileNameWithoutExtension(pack);
+            ActorName = name;
             orig_actor_name = ActorName;
             this.profile = profile;
             hasTexts = msbtProfiles.Contains(profile);
@@ -65,7 +65,7 @@ namespace BotwActorTool.Lib.Texts
                 return;
             }
             string lang = Config.Lang;
-            MSBT msbt = new(Util.GetFileAnywhere(Util.GetModRoot(pack), $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt"));
+            MSBT msbt = new(Util.GetFileAnywhere(modRoot, $"Pack/Bootup_{lang}.pack//Message/Msg_{lang}.product.ssarc//ActorType/{profile}.msbt"));
             Dictionary<string, MsbtEntry> temp = msbt.GetTexts();
             foreach (string key in texts.Keys) {
                 if (temp.ContainsKey($"{ActorName}_{key}")) {

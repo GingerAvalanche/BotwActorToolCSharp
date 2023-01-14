@@ -548,12 +548,12 @@ namespace BotwActorTool.Lib
             info = new(this);
             needs_info_update = true;
         }
-        public FarActor(string filename)
+        public FarActor(string name, string modRoot)
         {
-            origname = Path.GetFileNameWithoutExtension(filename);
-            pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile(filename))));
-            ActorInfo.LoadActorInfoFile(Util.GetModRoot(filename));
-            info = new ActorInfo(this).LoadFromActorInfoByml();
+            origname = name;
+            pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile($"{modRoot}/{Util.GetActorRelPath(name, modRoot)}"))));
+            info = new ActorInfo(this);
+            info.LoadFromActorInfoByml(new(Yaz0.Decompress(Util.GetFile($"{modRoot}/Actor/ActorInfo.product.sbyml"))));
         }
 
         public virtual void SetName(string name)

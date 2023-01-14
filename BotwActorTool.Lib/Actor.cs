@@ -91,28 +91,26 @@ namespace BotwActorTool.Lib
         public string[] AnimSeqNames { get => pack.AnimSeqNames; }
         public override bool HasFar { get => far_actor != null; }
         public bool Resident { get => resident; set => resident = value; }
-        public Dictionary<string, MsbtEntry>? Texts
+        public Dictionary<string, MsbtEntry>? Texts { get => texts.HasTexts ? texts.Texts : null; }
+        public Actor(string name, string modRoot) : base(name, modRoot)
         {
-            get
-            {
-                if (texts.HasTexts)
-                    return texts.Texts;
-                return null;
-            }
-        }
-        public Actor(string filename) : base(filename)
-        {
-            resident = filename.Contains("TitleBG.pack");
+            resident = Util.GetResidentActors(modRoot).Contains(name);
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
-            texts = new(filename, pack.GetLink("ProfileUser"));
+            texts = new(name, pack.GetLink("ProfileUser"), modRoot);
 
-            string far_filename = filename.Replace(origname, $"{origname}_Far");
-            if (File.Exists(far_filename))
+            string far_name = $"{origname}_Far";
+            if (File.Exists($"{modRoot}/Actor/Pack/{far_name}.sbactorpack"))
             {
-                far_actor = new FarActor(far_filename);
+                far_actor = new FarActor(far_name, modRoot);
             }
-            ActorInfo.ReleaseActorInfoFile();
+        }
+
+        public static Actor LoadActor(string path)
+        {
+            string name = Path.GetFileNameWithoutExtension(path);
+            string modRoot = Util.GetModRoot(path);
+            return new Actor(name, modRoot);
         }
 
         public override void SetName(string name)
@@ -210,8 +208,8 @@ namespace BotwActorTool.Lib
 
         public override void Write(string modRoot)
         {
-            ActorInfo.LoadActorInfoFile(modRoot);
             Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
+            ActorInfo.SetActorInfoFile(new BymlFile(Util.GetFileAnywhere(modRoot, "Actor/Pack/ActorInfo.product.sbyml")));
             if (resident)
             {
                 string titlebg_path = $"{modRoot}/Pack/TitleBG.pack";
@@ -233,7 +231,7 @@ namespace BotwActorTool.Lib
 
             far_actor?.Write(modRoot);
             ActorInfo.Write(modRoot);
-            ActorInfo.ReleaseActorInfoFile();
+            ActorInfo.ClearActorInfoFile();
 
             texts.Write(modRoot);
 
