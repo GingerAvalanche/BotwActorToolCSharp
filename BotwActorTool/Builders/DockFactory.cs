@@ -9,9 +9,6 @@ using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Model.ReactiveUI;
 using Dock.Model.ReactiveUI.Controls;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace BotwActorTool.Builders
 {
@@ -47,7 +44,9 @@ namespace BotwActorTool.Builders
                         Id = "ActorDocuments",
                         Title = "Actor Documents",
                         Proportion = 0.75,
-                        VisibleDockables = CreateList<IDockable>(new HomeViewModel())
+                        VisibleDockables = CreateList<IDockable>(new HomeViewModel(), new ContainerViewModel() {
+                            Content = new ActorEditorViewModel()
+                        })
                     }
                 )
             };
