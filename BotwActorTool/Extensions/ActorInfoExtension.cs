@@ -4,6 +4,7 @@ using Byml.Security.Cryptography;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace BotwActorTool.Extensions
 {
@@ -45,16 +46,32 @@ namespace BotwActorTool.Extensions
 
         public static string GetActorDescription(this BymlNode actor)
         {
-            Tuple<string, string>[] schema = new Tuple<string, string>[] {
-                new("Name", "name"), // WIP implementation, in future this will be loaded from the MSBT files for the in-game name
-                new("Bfres", "bfres"),
-                new("Model", "mainModel"),
-                new("Profile", "profile")
+            (string Key, string Value)[] schema = new (string, string)[] {
+                new("name", "Name"),
+                new("bfres", "Bfres"),
+                new("mainModel", "Model"),
+                new("profile", "Profile")
             };
 
-            return string.Join("\n", schema.Select(x => {
-                return $"{x.Item1}: {(actor.Hash.TryGetValue(x.Item2, out BymlNode? node) ? node : "(-)")}";
-            }));
+            StringBuilder sb = new();
+            for (int i = 0; i < schema.Length; i++) {
+                (string key, string value) item = schema[i];
+                sb.Append(item.value);
+                sb.Append(": ");
+                if (item.key == "name") {
+                    // Load name from MSBT
+                    sb.Append(actor.Hash.TryGetValue(schema[i].Key, out BymlNode? node) ? node : "(-)");
+                }
+                else {
+                    sb.Append(actor.Hash.TryGetValue(schema[i].Key, out BymlNode? node) ? node : "(-)");
+                }
+
+                if (i + 1 < schema.Length) {
+                    sb.Append('\n');
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }
