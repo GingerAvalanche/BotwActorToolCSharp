@@ -20,8 +20,6 @@ namespace BotwActorTool.Lib
     }
     public class Util
     {
-        private static BymlFile? ActorInfo_Vanilla = null;
-        private static BymlFile? ActorInfo_Mod = null;
         public static readonly List<string> LINKS = new()
         {
             "ActorNameJpn",
@@ -103,26 +101,6 @@ namespace BotwActorTool.Lib
             "KRko",
             "TWzh"
         };
-
-        public static BymlFile GetVanillaActorInfo()
-        {
-            ActorInfo_Vanilla ??= new BymlFile(GetFile($"{Config.GetDir(BotwDir.Update)}/Actor/ActorInfo.product.sbyml"));
-            return ActorInfo_Vanilla;
-        }
-
-        public static BymlFile GetModActorInfo()
-        {
-            if (ActorInfo_Mod == null)
-            {
-                throw new InvalidOperationException("Mod ActorInfo.product has not been loaded yet.");
-            }
-            return ActorInfo_Mod;
-        }
-
-        public static BymlFile GetModActorInfo(string modRoot)
-        {
-            return ActorInfo_Mod = new BymlFile(GetFile($"{modRoot}/Actor/ActorInfo.product.sbyml"));
-        }
 
         public static byte[]? GetFile(string filePath)
         {
