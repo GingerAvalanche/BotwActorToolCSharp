@@ -3,6 +3,7 @@ using Avalonia.Data;
 using BotwActorTool.Extensions;
 using BotwActorTool.Models;
 using BotwActorTool.ViewModels;
+using BotwActorTool.ViewModels.Documents;
 using Dock.Avalonia.Controls;
 using Dock.Model.Controls;
 using Dock.Model.Core;
@@ -45,7 +46,8 @@ namespace BotwActorTool.Builders
                     new DocumentDock() {
                         Id = "ActorDocuments",
                         Title = "Actor Documents",
-                        Proportion = 0.75
+                        Proportion = 0.75,
+                        VisibleDockables = CreateList<IDockable>(new HomeViewModel())
                     }
                 )
             };
