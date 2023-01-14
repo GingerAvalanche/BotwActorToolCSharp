@@ -46,13 +46,6 @@
                                 <MenuItem Command="{Binding $parent[UserControl].DataContext.Open}"
                                           Header="Open"
                                           InputGesture="Enter" />
-                                <MenuItem Command="{Binding $parent[UserControl].DataContext.CreateCopy}"
-                                          Header="Create Copy"
-                                          InputGesture="Ctrl + Enter" />
-                                <Separator />
-                                <MenuItem Command="{Binding $parent[UserControl].DataContext.ActorInfo}"
-                                          Header="ActorInfo"
-                                          InputGesture="Alt + Enter" />
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
