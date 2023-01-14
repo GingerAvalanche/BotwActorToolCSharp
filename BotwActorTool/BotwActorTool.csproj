@@ -9,6 +9,7 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Platforms>AnyCPU</Platforms>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -38,20 +39,26 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-preview4" />
     <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.0.0-preview4" />
     <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.0-preview1" />
-    <PackageReference Include="AvaloniaGenerics" Version="1.0.4" />
-    <PackageReference Include="AvaloniaSettingsFactory" Version="1.2.3" />
-    <PackageReference Include="AvaloniaSettingsFactory.Core" Version="1.2.3" />
+    <PackageReference Include="AvaloniaGenerics" Version="1.0.5" />
+    <PackageReference Include="AvaloniaSettingsFactory" Version="1.2.6" />
+    <PackageReference Include="AvaloniaSettingsFactory.Core" Version="1.2.6" />
     <PackageReference Include="Dock.Avalonia" Version="11.0.0-preview4" />
     <PackageReference Include="Dock.Model.ReactiveUI" Version="11.0.0-preview4" />
     <PackageReference Include="Dock.Serializer" Version="11.0.0-preview4" />
     <PackageReference Include="Markdown.Avalonia" Version="11.0.0-a6" />
     <PackageReference Include="Material.Icons.Avalonia" Version="1.2.0" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.4.2" />
+    <PackageReference Include="Projektanker.Icons.Avalonia" Version="6.3.0-preview4" />
+    <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="6.3.0-preview4" />
+    <PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" Version="6.3.0-preview4" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotwActorTool.Lib\BotwActorTool.Lib.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Documents\HomeView.axaml.cs">
+      <DependentUpon>HomeView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
     </Compile>
