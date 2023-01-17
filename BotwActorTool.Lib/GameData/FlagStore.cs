@@ -1,5 +1,8 @@
 ﻿using BotwActorTool.Lib.Gamedata.Flags;
 using Nintendo.Byml;
+using Nintendo.Sarc;
+using Nintendo.Yaz0;
+using Syroot.BinaryData.Core;
 using System.Collections.ObjectModel;
 
 namespace BotwActorTool.Lib.Gamedata
@@ -132,7 +135,7 @@ namespace BotwActorTool.Lib.Gamedata
             }
         }
 
-        public void AddFlagsFromByml(string filename, BymlFile byml)
+        public void AddFlagsFromByml(string filename, BymlFile byml, bool overwrite)
         {
             bool IsRevival = filename.Contains("revival");
 
@@ -174,63 +177,7 @@ namespace BotwActorTool.Lib.Gamedata
                         "vector4f_data" => new Vec4Flag(flag),
                         _ => throw new Exception($"Unknown flag type {type}"),
                     };
-                    if (f.HashValue == 0)
-                    {
-                        continue;
-                    }
-                    CurrFlagStore[type].Add(f.HashValue, f);
-                    OrigFlagStore[type].Add(f.HashValue, f);
-                }
-                if (error)
-                {
-                    throw new KeyNotFoundException($"Malformed flags found in {type} in {filename}. See error log for details.");
-                }
-            }
-        }
-
-        public void AddFlagsFromBymlNoOverwrite(string filename, BymlFile byml)
-        {
-            bool IsRevival = filename.Contains("revival");
-
-            foreach ((string type, BymlNode hash) in byml.RootNode.Hash)
-            {
-                bool error = false;
-                foreach (BymlNode flag in hash.Array)
-                {
-                    foreach (string key in FLAG_KEYS)
-                    {
-                        if (!flag.Hash.ContainsKey(key))
-                        {
-                            System.Console.Error.WriteLine($"Malformed flag: {flag.Hash["HashValue"].Int} missing {key}");
-                            error = true;
-                        }
-                    }
-                    if (error)
-                    {
-                        continue;
-                    }
-
-                    BaseFlag f = type switch
-                    {
-                        "bool_data" => new BoolFlag(flag, IsRevival),
-                        "bool_array_data" => new BoolArrayFlag(flag),
-                        "s32_data" => new S32Flag(flag, IsRevival),
-                        "s32_array_data" => new S32ArrayFlag(flag),
-                        "f32_data" => new F32Flag(flag),
-                        "f32_array_data" => new F32ArrayFlag(flag),
-                        "string_data" => new String32Flag(flag),
-                        "string64_data" => new String64Flag(flag),
-                        "string64_array_data" => new String64ArrayFlag(flag),
-                        "string256_data" => new String256Flag(flag),
-                        "string256_array_data" => new String256ArrayFlag(flag),
-                        "vector2f_data" => new Vec2Flag(flag),
-                        "vector2f_array_data" => new Vec2ArrayFlag(flag),
-                        "vector3f_data" => new Vec3Flag(flag),
-                        "vector3f_array_data" => new Vec3ArrayFlag(flag),
-                        "vector4f_data" => new Vec4Flag(flag),
-                        _ => throw new Exception($"Unknown flag type {type}"),
-                    };
-                    if (f.HashValue == 0 || CurrFlagStore[type].ContainsKey(f.HashValue))
+                    if (f.HashValue == 0 || (overwrite && CurrFlagStore[type].ContainsKey(f.HashValue)))
                     {
                         continue;
                     }
@@ -270,106 +217,6 @@ namespace BotwActorTool.Lib.Gamedata
 
         public void Add(string type, BaseFlag flag) => CurrFlagStore[type][flag.HashValue] = flag;
         public void Remove(string type, int hash) => CurrFlagStore[type].Remove(hash);
-
-        public int GetNewNum()
-        {
-            int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
-                ret += GetNew(pair.Key).Count;
-            }
-            return ret;
-        }
-
-        public int GetModifiedNum()
-        {
-            int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
-                ret += GetModified(pair.Key).Count;
-            }
-            return ret;
-        }
-
-        public int GetRemovedNum()
-        {
-            int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
-                ret += GetRemoved(pair.Key).Count;
-            }
-            return ret;
-        }
-
-        public HashSet<string> GetNew(string type)
-        {
-            return CurrFlagStore[type]
-                .Where(p => !OrigFlagStore[type].ContainsKey(p.Key))
-                .Select(p => p.Value.DataName)
-                .ToHashSet();
-        }
-
-        public HashSet<string> GetModified(string type)
-        {
-            return CurrFlagStore[type]
-                .Where(p => OrigFlagStore[type].ContainsKey(p.Key) && !p.Value.Equals(OrigFlagStore[type][p.Key]))
-                .Select(p => p.Value.DataName)
-                .ToHashSet();
-        }
-
-        public HashSet<string> GetRemoved(string type)
-        {
-            return OrigFlagStore[type]
-                .Where(p => !CurrFlagStore[type].ContainsKey(p.Key))
-                .Select(p => p.Value.DataName)
-                .ToHashSet();
-        }
-
-        public int GetChangesNum()
-        {
-            return GetNewNum() + GetModifiedNum() + GetRemovedNum();
-        }
-
-        public int GetNewNumSvData()
-        {
-            int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
-                ret += GetNewSvData(pair.Key).Count;
-            }
-            return ret;
-        }
-
-        public int GetModifiedNumSvData()
-        {
-            return 0;
-        }
-
-        public int GetRemovedNumSvData()
-        {
-            int ret = 0;
-            foreach (KeyValuePair<string, Dictionary<int, BaseFlag>> pair in CurrFlagStore) {
-                ret += GetRemovedSvData(pair.Key).Count;
-            }
-            return ret;
-        }
-
-        public HashSet<string> GetNewSvData(string type)
-        {
-            return CurrFlagStore[type]
-                .Where(p => p.Value.IsSave && !OrigFlagStore[type].ContainsKey(p.Key))
-                .Select(p => p.Value.DataName)
-                .ToHashSet();
-        }
-
-        public HashSet<string> GetModifiedSvData(string type)
-        {
-            return new();
-        }
-
-        public HashSet<string> GetRemovedSvData(string type)
-        {
-            return OrigFlagStore[type]
-                .Where(p => p.Value.IsSave && !CurrFlagStore[type].ContainsKey(p.Key))
-                .Select(p => p.Value.DataName)
-                .ToHashSet();
-        }
 
         public SortedDictionary<string, BymlFile> ToBgdata()
         {
@@ -475,6 +322,45 @@ namespace BotwActorTool.Lib.Gamedata
                 });
             }
             return svdata_files;
+        }
+
+        public void Write(string modRoot)
+        {
+            Endian endianness = Util.GetEndian(modRoot);
+            string bootup_path = $"{modRoot}/Pack/Bootup.pack";
+            if (!File.Exists(bootup_path))
+            {
+                Directory.CreateDirectory($"{modRoot}/Pack");
+                File.Copy(Util.FindFileOrig("Pack/Bootup.pack", endianness), bootup_path);
+            }
+            SarcFile gamedata_sarc = new(Yaz0.Decompress(Util.GetFile($"{bootup_path}/GameData/gamedata.ssarc")));
+            foreach ((string name, byte[] data) in gamedata_sarc.Files)
+            {
+                AddFlagsFromByml(name, new(data), false);
+            }
+
+            gamedata_sarc = new(new Dictionary<string, byte[]>(), endianness);
+            foreach ((string filename, BymlFile file) in ToBgdata())
+            {
+                gamedata_sarc.Files[filename] = file.ToBinary();
+            }
+            SortedDictionary<string, BymlFile> savedata_files = ToSvdata();
+            int format_num = savedata_files.Count;
+            foreach (BymlFile file in Util.GetAccountSaveFormatFiles(modRoot))
+            {
+                savedata_files[$"/saveformat_{format_num}"] = file;
+                format_num++;
+            }
+            SarcFile savedata_sarc = new(new Dictionary<string, byte[]>(), endianness);
+            foreach ((string filename, BymlFile file) in savedata_files)
+            {
+                savedata_sarc.Files[filename] = file.ToBinary();
+            }
+            Util.InjectFilesIntoBootup(modRoot, new()
+            {
+                ("GameData/gamedata.ssarc", gamedata_sarc.ToBinary()),
+                ("GameData/savedataformat.ssarc", savedata_sarc.ToBinary()),
+            });
         }
     }
 }

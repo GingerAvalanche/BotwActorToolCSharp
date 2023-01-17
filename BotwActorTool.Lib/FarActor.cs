@@ -5,6 +5,7 @@ using Nintendo.Byml;
 using Nintendo.Sarc;
 using Nintendo.Yaz0;
 using Syroot.BinaryData.Core;
+using System;
 
 namespace BotwActorTool.Lib
 {
@@ -53,8 +54,10 @@ namespace BotwActorTool.Lib
         private protected readonly ActorPack pack;
         private protected bool needs_info_update;
         private protected readonly string origname;
+        private protected bool resident;
         public string Name { get => pack.Name; }
         public virtual bool HasFar { get => false; }
+        public bool Resident { get => resident; set => resident = value; }
         public string Tags { get => pack.Tags; set { pack.Tags = value; needs_info_update = true; } }
         public string Tags2 { get => pack.Tags2; set { pack.Tags2 = value; needs_info_update = true; } }
 
@@ -550,6 +553,7 @@ namespace BotwActorTool.Lib
         }
         public FarActor(string name, string modRoot)
         {
+            resident = Util.GetResidentActors(modRoot).Contains(name);
             origname = name;
             pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile($"{modRoot}/{Util.GetActorRelPath(name, modRoot)}"))));
             info = new ActorInfo(this);
@@ -605,13 +609,19 @@ namespace BotwActorTool.Lib
 
         public virtual void Write(string modRoot)
         {
-            string actor_path = $"{modRoot}/Actor/Pack/{pack.Name}.sbactorpack";
-            if (!File.Exists(actor_path))
+            if (resident)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(actor_path)!);
+                Directory.CreateDirectory($"{modRoot}/Pack");
+                File.Copy(Util.FindFileOrig("Pack/TitleBG.pack", pack.Endianness), $"{modRoot}/Pack/TitleBG.pack");
+                byte[] compressed_bytes = Yaz0.Compress(pack.Write());
+                Util.InjectFile(modRoot, $"Pack/TitleBG.pack//Actor/Pack/{Name}.sbactorpack", compressed_bytes);
             }
-            byte[] compressed_bytes = Yaz0.Compress(pack.Write());
-            File.WriteAllBytes(actor_path, compressed_bytes);
+            else
+            {
+                Directory.CreateDirectory($"{modRoot}/Actor/Pack");
+                byte[] compressed_bytes = Yaz0.Compress(pack.Write());
+                File.WriteAllBytes($"{modRoot}/Actor/Pack/{Name}.sbactorpack", compressed_bytes);
+            }
             Update();
             info.Apply();
         }

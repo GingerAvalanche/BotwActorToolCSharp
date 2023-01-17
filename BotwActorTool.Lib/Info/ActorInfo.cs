@@ -81,7 +81,7 @@ namespace BotwActorTool.Lib.Info
         private int? instSize;
         private string[]? invalidTimes;
         private string[]? invalidWeathers;
-        private bool? isHasFar;
+        public bool? isHasFar;
         private int? itemBuyingPrice;
         private int? itemCreatingPrice;
         private int? itemSaleRevivalCount;

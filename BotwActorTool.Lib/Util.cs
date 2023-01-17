@@ -1,15 +1,11 @@
 ﻿using Nintendo.Byml;
 using Nintendo.Sarc;
 using Nintendo.Yaz0;
+using Syroot.BinaryData.Core;
 using System.Text;
 
 namespace BotwActorTool.Lib
 {
-    public enum Console
-    {
-        WiiU,
-        Switch,
-    }
     public enum ArmorUpgradable
     {
         IsResident,
@@ -141,7 +137,7 @@ namespace BotwActorTool.Lib
             byte[]? bytes = GetFile($"{modRoot}/{relPath}");
 
             if (bytes == null || bytes.Length == 0) {
-                bytes = GetFile(FindFileOrig(relPath, GetConsole(modRoot)));
+                bytes = GetFile(FindFileOrig(relPath, GetEndian(modRoot)));
             }
 
             return bytes!;
@@ -209,12 +205,12 @@ namespace BotwActorTool.Lib
             }
         }
 
-        public static string FindFileOrig(string relPath, Console console)
+        public static string FindFileOrig(string relPath, Endian endianness)
         {
             string[] parts = relPath.Split(new[] { "//" }, StringSplitOptions.None);
-            switch (console)
+            switch (endianness)
             {
-                case Console.WiiU:
+                case Endian.Big:
                     if (File.Exists($"{Config.UpdateDir}/{parts[0]}"))
                     {
                         return $"{Config.UpdateDir}/{relPath}";
@@ -228,7 +224,7 @@ namespace BotwActorTool.Lib
                         return $"{Config.GameDir}/{relPath}";
                     }
                     break;
-                case Console.Switch:
+                case Endian.Little:
                     if (File.Exists($"{Config.DlcDirNx}/{parts[0]}"))
                     {
                         return $"{Config.DlcDirNx}/{relPath}";
@@ -239,7 +235,7 @@ namespace BotwActorTool.Lib
                     }
                     break;
             }
-            throw new FileNotFoundException($"{relPath} wasn't found in the {console} files.");
+            throw new FileNotFoundException($"{relPath} wasn't found in the {(endianness == Endian.Big ? "WiiU" : "Switch")} files.");
         }
 
         public static List<string> GetResidentActors(string modRoot)
@@ -250,7 +246,7 @@ namespace BotwActorTool.Lib
                 ResidentActorPath = $"{modRoot}/Pack/Bootup.pack//Actor/ResidentActors.byml";
             }
             else {
-                ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack", GetConsole(modRoot))}//Actor/ResidentActors.byml";
+                ResidentActorPath = $"{FindFileOrig("Pack/Bootup.pack", GetEndian(modRoot))}//Actor/ResidentActors.byml";
             }
             BymlNode? ResidentActorRoot = BymlFile.FromBinary(GetFile(ResidentActorPath)).RootNode;
             if (ResidentActorRoot == null)
@@ -280,9 +276,9 @@ namespace BotwActorTool.Lib
             return string.Join("/", reversed_path.Skip(reversed_path.TakeWhile(s => s != "content" && s != "romfs").Count()).Reverse());
         }
 
-        public static Console GetConsole(string modRoot)
+        public static Endian GetEndian(string modRoot)
         {
-            return modRoot.Contains("romfs") ? Console.Switch : Console.WiiU;
+            return modRoot.Contains("romfs") ? Endian.Little : Endian.Big;
         }
 
         public static bool UnYazIfNeeded(ref Stream stream)

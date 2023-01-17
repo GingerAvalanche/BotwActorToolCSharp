@@ -87,22 +87,18 @@ namespace BotwActorTool.Lib
         private FarActor? far_actor;
         private readonly FlagStore store;
         private readonly Dictionary<string, HashSet<int>> flag_hashes;
-        private bool resident;
         public string[] AnimSeqNames { get => pack.AnimSeqNames; }
         public override bool HasFar { get => far_actor != null; }
-        public bool Resident { get => resident; set => resident = value; }
         public Dictionary<string, MsbtEntry>? Texts { get => texts.HasTexts ? texts.Texts : null; }
         public Actor(string name, string modRoot) : base(name, modRoot)
         {
-            resident = Util.GetResidentActors(modRoot).Contains(name);
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(name, pack.GetLink("ProfileUser"), modRoot);
 
-            string far_name = $"{origname}_Far";
-            if (File.Exists($"{modRoot}/Actor/Pack/{far_name}.sbactorpack"))
+            if (info.isHasFar is true)
             {
-                far_actor = new FarActor(far_name, modRoot);
+                far_actor = new FarActor($"{origname}_Far", modRoot);
             }
         }
 
@@ -208,67 +204,13 @@ namespace BotwActorTool.Lib
 
         public override void Write(string modRoot)
         {
-            Console console = pack.Endianness == Endian.Big ? Console.WiiU : Console.Switch;
             ActorInfo.SetActorInfoFile(new BymlFile(Util.GetFileAnywhere(modRoot, "Actor/Pack/ActorInfo.product.sbyml")));
-            if (resident)
-            {
-                string titlebg_path = $"{modRoot}/Pack/TitleBG.pack";
-                if (!File.Exists(titlebg_path))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(titlebg_path)!);
-                    File.Copy(Util.FindFileOrig("Pack/TitleBG.pack", console), titlebg_path);
-                }
-                string actor_path = $"Actor/Pack/{pack.Name}.sbactorpack";
-                byte[] compressed_bytes = Yaz0.Compress(pack.Write());
-                Util.InjectFile(modRoot, actor_path, compressed_bytes);
-                Update();
-                info.Apply();
-            }
-            else
-            {
-                base.Write(modRoot);
-            }
-
+            base.Write(modRoot);
             far_actor?.Write(modRoot);
             ActorInfo.Write(modRoot);
             ActorInfo.ClearActorInfoFile();
-
             texts.Write(modRoot);
-
-            string bootup_path = $"{modRoot}/Pack/Bootup.pack";
-            if (!File.Exists(bootup_path))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(bootup_path)!);
-                File.Copy(Util.FindFileOrig("Pack/Bootup.pack", console), bootup_path);
-            }
-            SarcFile gamedata_sarc = new(Yaz0.Decompress(Util.GetFile($"{bootup_path}/GameData/gamedata.ssarc")));
-            foreach ((string name, byte[] data) in gamedata_sarc.Files)
-            {
-                store.AddFlagsFromBymlNoOverwrite(name, new(data));
-            }
-
-            gamedata_sarc = new(new Dictionary<string, byte[]>(), pack.Endianness);
-            foreach ((string filename, BymlFile file) in store.ToBgdata())
-            {
-                gamedata_sarc.Files[filename] = file.ToBinary();
-            }
-            SortedDictionary<string, BymlFile> savedata_files = store.ToSvdata();
-            int format_num = savedata_files.Count;
-            foreach (BymlFile file in Util.GetAccountSaveFormatFiles(modRoot))
-            {
-                savedata_files[$"/saveformat_{format_num}"] = file;
-                format_num++;
-            }
-            SarcFile savedata_sarc = new(new Dictionary<string, byte[]>(), pack.Endianness);
-            foreach ((string filename, BymlFile file) in savedata_files)
-            {
-                savedata_sarc.Files[filename] = file.ToBinary();
-            }
-            Util.InjectFilesIntoBootup(modRoot, new()
-            {
-                ("GameData/gamedata.ssarc", gamedata_sarc.ToBinary()),
-                ("GameData/savedataformat.ssarc", savedata_sarc.ToBinary()),
-            });
+            store.Write(modRoot);
         }
 
         public ArmorUpgradable CanMakeArmorUpgradable()
