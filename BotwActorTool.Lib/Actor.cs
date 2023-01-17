@@ -5,9 +5,6 @@ using BotwActorTool.Lib.Texts;
 using MsbtLib;
 using Nintendo.Aamp;
 using Nintendo.Byml;
-using Nintendo.Sarc;
-using Nintendo.Yaz0;
-using Syroot.BinaryData.Core;
 
 namespace BotwActorTool.Lib
 {
@@ -96,7 +93,7 @@ namespace BotwActorTool.Lib
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(name, pack.GetLink("ProfileUser"), modRoot);
 
-            if (info.isHasFar is true)
+            if (info.IsHasFar)
             {
                 far_actor = new FarActor($"{origname}_Far", modRoot);
             }

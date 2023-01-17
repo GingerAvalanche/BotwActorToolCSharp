@@ -5,7 +5,6 @@ using Nintendo.Byml;
 using Nintendo.Sarc;
 using Nintendo.Yaz0;
 using Syroot.BinaryData.Core;
-using System;
 
 namespace BotwActorTool.Lib
 {

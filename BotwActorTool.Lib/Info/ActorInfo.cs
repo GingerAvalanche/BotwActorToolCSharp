@@ -9,7 +9,6 @@ using Byml.Security.Cryptography;
 using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
-using Syroot.BinaryData.Core;
 using Syroot.Maths;
 using System.Reflection;
 
@@ -81,7 +80,7 @@ namespace BotwActorTool.Lib.Info
         private int? instSize;
         private string[]? invalidTimes;
         private string[]? invalidWeathers;
-        public bool? isHasFar;
+        private bool? isHasFar;
         private int? itemBuyingPrice;
         private int? itemCreatingPrice;
         private int? itemSaleRevivalCount;
@@ -154,8 +153,9 @@ namespace BotwActorTool.Lib.Info
         private int? weaponCommonStickDamage;
         private string? xlink;
         private string? yLimitAlgorithm;
-        public int? InstSize { get => instSize; set => instSize = value; }
-        public int? SortKey { get => sortKey; set => sortKey = value; }
+        public int InstSize { get => instSize ?? 0; set => instSize = value; }
+        public bool IsHasFar { get => isHasFar is true; set => isHasFar = value == false ? null : true; }
+        public int SortKey { get => sortKey ?? 0; set => sortKey = value; }
         #endregion
 
         #region Param Maps
