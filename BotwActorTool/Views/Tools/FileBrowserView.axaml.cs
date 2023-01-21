@@ -18,7 +18,7 @@ namespace BotwActorTool.Views.Tools
                 }
             };
 
-            ItemsListRoot.KeyDown += (s, e) => {
+            ItemsListRoot.KeyDown += async (s, e) => {
                 if (e.Key == Key.Down) {
                     ItemsListRoot.Focus();
                     ItemsListRoot.SelectedIndex += 1;
@@ -27,13 +27,13 @@ namespace BotwActorTool.Views.Tools
                     ItemsListRoot.SelectedIndex -= 1;
                 }
                 else if (e.KeyModifiers == KeyModifiers.Alt && e.Key == Key.Enter) {
-                    (DataContext as FileBrowserViewModel)!.ActorInfo();
+                    await (DataContext as FileBrowserViewModel)!.ActorInfo();
                 }
                 else if (e.KeyModifiers == KeyModifiers.Control && e.Key == Key.Enter) {
-                    (DataContext as FileBrowserViewModel)!.CreateCopy();
+                    await (DataContext as FileBrowserViewModel)!.CreateCopy();
                 }
                 else if (e.Key == Key.Enter) {
-                    (DataContext as FileBrowserViewModel)!.Open();
+                    await (DataContext as FileBrowserViewModel)!.Open();
                 }
             };
         }
