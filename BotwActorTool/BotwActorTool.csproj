@@ -62,6 +62,9 @@
     <Compile Update="Views\ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Tools\ModBrowserView.axaml.cs">
+      <DependentUpon>ModBrowserView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Tools\FileBrowserView.axaml.cs">
       <DependentUpon>FileBrowserView.axaml</DependentUpon>
     </Compile>
