@@ -1,0 +1,165 @@
+<UserControl x:Class="BotwActorTool.Views.Tools.ModBrowserView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:BotwActorTool.Models"
+             d:DesignHeight="450"
+             d:DesignWidth="300"
+             mc:Ignorable="d">
+    <Grid Name="ROOT"
+          Margin="0,0,0,7"
+          RowDefinitions="37,*,Auto">
+        <TextBox Name="SearchField"
+                 Margin="5,7"
+                 AcceptsReturn="False"
+                 AcceptsTab="False"
+                 Classes="clearButton"
+                 Text="{Binding SearchField}"
+                 Watermark="Search" />
+        <Border Margin="5,7"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource SystemChromeMediumColor}"
+                CornerRadius="2"
+                IsVisible="{Binding !Items.Count}">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       FontWeight="Light"
+                       Text="{Binding Title, StringFormat=Nothing loaded in {0}}" />
+        </Border>
+
+        <TreeView Name="ItemsTreeView"
+                  Grid.Row="1"
+                  Items="{Binding Items}"
+                  SelectedItem="{Binding SelectedItem}">
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="models:ModNodeModel" ItemsSource="{Binding Actors}">
+                    <TextBlock VerticalAlignment="Center"
+                               Background="Transparent"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Opacity="0.8"
+                               Text="{Binding Name}"
+                               ToolTip.Tip="{Binding Description}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.CloseMod}" Header="Close Mod" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </TreeDataTemplate>
+                <TreeDataTemplate DataType="models:ActorNodeModel">
+                    <TextBlock Margin="-24,0,0,0"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Center"
+                               Background="Transparent"
+                               DoubleTapped="OpenEvent"
+                               FontSize="12"
+                               Opacity="0.8"
+                               Text="{Binding Name}"
+                               ToolTip.Tip="{Binding Description}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.Open}"
+                                          Header="Open"
+                                          InputGesture="Enter" />
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.CreateCopy}"
+                                          Header="Create Copy"
+                                          InputGesture="Ctrl + Enter" />
+                                <Separator />
+                                <MenuItem Command="{Binding $parent[UserControl].DataContext.ActorInfo}"
+                                          Header="ActorInfo"
+                                          InputGesture="Alt + Enter" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </TreeDataTemplate>
+            </TreeView.DataTemplates>
+            <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                    <Setter Property="MinHeight" Value="24" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="IsVisible" Value="{Binding Visible}" />
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <StackPanel>
+                                <Border Name="PART_LayoutRoot"
+                                        MinHeight="{TemplateBinding MinHeight}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Classes="TreeViewItemLayoutRoot"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        Focusable="True"
+                                        TemplatedControl.IsTemplateFocusTarget="True">
+                                    <Grid Name="PART_Header"
+                                          Margin="{TemplateBinding Level,
+                                                                   Mode=OneWay,
+                                                                   Converter={StaticResource TreeViewItemLeftMarginConverter}}"
+                                          Background="Transparent"
+                                          ColumnDefinitions="Auto, *">
+                                        <Panel Name="PART_ExpandCollapseChevronContainer" Margin="6,0,4,0">
+                                            <ToggleButton Name="PART_ExpandCollapseChevron"
+                                                          Focusable="False"
+                                                          IsChecked="{TemplateBinding IsExpanded,
+                                                                                      Mode=TwoWay}"
+                                                          Theme="{StaticResource FluentTreeViewExpandCollapseChevron}" />
+                                        </Panel>
+                                        <ContentPresenter Name="PART_HeaderPresenter"
+                                                          Grid.Column="1"
+                                                          Margin="{TemplateBinding Padding}"
+                                                          HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                          Content="{TemplateBinding Header}"
+                                                          Focusable="False" />
+                                    </Grid>
+                                </Border>
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                IsVisible="{TemplateBinding IsExpanded}"
+                                                Items="{TemplateBinding Items}"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter>
+                </Style>
+                <Style Selector="TreeViewItem /template/ ToggleButton#PART_ExpandCollapseChevron">
+                    <Style.Resources>
+                        <StreamGeometry x:Key="TreeViewItemCollapsedChevronPathData">M 0,0 6,5 L 0,10 Z</StreamGeometry>
+                        <StreamGeometry x:Key="TreeViewItemExpandedChevronPathData">M 0,0 10,0 L 5,6 Z</StreamGeometry>
+                        <ControlTheme x:Key="FluentTreeViewExpandCollapseChevron" TargetType="ToggleButton">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Width" Value="{StaticResource TreeViewItemExpandCollapseChevronSize}" />
+                            <Setter Property="Height" Value="{StaticResource TreeViewItemExpandCollapseChevronSize}" />
+                            <Setter Property="Template">
+                                <ControlTemplate>
+                                    <Border Width="{TemplateBinding Width}"
+                                            Height="{TemplateBinding Height}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Background="Transparent"
+                                            Opacity="0.8">
+                                        <Path x:Name="ChevronPath"
+                                              Margin="1"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Data="{StaticResource TreeViewItemCollapsedChevronPathData}"
+                                              Fill="{DynamicResource TreeViewItemForeground}"
+                                              Stretch="Uniform" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter>
+
+                            <Style Selector="^:checked /template/ Path#ChevronPath">
+                                <Setter Property="Data" Value="{StaticResource TreeViewItemExpandedChevronPathData}" />
+                            </Style>
+                        </ControlTheme>
+                    </Style.Resources>
+                    <Setter Property="Theme" Value="{StaticResource FluentTreeViewExpandCollapseChevron}" />
+                </Style>
+            </TreeView.Styles>
+        </TreeView>
+    </Grid>
+</UserControl>
