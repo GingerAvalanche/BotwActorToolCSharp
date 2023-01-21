@@ -33,7 +33,7 @@ namespace BotwActorTool.Models
             bool any = false;
             foreach (var actor in Actors) {
                 actor.Visible = string.IsNullOrEmpty(str) || str.Contains(actor.Name.ToLower()) || actor.Name.ToLower().Contains(str);
-                any = actor.Visible ? true : any;
+                any = actor.Visible || any;
             }
 
             return any;
