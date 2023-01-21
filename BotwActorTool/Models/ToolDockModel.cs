@@ -9,10 +9,10 @@ namespace BotwActorTool.Models
     internal class ToolDockModel
     {
         [ToolDock(Title = "Actor")]
-        public static FileBrowserViewModel Actor()
+        public static ActorFilesViewModel Actor()
         {
             // Query build tool dock for this VM and return, else build the VM
-            return ToolDockFactory.QueryTool(out FileBrowserViewModel? obj) != null ? obj! : new();
+            return ToolDockFactory.QueryTool(out ActorFilesViewModel? obj) != null ? obj! : new();
         }
 
         [ToolDock(Title = "Vanilla Actors")]
@@ -28,11 +28,11 @@ namespace BotwActorTool.Models
             return browser;
         }
 
-        [ToolDock(Title = "Mod Actors")]
-        public static FileBrowserViewModel ModActors()
+        [ToolDock(Title = "Mods")]
+        public static ModBrowserViewModel Mods()
         {
             // Query build tool dock for this VM and return, else build the VM
-            return ToolDockFactory.QueryTool(out FileBrowserViewModel? obj) != null ? obj! : new();
+            return ToolDockFactory.QueryTool(out ModBrowserViewModel? obj) != null ? obj! : new();
         }
     }
 }
