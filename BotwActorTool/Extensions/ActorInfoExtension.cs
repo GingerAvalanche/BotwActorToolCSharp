@@ -13,14 +13,14 @@ namespace BotwActorTool.Extensions
     public static class ActorInfoExtension
     {
         /// <inheritdoc cref="LoadActorInfoNodes(string, string, AltActorsAction)"/>
-        public static ObservableCollection<TreeNodeModel> LoadActorInfoNodes(string modRoot) => LoadActorInfoNodes(modRoot, null);
+        public static ObservableCollection<ActorNodeModel> LoadActorInfoNodes(string modRoot) => LoadActorInfoNodes(modRoot, null);
 
         /// <summary>
         /// Loads a <see cref="ObservableCollection{TreeNodeModel}"/> (node tree) from the target mod's ActorInfo
         /// </summary>
         /// <param name="altModRoot">Specify an alternative mod root to compare against</param>
         /// <exception cref="NullReferenceException"></exception>
-        public static ObservableCollection<TreeNodeModel> LoadActorInfoNodes(string modRoot, string? altModRoot, AltActorsAction action = AltActorsAction.RemoveAltActors)
+        public static ObservableCollection<ActorNodeModel> LoadActorInfoNodes(string modRoot, string? altModRoot, AltActorsAction action = AltActorsAction.RemoveAltActors)
         {
             BymlFile actorInfo = new(Yaz0.DecompressFast(Util.GetFile($"{modRoot}/Actor/ActorInfo.product.sbyml")));
             Func<BymlNode, bool> condition;
@@ -38,10 +38,10 @@ namespace BotwActorTool.Extensions
             }
 
             return new(actorInfo.RootNode.Hash["Actors"].Array.Where(condition).Select(x => {
-                return new TreeNodeModel(x.Hash["name"].String, x.GetActorDescription()) {
+                return new ActorNodeModel(x.Hash["name"].String, x.GetActorDescription()) {
                     Meta = x
                 };
-            }).OrderBy(x => x.Key));
+            }).OrderBy(x => x.Name));
         }
 
         public static string GetActorDescription(this BymlNode actor)

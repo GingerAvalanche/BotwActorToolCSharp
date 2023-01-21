@@ -20,7 +20,7 @@
                 VerticalAlignment="Stretch"
                 Background="{DynamicResource SystemChromeMediumColor}"
                 CornerRadius="2"
-                IsVisible="{Binding $parent[UserControl].DataContext.Unloaded}">
+                IsVisible="{Binding !Items.Count}">
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="14"
@@ -40,8 +40,8 @@
                                Background="Transparent"
                                DoubleTapped="OpenEvent"
                                FontSize="12"
-                               Text="{Binding Key}"
-                               ToolTip.Tip="{Binding Tooltip}">
+                               Text="{Binding Name}"
+                               ToolTip.Tip="{Binding Description}">
                         <TextBlock.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Command="{Binding $parent[UserControl].DataContext.Open}"

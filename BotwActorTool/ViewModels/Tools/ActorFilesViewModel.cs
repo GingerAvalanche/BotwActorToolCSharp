@@ -7,19 +7,19 @@ namespace BotwActorTool.ViewModels.Tools
 {
     public class ActorFilesViewModel : Tool
     {
-        public ObservableCollection<TreeNodeModel> ItemsBase = new();
+        public ObservableCollection<ActorNodeModel> ItemsBase = new();
         public bool Unloaded => ItemsBase.Count.Equals(0);
 
-        private TreeNodeModel? selectedItem;
-        public TreeNodeModel? SelectedItem {
+        private ActorNodeModel? selectedItem;
+        public ActorNodeModel? SelectedItem {
             get => selectedItem;
             set {
                 this.RaiseAndSetIfChanged(ref selectedItem, value);
             }
         }
 
-        private ObservableCollection<TreeNodeModel>? items;
-        public ObservableCollection<TreeNodeModel> Items {
+        private ObservableCollection<ActorNodeModel>? items;
+        public ObservableCollection<ActorNodeModel> Items {
             get {
                 items ??= new(ItemsBase);
                 return items;
@@ -32,7 +32,7 @@ namespace BotwActorTool.ViewModels.Tools
             get => searchField;
             set {
                 this.RaiseAndSetIfChanged(ref searchField, value);
-                Items = new(string.IsNullOrEmpty(searchField) ? ItemsBase : ItemsBase.Where(x => x.Key.ToLower().Contains(searchField.ToLower())).OrderBy(x => x.Key));
+                Items = new(string.IsNullOrEmpty(searchField) ? ItemsBase : ItemsBase.Where(x => x.Name.ToLower().Contains(searchField.ToLower())).OrderBy(x => x.Name));
             }
         }
 

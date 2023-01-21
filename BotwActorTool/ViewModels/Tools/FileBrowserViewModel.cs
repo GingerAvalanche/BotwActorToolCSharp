@@ -1,26 +1,24 @@
 ﻿using Avalonia.Generics.Dialogs;
 using BotwActorTool.Models;
 using Dock.Model.ReactiveUI.Controls;
-using Nintendo.Byml;
 using System.Collections.ObjectModel;
 
 namespace BotwActorTool.ViewModels.Tools
 {
     public class FileBrowserViewModel : Tool
     {
-        public ObservableCollection<TreeNodeModel> ItemsBase = new();
-        public bool Unloaded => ItemsBase.Count.Equals(0);
+        public ObservableCollection<ActorNodeModel> ItemsBase = new();
 
-        private TreeNodeModel? selectedItem;
-        public TreeNodeModel? SelectedItem {
+        private ActorNodeModel? selectedItem;
+        public ActorNodeModel? SelectedItem {
             get => selectedItem;
             set {
                 this.RaiseAndSetIfChanged(ref selectedItem, value);
             }
         }
 
-        private ObservableCollection<TreeNodeModel>? items;
-        public ObservableCollection<TreeNodeModel> Items {
+        private ObservableCollection<ActorNodeModel>? items;
+        public ObservableCollection<ActorNodeModel> Items {
             get {
                 items ??= new(ItemsBase);
                 return items;
@@ -33,7 +31,7 @@ namespace BotwActorTool.ViewModels.Tools
             get => searchField;
             set {
                 this.RaiseAndSetIfChanged(ref searchField, value);
-                Items = new(string.IsNullOrEmpty(searchField) ? ItemsBase : ItemsBase.Where(x => x.Key.ToLower().Contains(searchField.ToLower())).OrderBy(x => x.Key));
+                Items = new(string.IsNullOrEmpty(searchField) ? ItemsBase : ItemsBase.Where(x => x.Name.ToLower().Contains(searchField.ToLower())).OrderBy(x => x.Name));
             }
         }
 
@@ -51,8 +49,8 @@ namespace BotwActorTool.ViewModels.Tools
         {
             // INPUT DIALOG
             var name = (await InputDialog.ShowDialog(new Dictionary<string, string>() {
-                { "Name", SelectedItem!.Key }
-            }, $"Copy {SelectedItem!.Key}"))?["Name"];
+                { "Name", SelectedItem!.Name }
+            }, $"Copy {SelectedItem!.Name}"))?["Name"];
 
             if (name != null) {
                 // INVOKE OPEN
@@ -62,7 +60,7 @@ namespace BotwActorTool.ViewModels.Tools
 
         public async Task ActorInfo()
         {
-            await MessageBox.ShowDialog(((BymlNode)SelectedItem!.Meta).SerializeNode(), $"Actor Info");
+            await MessageBox.ShowDialog(SelectedItem!.Meta.SerializeNode(), $"Actor Info");
         }
     }
 }
