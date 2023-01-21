@@ -34,33 +34,5 @@ namespace BotwActorTool.ViewModels.Tools
                 Items = new(string.IsNullOrEmpty(searchField) ? ItemsBase : ItemsBase.Where(x => x.Name.ToLower().Contains(searchField.ToLower())).OrderBy(x => x.Name));
             }
         }
-
-        public async Task Open()
-        {
-            // INVOKE OPEN
-            // - Report UI as working
-            // - Build View (async)
-            // - Inject into DocumentDock
-            // - End working
-            await MessageBox.ShowDialog("INVOKE OPEN");
-        }
-
-        public async Task CreateCopy()
-        {
-            // INPUT DIALOG
-            var name = (await InputDialog.ShowDialog(new Dictionary<string, string>() {
-                { "Name", SelectedItem!.Name }
-            }, $"Copy {SelectedItem!.Name}"))?["Name"];
-
-            if (name != null) {
-                // INVOKE OPEN
-                // RENAME
-            }
-        }
-
-        public async Task ActorInfo()
-        {
-            await MessageBox.ShowDialog(SelectedItem!.Meta.SerializeNode(), $"Actor Info");
-        }
     }
 }

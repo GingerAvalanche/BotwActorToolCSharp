@@ -14,20 +14,23 @@ namespace BotwActorTool.Views.Tools
             SearchField.AttachedToVisualTree += (s, e) => SearchField.Focus();
 
             ItemsTreeView.KeyDown += async (s, e) => {
-                if (((TreeView)s!).SelectedItem is ActorNodeModel) {
+                if (((TreeView)s!).SelectedItem is ActorNodeModel actorNode) {
                     if (e.KeyModifiers == KeyModifiers.Alt && e.Key == Key.Enter) {
-                        await (DataContext as ModBrowserViewModel)!.ActorInfo();
+                        await actorNode.ActorInfo();
                     }
                     else if (e.KeyModifiers == KeyModifiers.Control && e.Key == Key.Enter) {
-                        await (DataContext as ModBrowserViewModel)!.CreateCopy();
+                        await actorNode.CreateCopy();
                     }
                     else if (e.Key == Key.Enter) {
-                        await (DataContext as ModBrowserViewModel)!.Open();
+                        await actorNode.Open();
                     }
                 }
             };
         }
 
-        public async void OpenEvent(object? sender, TappedEventArgs e) => await (DataContext as ModBrowserViewModel)!.CloseMod();
+        public async void OpenEvent(object? sender, TappedEventArgs e)
+        {
+            await ((DataContext as ModBrowserViewModel)!.SelectedItem as ActorNodeModel)!.Open();
+        }
     }
 }

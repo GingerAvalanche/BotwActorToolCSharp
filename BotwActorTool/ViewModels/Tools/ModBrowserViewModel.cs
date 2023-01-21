@@ -9,7 +9,9 @@ namespace BotwActorTool.ViewModels.Tools
     {
         public ModBrowserViewModel()
         {
-
+            ModNodeModel mod = new("ModName", "ModDescription");
+            mod.Actors.Add(new("ActorName", "ActorDescription"));
+            Items.Add(mod);
         }
 
         private ObservableCollection<ModNodeModel> _items = new();
@@ -50,34 +52,6 @@ namespace BotwActorTool.ViewModels.Tools
             // - Inject into DocumentDock
             // - End working
             await MessageBox.ShowDialog("INVOKE CLOSE");
-        }
-
-        public async Task Open()
-        {
-            // INVOKE OPEN
-            // - Report UI as working
-            // - Build View (async)
-            // - Inject into DocumentDock
-            // - End working
-            await MessageBox.ShowDialog("INVOKE OPEN");
-        }
-
-        public async Task CreateCopy()
-        {
-            // INPUT DIALOG
-            var name = (await InputDialog.ShowDialog(new Dictionary<string, string>() {
-                 { "Name", (SelectedItem as ActorNodeModel)!.Name }
-             }, $"Copy {(SelectedItem as ActorNodeModel)!.Name}"))?["Name"];
-
-            if (name != null) {
-                // INVOKE OPEN
-                // RENAME
-            }
-        }
-
-        public async Task ActorInfo()
-        {
-            await MessageBox.ShowDialog((SelectedItem as ActorNodeModel)!.Meta.SerializeNode(), $"Actor Info");
         }
     }
 }

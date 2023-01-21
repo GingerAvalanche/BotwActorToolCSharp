@@ -62,14 +62,14 @@
                                ToolTip.Tip="{Binding Description}">
                         <TextBlock.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Command="{Binding $parent[UserControl].DataContext.Open}"
+                                <MenuItem Command="{Binding Open}"
                                           Header="Open"
                                           InputGesture="Enter" />
-                                <MenuItem Command="{Binding $parent[UserControl].DataContext.CreateCopy}"
+                                <MenuItem Command="{Binding CreateCopy}"
                                           Header="Create Copy"
                                           InputGesture="Ctrl + Enter" />
                                 <Separator />
-                                <MenuItem Command="{Binding $parent[UserControl].DataContext.ActorInfo}"
+                                <MenuItem Command="{Binding ActorInfo}"
                                           Header="ActorInfo"
                                           InputGesture="Alt + Enter" />
                             </ContextMenu>

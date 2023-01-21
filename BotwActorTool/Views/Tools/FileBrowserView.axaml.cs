@@ -27,17 +27,20 @@ namespace BotwActorTool.Views.Tools
                     ItemsListRoot.SelectedIndex -= 1;
                 }
                 else if (e.KeyModifiers == KeyModifiers.Alt && e.Key == Key.Enter) {
-                    await (DataContext as FileBrowserViewModel)!.ActorInfo();
+                    await (DataContext as FileBrowserViewModel)!.SelectedItem!.ActorInfo();
                 }
                 else if (e.KeyModifiers == KeyModifiers.Control && e.Key == Key.Enter) {
-                    await (DataContext as FileBrowserViewModel)!.CreateCopy();
+                    await (DataContext as FileBrowserViewModel)!.SelectedItem!.CreateCopy();
                 }
                 else if (e.Key == Key.Enter) {
-                    await (DataContext as FileBrowserViewModel)!.Open();
+                    await (DataContext as FileBrowserViewModel)!.SelectedItem!.Open();
                 }
             };
         }
 
-        public void OpenEvent(object? sender, TappedEventArgs e) => (DataContext as FileBrowserViewModel)!.Open();
+        public async void OpenEvent(object? sender, TappedEventArgs e)
+        {
+            await (DataContext as FileBrowserViewModel)!.SelectedItem!.Open();
+        }
     }
 }
