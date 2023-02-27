@@ -547,16 +547,15 @@ namespace BotwActorTool.Lib
             // Create the SarcFile
             SarcFile far_sarc = new(files, Endian.Little);
             pack = new($"{name}_Far", far_sarc);
-            info = new(this);
+            info = new();
             needs_info_update = true;
         }
-        public FarActor(string name, string modRoot)
+        public FarActor(string name, string modRoot, ActorInfo info)
         {
             resident = Util.GetResidentActors(modRoot).Contains(name);
             origname = name;
             pack = new ActorPack(origname, new(Yaz0.Decompress(Util.GetFile($"{modRoot}/{Util.GetActorRelPath(name, modRoot)}"))));
-            info = new ActorInfo(this);
-            info.LoadFromActorInfoByml(new(Yaz0.Decompress(Util.GetFile($"{modRoot}/Actor/ActorInfo.product.sbyml"))));
+            this.info = info;
         }
 
         public virtual void SetName(string name)

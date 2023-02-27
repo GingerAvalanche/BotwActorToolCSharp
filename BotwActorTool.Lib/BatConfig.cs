@@ -12,6 +12,9 @@ namespace BotwActorTool.Lib
 {
     public enum BotwDir { Game = 0, Update = 1, Dlc = 2 }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum Console { WiiU = 0, Switch = 1 }
+
     public class BatConfig : ISettingsBase
     {
         //
@@ -38,7 +41,7 @@ namespace BotwActorTool.Lib
         public string DataFolder
             => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{GetFolderPath(SpecialFolder.LocalApplicationData)}/{nameof(BotwActorTool)}" : $"{GetFolderPath(SpecialFolder.ApplicationData)}/{nameof(BotwActorTool)}";
 
-        [Setting("Base Game Directory", "The folder containing the base game files for BOTW, without the update ir DLC files. The last folder should be \"content\", e.g. \"C:/Games/Botw/BaseGame/content\"")]
+        [Setting("Base Game Directory", "The folder containing the base game files for BOTW, without the update or DLC files. The last folder should be \"content\", e.g. \"C:/Games/Botw/BaseGame/content\"")]
         public string GameDir { get; set; } = "";
 
         [Setting("Update Directory", "The folder containing the update files for BOTW, version 1.5.0. The last folder should be \"content\", e.g. \"C:/Games/Botw/Update/content\"")]
@@ -56,8 +59,8 @@ namespace BotwActorTool.Lib
         [Setting(UiType.Dropdown, "Resource:RegionList", Name = "Game Region/Language")]
         public string Lang { get; set; } = "NULL";
 
-        [Setting(UiType.Dropdown, "Switch", "WiiU")]
-        public string Mode { get; set; } = "WiiU";
+        [Setting(UiType.Dropdown, Console.Switch, Console.WiiU)]
+        public Console Mode { get; set; } = Console.WiiU;
 
         [Setting(UiType.Dropdown, "Dark", "Light", Category = "Appearance")]
         public string Theme { get; set; } = "Dark";
@@ -118,9 +121,9 @@ namespace BotwActorTool.Lib
         }
 
         public string GetDir(BotwDir dir) => dir switch {
-            BotwDir.Game => Mode == "Switch" ? GameDirNx : GameDir,
-            BotwDir.Update => Mode == "Switch" ? GameDirNx : UpdateDir,
-            BotwDir.Dlc => Mode == "Switch" ? DlcDirNx : DlcDir,
+            BotwDir.Game => Mode == Console.Switch ? GameDirNx : GameDir,
+            BotwDir.Update => Mode == Console.Switch ? GameDirNx : UpdateDir,
+            BotwDir.Dlc => Mode == Console.Switch ? DlcDirNx : DlcDir,
             _ => throw new InvalidDataException($"The BotwDir type '{dir}' is not implemented yet.")
         };
     }

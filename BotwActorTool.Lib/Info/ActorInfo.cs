@@ -10,14 +10,16 @@ using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Yaz0;
 using Syroot.Maths;
+using System.Net.NetworkInformation;
 using System.Reflection;
 
 namespace BotwActorTool.Lib.Info
 {
-    internal class ActorInfo
+    public class ActorInfo
     {
         private static BymlFile? actor_info_file;
-        private FarActor actor;
+        private FarActor? actor;
+        public FarActor Actor { set => actor = value; }
 
         #region ActorInfo Params
         private Dictionary<string, int>? Chemical;
@@ -118,11 +120,38 @@ namespace BotwActorTool.Lib.Info
         private bool? systemIsGetItemSelf;
         private string? systemSameGroupActorName;
         private Dictionary<string, int>? tags;
-        private string[]? terrainTextures;
+        private uint[]? terrainTextures;
         private string? travelerAppearGameDataName;
         private string? travelerDeleteGameDataName;
         private string? travelerRideHorseName;
-        private string[]? travelerRoutePointNames;
+        private string? travelerRoutePoint0Name;
+        private string? travelerRoutePoint1Name;
+        private string? travelerRoutePoint2Name;
+        private string? travelerRoutePoint3Name;
+        private string? travelerRoutePoint4Name;
+        private string? travelerRoutePoint5Name;
+        private string? travelerRoutePoint6Name;
+        private string? travelerRoutePoint7Name;
+        private string? travelerRoutePoint8Name;
+        private string? travelerRoutePoint9Name;
+        private string? travelerRoutePoint10Name;
+        private string? travelerRoutePoint11Name;
+        private string? travelerRoutePoint12Name;
+        private string? travelerRoutePoint13Name;
+        private string? travelerRoutePoint14Name;
+        private string? travelerRoutePoint15Name;
+        private string? travelerRoutePoint16Name;
+        private string? travelerRoutePoint17Name;
+        private string? travelerRoutePoint18Name;
+        private string? travelerRoutePoint19Name;
+        private string? travelerRoutePoint20Name;
+        private string? travelerRoutePoint21Name;
+        private string? travelerRoutePoint22Name;
+        private string? travelerRoutePoint23Name;
+        private string? travelerRoutePoint24Name;
+        private string? travelerRoutePoint25Name;
+        private string? travelerRoutePoint26Name;
+        private string? travelerRoutePoint27Name;
         private string? travelerRouteType;
         private float? traverseDist;
         private string? variationMatAnim;
@@ -237,7 +266,34 @@ namespace BotwActorTool.Lib.Info
             { "travelerAppearGameDataName", ("Traveler", "AppearGameDataName") },
             { "travelerDeleteGameDataName", ("Traveler", "DeleteGameDataName") },
             { "travelerRideHorseName", ("Traveler", "RideHorseName") },
-            { "travelerRoutePointNames", ("Traveler", "RoutePoint{0}Name") },
+            { "travelerRoutePoint0Name", ("Traveler", "RoutePoint0Name") },
+            { "travelerRoutePoint1Name", ("Traveler", "RoutePoint1Name") },
+            { "travelerRoutePoint2Name", ("Traveler", "RoutePoint2Name") },
+            { "travelerRoutePoint3Name", ("Traveler", "RoutePoint3Name") },
+            { "travelerRoutePoint4Name", ("Traveler", "RoutePoint4Name") },
+            { "travelerRoutePoint5Name", ("Traveler", "RoutePoint5Name") },
+            { "travelerRoutePoint6Name", ("Traveler", "RoutePoint6Name") },
+            { "travelerRoutePoint7Name", ("Traveler", "RoutePoint7Name") },
+            { "travelerRoutePoint8Name", ("Traveler", "RoutePoint8Name") },
+            { "travelerRoutePoint9Name", ("Traveler", "RoutePoint9Name") },
+            { "travelerRoutePoint10Name", ("Traveler", "RoutePoint10Name") },
+            { "travelerRoutePoint11Name", ("Traveler", "RoutePoint11Name") },
+            { "travelerRoutePoint12Name", ("Traveler", "RoutePoint12Name") },
+            { "travelerRoutePoint13Name", ("Traveler", "RoutePoint13Name") },
+            { "travelerRoutePoint14Name", ("Traveler", "RoutePoint14Name") },
+            { "travelerRoutePoint15Name", ("Traveler", "RoutePoint15Name") },
+            { "travelerRoutePoint16Name", ("Traveler", "RoutePoint16Name") },
+            { "travelerRoutePoint17Name", ("Traveler", "RoutePoint17Name") },
+            { "travelerRoutePoint18Name", ("Traveler", "RoutePoint18Name") },
+            { "travelerRoutePoint19Name", ("Traveler", "RoutePoint19Name") },
+            { "travelerRoutePoint20Name", ("Traveler", "RoutePoint20Name") },
+            { "travelerRoutePoint21Name", ("Traveler", "RoutePoint21Name") },
+            { "travelerRoutePoint22Name", ("Traveler", "RoutePoint22Name") },
+            { "travelerRoutePoint23Name", ("Traveler", "RoutePoint23Name") },
+            { "travelerRoutePoint24Name", ("Traveler", "RoutePoint24Name") },
+            { "travelerRoutePoint25Name", ("Traveler", "RoutePoint25Name") },
+            { "travelerRoutePoint26Name", ("Traveler", "RoutePoint26Name") },
+            { "travelerRoutePoint27Name", ("Traveler", "RoutePoint27Name") },
             { "travelerRouteType", ("Traveler", "RouteType") },
             { "weaponCommonGuardPower", ("WeaponCommon", "GuardPower") },
             { "weaponCommonPoweredSharpAddAtkMax", ("WeaponCommon", "PoweredSharpAddAtkMax") },
@@ -289,50 +345,47 @@ namespace BotwActorTool.Lib.Info
         };
         #endregion
 
-        public ActorInfo(FarActor actor)
+        public ActorInfo() { }
+        public ActorInfo(BymlNode infoNode)
         {
-            this.actor = actor;
-        }
-
-        public void LoadFromActorInfoByml(BymlFile ActorInfo)
-        {
-            foreach (BymlNode actor in ActorInfo.RootNode.Hash["Actors"].Array)
+            foreach ((string key, BymlNode node) in infoNode.Hash)
             {
-                if (actor.Hash["name"].String == this.actor.Name)
+                if (key == "homeArea")
                 {
-                    foreach ((string key, BymlNode node) in actor.Hash)
-                    {
-                        if (key == "homeArea")
-                        {
-                            homeArea = node.Array.Select(n => RetrieveStringHash(n)).ToArray();
-                        }
-                        else if (key == "locators")
-                        {
-                            locators = node.Array.Select(n => RetrieveDynamicHash(n)).ToArray();
-                        }
-                        else if (key == "tags")
-                        {
-                            tags = RetrieveIntHash(node);
-                        }
-                        else if (key.Contains("invalid"))
-                        {
-                            typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
-                                .SetValue(this, node.Array.Select(x => x.String).ToArray());
-                        }
-                        else
-                        {
-                            typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
-                                .SetValue(this, Retrieve(node));
-                        }
-                    }
-                    break;
+                    homeArea = node.Array.Select(n => RetrieveStringHash(n)).ToArray();
+                }
+                else if (key == "locators")
+                {
+                    locators = node.Array.Select(n => RetrieveDynamicHash(n)).ToArray();
+                }
+                else if (key == "tags")
+                {
+                    tags = RetrieveIntHash(node);
+                }
+                else if (key == "terrainTextures")
+                {
+                    terrainTextures = node.Array.Select(n => n.UInt).ToArray();
+                }
+                else if (key == "farModelCulling" || key == "drops")
+                {
+                    farModelCulling = RetrieveDynamicHash(node);
+                }
+                else if (key.Contains("invalid"))
+                {
+                    typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, node.Array.Select(x => x.String).ToArray());
+                }
+                else
+                {
+                    typeof(ActorInfo).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, Retrieve(node));
                 }
             }
         }
 
         public void Update()
         {
-            name = actor.Name;
+            name = actor!.Name;
             isHasFar = actor?.HasFar == false ? null : true; // coerce false to null
             UpdateFromActorLink();
             UpdateFromTags();
@@ -368,6 +421,10 @@ namespace BotwActorTool.Lib.Info
         }
         private void UpdateFromTags()
         {
+            if (actor == null)
+            {
+                throw new InvalidDataException("Actor has not been set.");
+            }
             tags = new();
             foreach (string tag in actor.Tags.Split(", "))
             {
@@ -437,21 +494,13 @@ namespace BotwActorTool.Lib.Info
                 ParamObject? obj = file.RootNode.Objects(obj_name);
                 if (obj != null)
                 {
-                    if (param_name.Contains('{'))
-                    {
-                        string[] points = new string[28];
-                        for (int i = 0; i < points.Length; i++)
-                        {
-                            points[i] = Retrieve(obj.Params(string.Format(param_name, i))!);
-                        }
-                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                            .SetValue(this, points.Where(s => !IsDefault(s)).ToArray());
-                    }
-                    else
-                    {
-                        typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
-                            .SetValue(this, Retrieve(obj.Params(param_name)!));
-                    }
+                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, Retrieve(obj.Params(param_name)!));
+                }
+                else
+                {
+                    typeof(ActorInfo).GetField(prop_name, BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .SetValue(this, null);
                 }
             }
         }
@@ -687,8 +736,8 @@ namespace BotwActorTool.Lib.Info
             }
         }
 
-        private string GetLink(string link) => actor.GetLink(link);
-        private AampFile GetFile(string link) => actor.GetPackAampFile(link);
+        private string GetLink(string link) => actor!.GetLink(link);
+        private AampFile GetFile(string link) => actor!.GetPackAampFile(link);
 
         private static dynamic Retrieve(ParamEntry entry, int index = -1, string prop = "\0")
         {
@@ -802,8 +851,11 @@ namespace BotwActorTool.Lib.Info
             {
                 hash[key] = child.Type switch
                 {
+                    NodeType.Int => child.Int,
                     NodeType.Float => child.Float,
                     NodeType.String => child.String,
+                    NodeType.Hash => RetrieveFloatHash(child),
+                    NodeType.Array => Retrieve(child),
                     _ => throw new InvalidDataException("locators children only contain string and float"),
                 };
             }
@@ -847,10 +899,25 @@ namespace BotwActorTool.Lib.Info
         public BymlNode GetInfoByml() => new(new Dictionary<string, BymlNode>(typeof(ActorInfo)
                 .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(f => f.GetValue(this) != null && f.FieldType != typeof(Actor) && f.FieldType != typeof(FarActor))
-                .Select(f => new KeyValuePair<string, BymlNode>(
-                    f.Name,
-                    f.Name == "tags" ? CompileTags((f.GetValue(this) as Dictionary<string, int>)!) : CompileNode(f.GetValue(this))
-                ))));
+                .Select(f =>
+                    {
+                        BymlNode node;
+                        if (f.Name == "tags")
+                        {
+                            node = CompileTags((f.GetValue(this) as Dictionary<string, int>)!);
+                        }
+                        else if (f.Name == "terrainTextures")
+                        {
+                            node = CompileHashes((f.GetValue(this) as uint[])!);
+                        }
+                        else
+                        {
+                            node = CompileNode(f.GetValue(this));
+                        }
+                        return new KeyValuePair<string, BymlNode>(f.Name, node);
+                    }
+                )
+            ));
         private BymlNode CompileNode<T>(T prop)
         {
             return prop switch
@@ -921,6 +988,10 @@ namespace BotwActorTool.Lib.Info
                 );
             }
             return new(hash);
+        }
+        private static BymlNode CompileHashes(uint[] hashes)
+        {
+            return new(hashes.Select(h => h >= 0x80000000 ? new BymlNode(h) : new BymlNode((int)h)).ToList());
         }
     }
 }

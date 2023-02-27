@@ -85,25 +85,25 @@ namespace BotwActorTool.Lib
         private readonly FlagStore store;
         private readonly Dictionary<string, HashSet<int>> flag_hashes;
         public string[] AnimSeqNames { get => pack.AnimSeqNames; }
-        public override bool HasFar { get => far_actor != null; }
+        public override bool HasFar { get => info.IsHasFar; }
         public Dictionary<string, MsbtEntry>? Texts { get => texts.HasTexts ? texts.Texts : null; }
-        public Actor(string name, string modRoot) : base(name, modRoot)
+        public Actor(string name, string modRoot, ActorInfo info, ActorInfo? farInfo = null) : base(name, modRoot, info)
         {
             store = new();
             flag_hashes = new() { { "bool_data", new() }, { "s32_data", new() } };
             texts = new(name, pack.GetLink("ProfileUser"), modRoot);
 
-            if (info.IsHasFar)
+            if (farInfo != null)
             {
-                far_actor = new FarActor($"{origname}_Far", modRoot);
+                far_actor = new FarActor($"{origname}_Far", modRoot, farInfo);
             }
         }
 
-        public static Actor LoadActor(string path)
+        public static Actor LoadActor(string path, ActorInfo info, ActorInfo? farInfo)
         {
             string name = Path.GetFileNameWithoutExtension(path);
             string modRoot = Util.GetModRoot(path);
-            return new Actor(name, modRoot);
+            return new Actor(name, modRoot, info, farInfo);
         }
 
         public override void SetName(string name)
@@ -185,9 +185,9 @@ namespace BotwActorTool.Lib
                 hashes.Clear();
             }
             string actor_type = name.Split("_")[0];
-            if (FLAG_TYPES.ContainsKey(actor_type))
+            if (FLAG_TYPES.TryGetValue(actor_type, out string[]? prefixes))
             {
-                foreach (string prefix in FLAG_TYPES[actor_type])
+                foreach (string prefix in prefixes)
                 {
                     BaseFlag flag = (BaseFlag)Activator.CreateInstance(FLAG_CLASSES[prefix])!;
                     string flag_type = FLAG_CLASSES[prefix] == typeof(BoolFlag) ? "bool_data" : "s32_data";
